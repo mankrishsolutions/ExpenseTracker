@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Expense Tracker</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="dashboard-header">
+
+        <div class="header-center">
+
+            <h1>Expense Tracker (Monthly Dashboard)</h1>
+
+            <span class="fy-badge">
+                FY 2026-27
+            </span>
+
+        </div>
+
+    </header>
+
+    <main class="dashboard-container">
+
+        <section class="balance-overview">
+            <div class="balance-expense">
+                <div class="balance-label">
+                    Total Available Balance
+                </div>
+                <div id="lblTotalBalance"
+                     class="balance-value">
+                    ₹0
+                </div>
+            </div>
+            <div class="balance-month">
+                <div class="balance-label">
+                    Month
+                </div>
+                <select id="cmbMonth"></select>
+            </div>
+            <div class="balance-wallet">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+        </section>
+
+        <!-- Account Balances -->
+
+        <h3 class="section-title">
+            Available Balances
+        </h3>
+
+        <div class="balances-row">
+
+            <div class="account-card cash">
+
+                <div class="account-icon">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+
+                <div class="account-info">
+                    <span>CASH</span>
+                    <strong id="lblCash">₹0</strong>
+                </div>
+
+            </div>
+
+            <div class="account-card crhd">
+                <div class="account-icon">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="account-info">
+                    <span>CRHD</span>
+                    <strong id="lblCRHD">₹0</strong>
+                </div>
+            </div>
+
+            <div class="account-card crax">
+                <div class="account-icon">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="account-info">
+                    <span>CRAX</span>
+                    <strong id="lblCRAX">₹0</strong>
+                </div>
+            </div>
+
+            <div class="account-card trhd">
+                <div class="account-icon">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="account-info">
+                    <span>TRHD</span>
+                    <strong id="lblTRHD">₹0</strong>
+                </div>
+            </div>
+
+            <div class="account-card trpn">
+                <div class="account-icon">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="account-info">
+                    <span>TRPN</span>
+                    <strong id="lblTRPN">₹0</strong>
+                </div>
+            </div>
+
+            <div class="account-card trcash">
+                <div class="account-icon">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+                <div class="account-info">
+                    <span>TRCASH</span>
+                    <strong id="lblTRCASH">₹0</strong>
+                </div>
+            </div>
+
+            <div class="account-card krhd">
+                <div class="account-icon">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                </div>
+                <div class="account-info">
+                    <span>KRHD</span>
+                    <strong id="lblKRHD">₹0</strong>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dashboard-row">
+
+            <!-- Payment Split -->
+
+            <section class="section-card payment-card">
+
+                <h3 class="section-title">
+                    Payment Split
+                </h3>
+
+                <canvas id="paymentSplitChart"></canvas>
+
+            </section>
+
+            <!-- Online Breakup -->
+
+            <section class="section-card breakup-card">
+
+                <h3 class="section-title">
+                    Online Payment Breakup
+                </h3>
+
+                <div class="breakup-list">
+
+                    <div class="breakup-item">
+
+                        <span>UPI</span>
+
+                        <div class="progress">
+                            <div class="progress-fill upi"></div>
+                        </div>
+
+                        <strong id="lblUPI">₹0</strong>
+
+                    </div>
+
+                    <div class="breakup-item">
+
+                        <span>Bank / DC</span>
+
+                        <div class="progress">
+                            <div class="progress-fill bank"></div>
+                        </div>
+
+                        <strong id="lblBankDC">₹0</strong>
+
+                    </div>
+
+                    <div class="breakup-item">
+
+                        <span>Credit Card</span>
+
+                        <div class="progress">
+                            <div class="progress-fill cc"></div>
+                        </div>
+
+                        <strong id="lblCC">₹0</strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- Trend -->
+
+        <section class="section-card">
+
+            <h3 class="section-title">
+                6 Month Expense Trend
+            </h3>
+
+            <canvas id="expenseTrendChart"></canvas>
+
+        </section>
+
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/navigation.js"></script>
+
+</body>
+</html>
