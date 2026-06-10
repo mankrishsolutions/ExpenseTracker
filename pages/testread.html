@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<button onclick="loadData()">
+
+Load Data
+
+</button>
+
+<pre id="result"></pre>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+
+async function loadData() {
+
+    const data =
+        await getAllTransactions();
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        JSON.stringify(
+            data,
+            null,
+            2
+        );
+}
+
+</script>
+
+</body>
+</html>
