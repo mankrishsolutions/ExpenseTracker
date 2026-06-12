@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadMasters() {
-
+    showLoading()
     fillSelect(
         "cmbCategory",
         Categories
@@ -26,6 +26,7 @@ function loadMasters() {
         "cmbPayment",
         PaymentMediums
     );
+    hideLoading()
 }
 
 function fillSelect(id, arr) {
@@ -58,7 +59,7 @@ function setToday() {
 }
 
 async function saveData(e) {
-
+    showLoading();
     e.preventDefault();
 
     const amount =
@@ -206,8 +207,8 @@ async function saveData(e) {
             "red"
         );
     }
+    hideLoading();
 }
-
 
 function showMessage(msg,color){
 
@@ -219,4 +220,12 @@ function showMessage(msg,color){
 
     box.innerHTML =
         msg;
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
 }

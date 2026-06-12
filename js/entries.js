@@ -7,7 +7,7 @@ document.addEventListener(
 );
 
 async function init() {
-
+    showLoading();
 	await loadData();
 
 	wireEvents();
@@ -24,7 +24,8 @@ async function init() {
 		sessionStorage.removeItem(
 			"appMessage"
 		);
-	}
+    }
+    hideLoading();
 }
 
 async function loadData() {
@@ -619,4 +620,12 @@ function bindButtons() {
                     }
                 };
         });
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
 }

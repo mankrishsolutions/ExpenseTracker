@@ -39,12 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		</a>
 
-		<a href="pages/monthly.html"
-		   data-page="monthly.html">
+		//<a href="pages/monthly.html"
+		//   data-page="monthly.html">
 
-			<i class="fa-solid fa-calendar"></i>
+		//	<i class="fa-solid fa-calendar"></i>
 
-		</a>
+		//</a>
 
 		<a href="pages/yearly.html"
 		   data-page="yearly.html">
