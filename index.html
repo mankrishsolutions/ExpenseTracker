@@ -39,6 +39,20 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                     ₹0
                 </div>
             </div>
+
+
+            <!--<div class="account-card cash">-->
+            <div class="cash-info">
+                <span>CASH</span>
+                <strong id="lblCash">
+                    ₹0
+                </strong>
+                <small id="lblCashOpening" class="opening-balance">
+                    OB ₹0
+                </small>
+            </div>
+            <!--</div>-->
+
             <div class="balance-month">
                 <div class="balance-label">
                     Month
@@ -58,36 +72,55 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
         <div class="balances-row">
 
-            <div class="account-card cash">
+            <!--<div class="account-card cash">
+
+            <div class="account-icon">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+            <div class="account-info">
+                <span>CASH</span>
+                <strong id="lblCash">
+                    ₹0
+                </strong>
+                <small id="lblCashOpening" class="opening-balance">
+                    OB ₹0
+                </small>
+            </div>
+        </div>-->
+
+            <div class="account-card crax">
 
                 <div class="account-icon">
-                    <i class="fa-solid fa-wallet"></i>
+                    <i class="fa-solid fa-building-columns"></i>
                 </div>
 
                 <div class="account-info">
-                    <span>CASH</span>
-                    <strong id="lblCash">₹0</strong>
-                </div>
 
+                    <span>CRAX</span>
+                    <strong id="lblCRAX">
+                        ₹0
+                    </strong>
+                    <small id="lblCRAXOpening" class="opening-balance">
+                        OB ₹0
+                    </small>
+                </div>
             </div>
 
             <div class="account-card crhd">
-                <div class="account-icon">
-                    <i class="fa-solid fa-building-columns"></i>
-                </div>
-                <div class="account-info">
-                    <span>CRHD</span>
-                    <strong id="lblCRHD">₹0</strong>
-                </div>
-            </div>
 
-            <div class="account-card crax">
                 <div class="account-icon">
                     <i class="fa-solid fa-building-columns"></i>
                 </div>
+
                 <div class="account-info">
-                    <span>CRAX</span>
-                    <strong id="lblCRAX">₹0</strong>
+
+                    <span>CRHD</span>
+                    <strong id="lblCRHD">
+                        ₹0
+                    </strong>
+                    <small id="lblCRHDOpening" class="opening-balance">
+                        OB ₹0
+                    </small>
                 </div>
             </div>
 
@@ -97,7 +130,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                 </div>
                 <div class="account-info">
                     <span>TRHD</span>
-                    <strong id="lblTRHD">₹0</strong>
+                    <strong id="lblTRHD">
+                        ₹0
+                    </strong>
+                    <small id="lblTRHDOpening" class="opening-balance">
+                        OB ₹0
+                    </small>
                 </div>
             </div>
 
@@ -105,9 +143,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                 <div class="account-icon">
                     <i class="fa-solid fa-building-columns"></i>
                 </div>
+
                 <div class="account-info">
+
                     <span>TRPN</span>
-                    <strong id="lblTRPN">₹0</strong>
+                    <strong id="lblTRPN">
+                        ₹0
+                    </strong>
+                    <small id="lblTRPNOpening" class="opening-balance">
+                        OB ₹0
+                    </small>
                 </div>
             </div>
 
@@ -117,18 +162,31 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                 </div>
                 <div class="account-info">
                     <span>TRCASH</span>
-                    <strong id="lblTRCASH">₹0</strong>
+                    <strong id="lblTRCASH">
+                        ₹0
+                    </strong>
+                    <small id="lblTRCASHOpening" class="opening-balance">
+                        OB ₹0
+                    </small>
                 </div>
+
             </div>
 
             <div class="account-card krhd">
+
                 <div class="account-icon">
                     <i class="fa-solid fa-piggy-bank"></i>
                 </div>
                 <div class="account-info">
                     <span>KRHD</span>
-                    <strong id="lblKRHD">₹0</strong>
+                    <strong id="lblKRHD">
+                        ₹0
+                    </strong>
+                    <small id="lblKRHDOpening" class="opening-balance">
+                        OB ₹0
+                    </small>
                 </div>
+
             </div>
 
         </div>
@@ -211,6 +269,20 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
         </section>
 
+        <div id="loadingOverlay" style="
+	          position: fixed;
+	          top: 0;
+	          left: 0;
+	          width: 100%;
+	          height: 100%;
+	          background: rgba(255,255,255,0.6);
+	          display: flex;
+	          align-items: center;
+	          justify-content: center;
+	          z-index: 9999;
+	          display: none;">
+            <img src="/Loading.gif" alt="Loading..." style="width: 150px; height: 150px;">
+        </div>
     </main>
 
     <script src="js/config.js"></script>
