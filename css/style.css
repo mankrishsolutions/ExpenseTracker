@@ -1123,7 +1123,7 @@ color:white !important;
 }
 
 .balance-value {
-    font-size: 60px;
+    font-size: 45px;
     font-weight: 700;
     color: #0f172a;
     line-height: 1;
@@ -1136,7 +1136,7 @@ color:white !important;
 }
 
 .balance-month select {
-        width: 100%;
+        width: 80%;
         height: 56px;
         border: 1px solid #ddd;
         border-radius: 14px;
