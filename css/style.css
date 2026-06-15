@@ -97,8 +97,8 @@
 
 .balances-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -156,21 +156,15 @@
    ACCOUNT CARDS
 ========================== */
 
-.account-grid {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 15px;
-}
-
 .account-card {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
-    border-radius: 18px;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 16px;
     background: #fff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    min-height: 90px;
+    min-height: 75px;
 }
 
 .account-card:hover {
@@ -178,13 +172,13 @@
 }
 
 .account-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 16px;
     flex-shrink: 0;
 }
 
@@ -206,9 +200,21 @@
     flex: 1;
 }
 
+.account-info span {
+        font-size: 12px;
+        font-weight: 600;
+        color: #4f46e5;
+        margin-bottom: 2px;
+    }
+
+.account-info strong {
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.1;
+    }
 
 .opening-balance {
-    font-size: 15px;
+    font-size: 11px;
     color: #7c3aed;
     margin-top: 2px;
     order: 3;
@@ -228,25 +234,12 @@
     margin-bottom: 2px;
 }
 
-    .cash-info strong {
+.cash-info strong {
         font-size: 45px;
         font-weight: 700;
         color: black;
         line-height: 1.1;
     }
-
-.account-info span {
-    font-size: 15px;
-    font-weight: 600;
-    color: #4f46e5;
-    margin-bottom: 2px;
-}
-
-.account-info strong {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.1;
-}
 
 .crhd .account-icon {
     background: #dcfce7;
@@ -350,49 +343,6 @@
     background: #f97316;
     width: 55%;
 }
-
-/* ==========================
-   MOBILE
-========================== */
-
-@media(max-width:768px) {
-
-    .dashboard-container {
-        padding: 15px;
-
-    }
-
-    .dashboard-row {
-        flex-direction: column;
-    }
-
-    .payment-card,
-    .breakup-card {
-        flex: unset;
-    }
-    .account-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .balance-overview {
-        padding: 20px;
-        width: auto;
-    }
-
-        .balance-overview h2 {
-            font-size: 28px;
-        }
-
-    .section-title {
-        font-size: 18px;
-    }
-
-    .breakup-item {
-        grid-template-columns: 70px 1fr 70px;
-    }
-}
-
-
 
 /* ========================== */
 /* ==========================
@@ -677,54 +627,32 @@ border-radius:16px;
 box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
 
-.bottom-nav{
-
-position:fixed;
-
-bottom:10px;
-
-left:50%;
-
-transform:translateX(-50%);
-
-width:auto;
-
-padding:8px 12px;
-
-background:white;
-
-border-radius:30px;
-
-display:flex;
-
-gap:10px;
-
-align-items:center;
-
-box-shadow:0 8px 25px rgba(0,0,0,.12);
-
-z-index:9999;
+.bottom-nav {
+    position: fixed;
+    left: 50%;
+    bottom: 12px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    z-index: 99999;
 }
 
-.bottom-nav a{
-
-width:42px;
-
-height:42px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-text-decoration:none;
-
-color:#666;
-
-border-radius:50%;
-
-transition:.2s;
+.bottom-nav a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #666;
+    border-radius: 50%;
+    transition: .2s;
 }
 
 .bottom-nav a.active{
@@ -1184,21 +1112,6 @@ color:white !important;
     margin-top: -35px;
 }
 
-.balance-main-card {
-    background: #fff;
-    border-radius: 28px;
-    padding: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 30px;
-    width: 100%;
-    margin: -45px auto 20px auto;
-    box-shadow: 0 12px 30px rgba(0,0,0,.08);
-    position: relative;
-    margin-top: 1px;
-}
-
 .balance-expense {
     flex: 1;
 }
@@ -1246,29 +1159,6 @@ color:white !important;
         font-size: 34px;
         color: #7c3aed;
     }
-
-@media(max-width:768px) {
-
-    .balance-main-card {
-        flex-direction: column;
-        text-align: center;
-        margin-top: 0px;
-        gap: 10px;
-    }
-
-    .balance-month {
-        width: 25%;
-        border-left: none;
-        border-top: 1px solid #ececec;
-        padding-left: 0;
-        padding-top: 15px;
-    }
-
-    .balance-value {
-        font-size: 42px;
-    }
-}
-
 
 .section-title {
     font-size: 18px;
@@ -1393,55 +1283,146 @@ color:white !important;
 }
 
 
-@media(max-width:768px){
+/* ==========================
+   MOBILE DASHBOARD
+========================== */
 
+@media (max-width:768px) {
 
-    .page-header{
-
-        margin:8px;
+    .dashboard-container {
+        margin: -20px auto 110px;
+        padding: 0 5px;
     }
 
-    .filters-panel{
-
-        margin:8px;
+    .dashboard-header {
+        padding: 5px 15px 20px;
+        border-radius: 0 0 28px 28px;
     }
 
-    #entriesContainer{
+        .dashboard-header h1 {
+            font-size: 18px;
+            line-height: 1.3;
+        }
 
-        margin:8px;
+    .fy-badge {
+        font-size: 12px;
+        padding: 5px 10px;
     }
 
-    .filter-row{
-
-        flex-direction:column;
+    .balance-overview {
+        display: grid;
+        grid-template-columns: 1fr 90px;
+        grid-template-areas:
+            "total wallet"
+            "cash month";
+        gap: 12px;
+        padding: 18px;
+        border-radius: 22px;
     }
 
-    .page-header h1{
-
-        font-size:24px;
+    .balance-expense {
+        grid-area: total;
     }
 
-    .summary-strip{
-
-        gap:6px;
+    .cash-info {
+        grid-area: cash;
+        align-items: flex-start;
     }
 
-    .summary-strip span{
-
-        font-size:12px;
-
-        padding:6px 10px;
+    .balance-month {
+        grid-area: month;
+        width: 100%;
+        border: none;
+        padding: 0;
     }
 
-    .form-grid{
-
-        grid-template-columns:1fr;
+    .balance-wallet {
+        grid-area: wallet;
+        width: 70px;
+        height: 70px;
+        justify-self: end;
     }
 
-    .entry-row{
+    .balance-label {
+        font-size: 14px;
+    }
 
-        font-size:13px;
+    .balance-value {
+        font-size: 24px;
+        line-height: 1.1;
+    }
 
-        padding:9px 12px;
+    .cash-info span {
+        font-size: 14px;
+    }
+
+    .cash-info strong {
+        font-size: 22px;
+    }
+
+    .opening-balance {
+        font-size: 11px;
+        margin-top: 4px;
+    }
+
+    .balance-month select {
+        height: 42px;
+        font-size: 14px;
+    }
+
+    .balances-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .account-card {
+        min-height: auto;
+        padding: 10px;
+    }
+
+    .account-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+
+    .account-info strong {
+        font-size: 16px;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+
+    .account-info span {
+        font-size: 13px;
+    }
+
+    .dashboard-row {
+        flex-direction: column;
+    }
+
+    .payment-card,
+    .breakup-card {
+        flex: none;
+    }
+
+    .section-card {
+        padding: 16px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .breakup-item {
+        grid-template-columns: 60px 1fr 70px;
+        gap: 8px;
+    }
+
+    body {
+        padding-bottom: 100px;
+    }
+
+    .bottom-nav {
+        bottom: 20px;
     }
 }
