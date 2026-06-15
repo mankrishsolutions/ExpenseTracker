@@ -103,17 +103,6 @@
     margin-bottom: 10px;
 }
 
-.balance-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-}
-
 .balance-overview span {
     font-size: 15px;
     opacity: .9;
@@ -344,7 +333,6 @@
     width: 55%;
 }
 
-/* ========================== */
 /* ==========================
    ADD TRANSACTION
 ========================== */
@@ -482,9 +470,6 @@ font-weight:600;
 font-size:14px;
 }
 
-
-/* ========================== */
-
 .balance-card {
     background: white;
     border-radius: 24px;
@@ -492,34 +477,23 @@ font-size:14px;
     margin-bottom: 20px;
     box-shadow: 0 4px 18px rgba(0,0,0,.06);
     position: relative;
-	margin-top: 20px;
-}
-
-.balance-card span {
-    color: #666;
-    font-size: 16px;
+    margin-top: 20px;
 }
 
 .balance-card h2 {
-    margin-top: 12px;
-    font-size: 48px;
-    font-weight: 800;
-    color: #14213d;
-}
+        font-size: 26px;
+    }
+
+.balance-card span {
+        font-size: 14px;
+    }
 
 .balance-icon {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    width: 60px;
-    height: 60px;
-    border-radius: 18px;
-    background: #f4f0ff;
-    color: #7c3aed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
+    width: 48px;
+    height: 48px;
+    top: 18px;
+    right: 18px;
+    font-size: 20px;
 }
 
 .quick-cards{
@@ -791,41 +765,18 @@ color:white !important;
     box-shadow:0 0 0 3px rgba(37,99,235,.15);
 }
 
-.filter-row{
-
-    display:flex;
-
-    gap:10px;
+.filter-row {
+    display: flex;
+    gap: 10px;
 }
 
-.filter-row select{
+.filter-row select {
+        width: 100%;
+    }
 
-    flex:1;
-
-    padding:12px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:12px;
-
-    font-size:14px;
-
-    background:white;
-}
-
-#entriesContainer{
-
-    max-width:1100px;
-
-    margin:15px auto;
-
-    background:white;
-
-    border-radius:16px;
-
-    overflow:hidden;
-
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
+#entriesContainer {
+    max-width: 1100px;
+    margin: 15px auto;
 }
 
 .entry-row{
@@ -1255,21 +1206,32 @@ color:white !important;
     background: linear-gradient( 90deg, #4f46e5, #7c3aed );
 }
 
-@media(max-width:1200px) {
+
+
+/* ==========================
+   MOBILE DASHBOARD
+========================== */
+
+@media (max-width:768px) {
+
+    .filters-panel,
+    .balance-card,
+    #entriesContainer {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .filter-row {
+        flex-direction: column;
+    }
 
     .balances-row {
-        grid-template-columns: repeat(4,1fr);
+        grid-template-columns: repeat(1,1fr);
     }
-}
-
-@media(max-width:768px) {
 
     .dashboard-top-row {
         grid-template-columns: 1fr;
-    }
-
-    .balances-row {
-        grid-template-columns: repeat(2,1fr);
     }
 
     .compact-cards,
@@ -1280,18 +1242,40 @@ color:white !important;
     .total-card h2 {
         font-size: 34px;
     }
-}
 
+    .expense-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
 
-/* ==========================
-   MOBILE DASHBOARD
-========================== */
+    .summary-box {
+        width: 100%;
+        padding: 14px;
+        min-width: 0;
+        box-sizing: border-box;
+    }
 
-@media (max-width:768px) {
+    .summary-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+
+    .summary-content h3 {
+        font-size: 14px;
+    }
+
+    .summary-content span {
+        font-size: 12px;
+    }
 
     .dashboard-container {
-        margin: -20px auto 110px;
-        padding: 0 5px;
+        width: 100%;
+        max-width: none;
+        margin: -20px 0 110px;
+        padding: 0 10px;
     }
 
     .dashboard-header {
@@ -1424,5 +1408,27 @@ color:white !important;
 
     .bottom-nav {
         bottom: 20px;
+    }
+
+    .balance-card {
+        padding: 20px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+
+    .balance-card h2 {
+        font-size: 26px;
+    }
+
+    .balance-card span {
+        font-size: 14px;
+    }
+
+    .balance-icon {
+        width: 48px;
+        height: 48px;
+        top: 18px;
+        right: 18px;
+        font-size: 20px;
     }
 }
