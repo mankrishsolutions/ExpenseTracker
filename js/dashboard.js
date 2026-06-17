@@ -11,8 +11,20 @@ async function init() {
     showLoading()
     try {
         await loadDashboardData();
-        populateMonths();
+
+        populateMonths(
+            allTransactions,
+            allAdjustments
+        );
+
         loadDashboard();
+
+        document
+            .getElementById("cmbMonth")
+            .addEventListener(
+                "change",
+                loadDashboard
+            );
     }
     catch (err) {
         console.error(err);
@@ -35,65 +47,6 @@ async function loadDashboardData() {
     allClosing =
         (await getMonthlyClosing())
             .slice(1);
-}
-
-function populateMonths() {
-
-    const cmb =
-        document.getElementById(
-            "cmbMonth"
-        );
-
-    const months =
-        new Set();
-
-    allTransactions.forEach(row => {
-        months.add(
-            getExpenseMonth(
-                new Date(row[1])
-            )
-        );
-    });
-
-    allAdjustments.forEach(row => {
-        months.add(
-            getExpenseMonth(
-                new Date(row[1])
-            )
-        );
-    });
-
-    const sortedMonths =
-        Array.from(months)
-            .sort((a, b) => {
-
-                return new Date(
-                    "01-" + a
-                ) -
-                    new Date(
-                        "01-" + b
-                    );
-            });
-
-    cmb.innerHTML = "";
-
-    sortedMonths.forEach(month => {
-
-        cmb.innerHTML +=
-            `<option value="${month}">
-                ${month}
-            </option>`;
-    });
-
-    cmb.value =
-        sortedMonths[
-        sortedMonths.length - 1
-        ];
-
-    cmb.addEventListener(
-        "change",
-        loadDashboard
-    );
 }
 
 function loadDashboard() {
@@ -292,35 +245,6 @@ function renderBalances(
 
 }
 
-function getExpenseMonth(dateObj) {
-
-    let month =
-        dateObj.getMonth();
-
-    let year =
-        dateObj.getFullYear();
-
-    if (dateObj.getDate() <= 6) {
-
-        month--;
-
-        if (month < 0) {
-
-            month = 11;
-            year--;
-        }
-    }
-
-    const monthNames = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ];
-
-    return monthNames[month] +
-        "-" +
-        year;
-}
-
 function calculateBalances(
     selectedMonth
 ) {
@@ -377,11 +301,9 @@ function calculateBalances(
         )];
 
     const orderedMonths =
-        allMonths.sort(
-            (a, b) =>
-                new Date("01-" + a) -
-                new Date("01-" + b)
-        );
+        sortExpenseMonths(
+            allMonths
+        );  
 
     // Process month by month
 
@@ -600,111 +522,111 @@ function processMonth(
 
 }
 
-function calculateCRHD(selectedMonth) {
+//function calculateCRHD(selectedMonth) {
 
-    let opening = 0;
+//    let opening = 0;
 
-    // Opening Balance
+//    // Opening Balance
 
-    const openingRow =
-        allClosing.find(r =>
-            r[1] === "CRHD"
-        );
+//    const openingRow =
+//        allClosing.find(r =>
+//            r[1] === "CRHD"
+//        );
 
-    if (openingRow) {
+//    if (openingRow) {
 
-        opening =
-            Number(
-                openingRow[2]
-            ) || 0;
-    }
+//        opening =
+//            Number(
+//                openingRow[2]
+//            ) || 0;
+//    }
 
-    let balance = opening;
+//    let balance = opening;
 
-    // Adjustments
+//    // Adjustments
 
-    allAdjustments.forEach(r => {
+//    allAdjustments.forEach(r => {
 
-        const month =
-            getExpenseMonth(
-                new Date(r[1])
-            );
+//        const month =
+//            getExpenseMonth(
+//                new Date(r[1])
+//            );
 
-        if (
-            month !== selectedMonth
-        ) return;
+//        if (
+//            month !== selectedMonth
+//        ) return;
 
-        const amount =
-            Number(r[2]) || 0;
+//        const amount =
+//            Number(r[2]) || 0;
 
-        const fromMode =
-            String(
-                r[3] || ""
-            ).trim();
+//        const fromMode =
+//            String(
+//                r[3] || ""
+//            ).trim();
 
-        const toMode =
-            String(
-                r[4] || ""
-            ).trim();
+//        const toMode =
+//            String(
+//                r[4] || ""
+//            ).trim();
 
-        if (
-            toMode === "CRHD"
-        ) {
+//        if (
+//            toMode === "CRHD"
+//        ) {
 
-            balance += amount;
-        }
+//            balance += amount;
+//        }
 
-        if (
-            fromMode === "CRHD"
-        ) {
+//        if (
+//            fromMode === "CRHD"
+//        ) {
 
-            balance -= amount;
-        }
+//            balance -= amount;
+//        }
 
-    });
+//    });
 
-    // Expenses
+//    // Expenses
 
-    allTransactions.forEach(r => {
+//    allTransactions.forEach(r => {
 
-        const month =
-            getExpenseMonth(
-                new Date(r[1])
-            );
+//        const month =
+//            getExpenseMonth(
+//                new Date(r[1])
+//            );
 
-        if (
-            month !== selectedMonth
-        ) return;
+//        if (
+//            month !== selectedMonth
+//        ) return;
 
-        const amount =
-            Number(r[2]) || 0;
+//        const amount =
+//            Number(r[2]) || 0;
 
-        const mode =
-            String(
-                r[5] || ""
-            ).trim();
+//        const mode =
+//            String(
+//                r[5] || ""
+//            ).trim();
 
-        if (
-            mode === "CRHD"
-        ) {
+//        if (
+//            mode === "CRHD"
+//        ) {
 
-            balance -= amount;
-        }
+//            balance -= amount;
+//        }
 
-    });
+//    });
 
-    return balance;
-}
+//    return balance;
+//}
 
-function calculateCash(selectedMonth) {
-     //Opening from MonthlyBalances
+//function calculateCash(selectedMonth) {
+//     //Opening from MonthlyBalances
 
-     //+ all adjustments where ToMode="CASH"
+//     //+ all adjustments where ToMode="CASH"
 
-     //- all Transactions where Mode="CashOut"
+//     //- all Transactions where Mode="CashOut"
 
-    return balance;
-}
+//    return balance;
+//}
 
 function getOpeningBalance(
     account,
@@ -725,51 +647,51 @@ function getOpeningBalance(
     let opening =
         Number(firstRow[2]) || 0;
 
-    const allMonths =
-        [...new Set([
+        const allMonths =
+            sortExpenseMonths(
 
-            ...allTransactions.map(
-                r =>
-                    getExpenseMonth(
-                        new Date(r[1])
+                [...new Set([
+
+                    ...allTransactions.map(
+                        r =>
+                            getExpenseMonth(
+                                new Date(r[1])
+                            )
+                    ),
+
+                    ...allAdjustments.map(
+                        r =>
+                            getExpenseMonth(
+                                new Date(r[1])
+                            )
                     )
-            ),
 
-            ...allAdjustments.map(
-                r =>
-                    getExpenseMonth(
-                        new Date(r[1])
-                    )
-            )
+                ])]
 
-        ])].sort(
-            (a, b) =>
-                new Date("01-" + a) -
-                new Date("01-" + b)
-        );
-
-    for (
-        let i = 0;
-        i < allMonths.length;
-        i++
-    ) {
-
-        const month =
-            allMonths[i];
-
-        if (
-            month === selectedMonth
-        ) {
-            break;
-        }
-
-        opening =
-            calculateAccountClosing(
-                account,
-                opening,
-                month
             );
-    }
+
+        for (
+            let i = 0;
+            i < allMonths.length;
+            i++
+        ) {
+
+            const month =
+                allMonths[i];
+
+            if (
+                month === selectedMonth
+            ) {
+                break;
+            }
+
+            opening =
+                calculateAccountClosing(
+                    account,
+                    opening,
+                    month
+                );
+        }
 
     return opening;
 }
@@ -900,3 +822,6 @@ function calculateAccountClosing(
 
     return balance;
 }
+
+
+

@@ -17,23 +17,11 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 </head>
 
-<body>
-	<header class="dashboard-header">
-		<a href="../index.html"
-		   id="btnBack"
-		   class="back-btn">
-			<i class="fa-solid fa-arrow-left"></i>
-		</a>
+<body data-title="Add Transaction"
+	  data-subtitle="Expense Entry"
+	  data-show-month="false">
 
-		<div class="header-center">
-			<h1 id="pageTitle">
-				Transactions
-			</h1>
-			<span class="fy-badge">
-				Add Transaction
-			</span>
-		</div>
-	</header>
+	<div id="headerContainer"></div>
 
 	<main class="dashboard-container">
 		<div class="form-card">
@@ -120,12 +108,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 	          justify-content: center;
 	          z-index: 9999;
 	          display: none;">
-		<img src="css/Loading.gif" alt="Loading..." style="width: 150px; height: 150px;">
+		<img src="../Loading.gif" alt="Loading..." style="width: 150px; height: 150px;">
 	</div>
 
 	<script src="../js/config.js"></script>
 	<script src="../js/masterdata.js"></script>
+	<script src="../js/common.js"></script>
 	<script src="../js/api.js"></script>
+	<script src="../js/header.js"></script>
 	<script src="../js/add.js"></script>
 	<script src="../js/navigation.js"></script>
 

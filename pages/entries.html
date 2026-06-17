@@ -4,9 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport"
         content="width=device-width, initial-scale=1">
-		<link rel="icon" type="image/x-icon" href="../favicon.ico">
-        <title>Expense History</title>
 
+        <title>Expense History</title>
+		<link rel="icon" type="image/x-icon" href="../favicon.ico">
         <link rel="stylesheet"
         href="../css/style.css">
 
@@ -14,25 +14,12 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     </head>
-    <body>
-        <header class="dashboard-header">
+    <body data-title="Transactions"
+          data-subtitle="Expense History"
+          data-show-month="true">
 
-            <a href="../index.html"
-               id="btnBack"
-               class="back-btn">
-                <i class="fa-solid fa-arrow-left"></i>
-            </a>
+        <div id="headerContainer"></div>
 
-            <div class="header-center">
-                <h1 id="pageTitle">
-                    Transactions
-                </h1>
-                <span class="fy-badge">
-                    Expense History
-                </span>
-            </div>
-
-        </header>
         <!-- Top Row -->
         <main class="dashboard-container">
             <div class="balance-card">
@@ -74,19 +61,43 @@
                 </div>
             </div>
 
-            <div class="filters-panel">
-                <input type="text"
-                       id="txtSearch"
-                       placeholder="🔍 Search Transactions">
+            <!--<div class="filters-panel">
+            <input type="text"
+                   id="txtSearch"
+                   placeholder="🔍 Search Transactions">
 
-                <div class="filter-row">
-                    <select id="cmbMonth"></select>
+            <div class="filter-row">
+                <select id="cmbCategory"></select>
+                <select id="cmbMode"></select>
+            </div>
+        </div>
+        <div id="entriesContainer"></div>-->
+
+            <div class="filters-panel">
+
+                <div class="filter-item search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text"
+                           id="txtSearch"
+                           placeholder="Search Transactions">
+                </div>
+
+                <div class="filter-item">
+                    <i class="fa-solid fa-folder"></i>
                     <select id="cmbCategory"></select>
+                </div>
+
+                <div class="filter-item">
+                    <i class="fa-solid fa-filter"></i>
                     <select id="cmbMode"></select>
                 </div>
+
             </div>
+
             <div id="entriesContainer"></div>
+
         </main>
+
         <div id="loadingOverlay" style="
 	              position: fixed;
 	              top: 0;
@@ -104,6 +115,8 @@
 
         <script src="../js/config.js"></script>
         <script src="../js/masterdata.js"></script>
+        <script src="../js/common.js"></script>
+        <script src="../js/header.js"></script>
         <script src="../js/api.js"></script>
         <script src="../js/entries.js"></script>
         <script src="../js/navigation.js"></script>

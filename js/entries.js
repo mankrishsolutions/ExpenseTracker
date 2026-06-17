@@ -38,6 +38,11 @@ async function loadData() {
         allTransactions =
             data.slice(1);
 
+        populateMonths(
+            allTransactions,
+            []
+        );
+
         populateFilters();
 
         applyFilters();
@@ -88,11 +93,6 @@ function wireEvents() {
 
 function populateFilters() {
 
-    const cmbMonth =
-        document.getElementById(
-            "cmbMonth"
-        );
-
     const cmbCategory =
         document.getElementById(
             "cmbCategory"
@@ -103,42 +103,29 @@ function populateFilters() {
             "cmbMode"
         );
 
-    cmbMonth.innerHTML =
-        '<option value="">All Months</option>';
-
     cmbCategory.innerHTML =
         '<option value="">All Categories</option>';
 
     cmbMode.innerHTML =
         '<option value="">All Modes</option>';
 
-    const months = new Set();
-    const categories = new Set();
-    const modes = new Set();
+    const categories =
+        new Set();
+
+    const modes =
+        new Set();
 
     allTransactions.forEach(row => {
 
-        const date =
-            new Date(row[1]);
+        categories.add(
+            row[4]
+        );
 
-        const monthKey = getExpenseMonth(date);
+        modes.add(
+            row[5]
+        );
 
-        months.add(monthKey);
-
-        categories.add(row[4]);
-
-        modes.add(row[5]);
     });
-
-    [...months]
-        .sort()
-        .forEach(month => {
-
-            cmbMonth.innerHTML +=
-                `<option value="${month}">
-                    ${month}
-                </option>`;
-        });
 
     [...categories]
         .sort()
@@ -160,16 +147,7 @@ function populateFilters() {
                 </option>`;
         });
 
-    const currentMonth =
-    getExpenseMonth(
-        new Date()
-    );
-
-    cmbMonth.value =
-        currentMonth;
-
-    cmbMode.value =
-        "";
+    cmbMode.value = "";
 }
 
 function applyFilters() {
@@ -327,6 +305,13 @@ function renderEntries() {
         document.getElementById(
             "entriesContainer"
         );
+
+    if (!container) {
+        console.error(
+            "entriesContainer not found"
+        );
+        return;
+    }
 
     container.innerHTML = "";
 
@@ -502,68 +487,6 @@ function renderEntries() {
     bindButtons();
 }
 
-function getExpenseMonth(dateObj) {
-
-    let month =
-        dateObj.getMonth();
-
-    let year =
-        dateObj.getFullYear();
-
-    if(dateObj.getDate() <= 6){
-
-        month--;
-
-        if(month < 0){
-
-            month = 11;
-
-            year--;
-        }
-    }
-
-    const monthNames = [
-
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-    ];
-
-    return monthNames[month] +
-        "-" +
-        year;
-}
-
-function showMessage(text) {
-
-    const lbl =
-        document.getElementById(
-            "lblMessage"
-        );
-
-    lbl.textContent =
-        text;
-
-    lbl.style.display =
-        "inline-block";
-
-    setTimeout(() => {
-
-        lbl.style.display =
-            "none";
-
-    }, 3000);
-}
-
 function getCategoryIcon(category) {
 
     const icons = {
@@ -620,12 +543,4 @@ function bindButtons() {
                     }
                 };
         });
-}
-
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-}
-
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
 }

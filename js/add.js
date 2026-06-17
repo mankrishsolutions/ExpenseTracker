@@ -210,22 +210,3 @@ async function saveData(e) {
     hideLoading();
 }
 
-function showMessage(msg,color){
-
-    const box =
-        document.getElementById("msgBox");
-
-    box.style.color =
-        color;
-
-    box.innerHTML =
-        msg;
-}
-
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-}
-
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
