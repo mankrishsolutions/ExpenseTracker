@@ -1241,8 +1241,9 @@ color:white !important;
     }
 
     .header-right select {
-        min-width: 110px;
-        height: 25px;
+        min-width: 100px;
+        height: 30px;
+		margin-top: 20px;
     }
         .filter-row {
         flex-direction: column;
