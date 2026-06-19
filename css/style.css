@@ -1263,9 +1263,10 @@ color:white !important;
     .header-right select {
         min-width: 100px;
         height: 30px;
-		margin-top: 20px;
+        margin-top: 20px;
     }
-        .filter-row {
+
+    .filter-row {
         flex-direction: column;
     }
 
@@ -1454,24 +1455,68 @@ color:white !important;
     }
 
     .balance-card {
-        padding: 20px;
-        margin-top: 10px;
-        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 25px;
     }
 
-    .balance-card h2 {
-        font-size: 26px;
+    .balance-left {
+        width: 100%;
     }
 
-    .balance-card span {
+    .expense-summary-inline {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .summary-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: normal;
+        padding: 8px 0;
+    }
+
+    .summary-item i {
+        font-size: 22px;
+        margin-right: 12px;
+    }
+
+    .transactions-table thead {
+        display: none;
+    }
+
+    .transactions-table,
+    .transactions-table tbody,
+    .transactions-table tr,
+    .transactions-table td {
+        display: block;
+    }
+
+        .transactions-table tr {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+    .action-cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .transaction-title {
         font-size: 14px;
     }
 
-    .balance-icon {
-        width: 48px;
-        height: 48px;
-        top: 18px;
-        right: 18px;
-        font-size: 20px;
+    .transactions-table td {
+        font-size: 13px;
     }
+
+    .category-total {
+        font-size: 32px;
+    }
+
 }
