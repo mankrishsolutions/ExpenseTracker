@@ -399,71 +399,55 @@ function renderEntries() {
         `;
 
             const details =
-                card.querySelector(
-                    ".category-transactions"
-                );
+                card.querySelector(".category-transactions");
+
+                let html = `
+                    <table class="transactions-table">
+                    <thead>
+                    <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Mode</th>
+                    <th>Pay</th>
+                    <th>Amount</th>
+                    <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    `;
 
             rows.forEach(row => {
 
-                const amount =
-                    Number(row[2]) || 0;
+                const amount = Number(row[2]) || 0;
 
-                const date =
-                    new Date(row[1]);
-
-                const item =
-                    document.createElement(
-                        "div"
-                    );
-
-                item.className =
-                    "transaction-item";
-
-                item.innerHTML = `
-
-                <div class="transaction-info">
-
-                    <div class="transaction-title">
-
-                        ${row[3]}
-
-                    </div>
-
-                    <div class="transaction-date">
-
-                        ${date.toLocaleDateString("en-GB")}
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <div class="transaction-amount">
-
-                        ₹${amount.toLocaleString("en-IN")}
-                    </div>
-
-                    <button
-                        class="btnEdit"
-                        data-id="${row[0]}">
-
-                        Edit
+                html += `
+                    <tr>
+                    <td>${new Date(row[1]).toLocaleDateString("en-GB")}</td>
+                    <td>${row[3]}</td>
+                    <td>${row[5]}</td>
+                    <td>${row[6]}</td>
+                    <td class="amount-cell">
+                    ₹${amount.toLocaleString("en-IN")}
+                    </td>
+                    <td>
+                    <button class="btnEdit" data-id="${row[0]}">
+                    <i class="fa fa-pen"></i>
                     </button>
 
-                    <button
-                        class="btnDelete"
-                        data-id="${row[0]}">
-
-                        Delete
+                    <button class="btnDelete" data-id="${row[0]}">
+                    <i class="fa fa-trash"></i>
                     </button>
+                    </td>
+                    </tr>
+                    `;
+            });
 
-                </div>
-
+            html += `
+            </tbody>
+            </table>
             `;
 
-                details.appendChild(item);
-
-            });
+            details.innerHTML = html;
 
             card
                 .querySelector(

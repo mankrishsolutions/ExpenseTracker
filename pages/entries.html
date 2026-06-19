@@ -23,42 +23,48 @@
         <!-- Top Row -->
         <main class="dashboard-container">
             <div class="balance-card">
-                <div class="balance-icon">
-                    <i class="fa-solid fa-wallet"></i>
-                </div>
-                <span>Total Expense</span>
-                <h2 id="lblTotalExpense">
-                    ₹ 0
-                </h2>
-            </div>
-            <div class="expense-summary">
-                <div class="summary-box">
-                    <div class="summary-icon cash-bg">
+
+                <div class="balance-left">
+
+                    <div class="balance-icon">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
-                    <div class="summary-content">
-                        <span>Cash</span>
-                        <h3 id="lblCashExpense"></h3>
+
+                    <div>
+                        <span>Total Expense</span>
+                        <h2 id="lblTotalExpense">₹0</h2>
                     </div>
+
                 </div>
-                <div class="summary-box">
-                    <div class="summary-icon online-bg">
-                        <i class="fa-solid fa-building-columns"></i>
+
+                <div class="expense-summary-inline">
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-wallet cash-color"></i>
+                        <div>
+                            <span>Cash</span>
+                            <h3 id="lblCashExpense"></h3>
+                        </div>
                     </div>
-                    <div class="summary-content">
-                        <span>Online</span>
-                        <h3 id="lblOnlineExpense"></h3>
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-building-columns online-color"></i>
+                        <div>
+                            <span>Online</span>
+                            <h3 id="lblOnlineExpense"></h3>
+                        </div>
                     </div>
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-credit-card cc-color"></i>
+                        <div>
+                            <span>Card</span>
+                            <h3 id="lblCCPayment"></h3>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="summary-box">
-                    <div class="summary-icon cc-bg">
-                        <i class="fa-solid fa-credit-card"></i>
-                    </div>
-                    <div class="summary-content">
-                        <span>Credit Card</span>
-                        <h3 id="lblCCPayment"></h3>
-                    </div>
-                </div>
+
             </div>
 
             <!--<div class="filters-panel">

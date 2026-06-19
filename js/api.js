@@ -52,19 +52,33 @@ async function getTransactions() {
 }
 
 async function deleteTransaction(id) {
-
-    const response =
-        await fetch(
-
+    //showLoading();
+    try {
+        const response = await fetch(
             CONFIG.apiUrl +
-
             "?action=delete&id=" +
-
             encodeURIComponent(id)
-
         );
 
-    return await response.json();
+        const result = await response.json();
+        //hideLoading();
+        showMessage(
+            result.message || "Deleted successfully",
+            "green"
+        );
+        return result;
+    }
+    catch (err) {
+        //hideLoading();
+        showMessage(
+            "Delete failed",
+            "red"
+        );
+        console.error(err);
+        return {
+            success: false
+        };
+    }
 }
 
 async function getTransactionById(id) {
