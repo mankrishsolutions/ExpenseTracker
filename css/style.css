@@ -484,7 +484,7 @@ font-size:14px;
 
 .balance-card {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     padding: 20px;
     background: #fff;
