@@ -1,0 +1,128 @@
+/* ==========================
+   ADD TRANSACTION
+========================== */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+}
+
+.form-card {
+    background: white;
+    margin-top: 20px;
+    padding: 25px;
+    border-radius: 22px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    .form-group i {
+        margin-right: 8px;
+        color: #4f46e5;
+    }
+
+#txtAmount {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: right;
+    background: #eef4ff;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 15px;
+    background: #fafafa;
+    transition: .2s;
+}
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #4f46e5;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(79,70,229,.12);
+    }
+
+.save-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient( 135deg, #4f46e5, #7c3aed );
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .save-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(79,70,229,.25);
+    }
+
+#msgBox {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width:768px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .form-card {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+        .form-group label {
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 13px;
+            font-size: 14px;
+        }
+
+    #txtAmount {
+        font-size: 18px;
+    }
+
+    .save-btn {
+        padding: 14px;
+        font-size: 15px;
+    }
+}
