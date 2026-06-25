@@ -251,7 +251,7 @@ body {
     }
 
 .opening-balance {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: #7c3aed;
     margin-top: 2px;
@@ -263,7 +263,7 @@ body {
 
 .balances-row {
     display: grid;
-    grid-template-columns: repeat(6,1fr);
+    grid-template-columns: repeat(5,1fr);
     gap: 10px;
     margin-top: 10px;
     margin-bottom: 10px;

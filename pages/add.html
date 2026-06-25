@@ -29,6 +29,13 @@
 	<main class="dashboard-container">
 		<div class="form-card">
 			<form id="expenseForm">
+
+				<div id="transactionInfo" class="transaction-info" style="display:none;">
+					<span class="label">Transaction ID :</span>
+					<span id="lblTransactionId"></span>
+				</div>
+				<input type="hidden" id="txtTransactionId">
+
 				<div class="form-grid">
 					<div class="form-group">
 						<label>
@@ -120,7 +127,7 @@
 	<script src="../js/api.js"></script>
 	<script src="../js/header.js"></script>
 	<script src="../js/add.js"></script>
-	<script src="../js/navigation.js"></script>
+	<!--<script src="../js/navigation.js"></script>-->
 
 </body>
 </html>

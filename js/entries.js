@@ -29,9 +29,9 @@ async function init() {
 }
 
 async function loadData() {
-
+    
     try {
-
+        showLoading();
         const data =
             await getAllTransactions();
 
@@ -50,8 +50,11 @@ async function loadData() {
 		window.scrollTo({
 			top: 0,
 			behavior: "smooth"
-		});
+        });
+        hideLoading();
     }
+
+
     catch (err) {
 
         console.error(err);

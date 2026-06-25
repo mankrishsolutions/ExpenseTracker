@@ -75,5 +75,25 @@ document.addEventListener(
 
         await loadHeader();
 
+        // Hide Month dropdown on Add page
+        if (window.location.pathname.toLowerCase().includes("add.html")) {
+
+            const monthDiv = document.querySelector(".header-right");
+
+            if (monthDiv) {
+                monthDiv.style.display = "none";
+            }
+        }
     }
 );
+
+function refreshHeader() {
+
+    document.title = document.body.dataset.title || "";
+
+    configureHeader(
+        location.pathname.endsWith("index.html") ||
+        location.pathname.endsWith("/ExpenseTracker/") ||
+        location.pathname.endsWith("/")
+    );
+}

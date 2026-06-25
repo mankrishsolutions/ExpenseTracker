@@ -1,8 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
     loadMasters();
 
     setToday();
+
+    await loadTransactionForEdit();
 
     document
         .getElementById("expenseForm")
@@ -62,6 +64,9 @@ async function saveData(e) {
     showLoading();
     e.preventDefault();
 
+    const transactionId =
+        document.getElementById("txtTransactionId").value;
+
     const amount =
         document.getElementById("txtAmount").value;
 
@@ -112,6 +117,7 @@ async function saveData(e) {
 	
     const data = {
 
+        id: transactionId,
 
         date: selectedDate,
 
@@ -168,8 +174,26 @@ async function saveData(e) {
 
     try {
 
-        const result =
-            await saveTransaction(data);
+
+        let result;
+
+        const transactionId =
+            document.getElementById("txtTransactionId").value;
+
+        if (transactionId) {
+
+            data.id = transactionId;
+
+            result =
+                await updateTransaction(data);
+
+        }
+        else {
+
+            result =
+                await saveTransaction(data);
+
+        }
 		
 			console.log(data);
         if (result.success) {
@@ -208,5 +232,97 @@ async function saveData(e) {
         );
     }
     hideLoading();
+}
+
+async function loadTransactionForEdit() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const id =
+        params.get("id") ||
+        params.get("ID");
+
+    console.log("ID=", id);
+
+    if (!id)
+        return;
+
+    try {
+
+        showLoading();
+
+        const result =
+            await getTransactionById(id);
+
+        console.log(result);
+            
+        if (!result.success)
+            return;
+
+        const row = result.data;
+
+        document.getElementById("txtTransactionId").value = row[0];
+
+        document.getElementById("lblTransactionId").textContent = row[0];
+
+        document.getElementById("transactionInfo").style.display = "block";
+
+        document.title = "Edit Transaction";
+        
+        document.body.setAttribute("data-title", "Edit Transaction");
+        document.body.setAttribute("data-subtitle", "Edit Existing Transaction");
+
+        refreshHeader();
+
+        document.body.dataset.title = "Edit Transaction";
+
+        document.querySelector(".save-btn").innerHTML =
+            '<i class="fa-solid fa-floppy-disk"></i> Update Transaction';
+
+        const dt = new Date(row[1]);
+
+        document.getElementById("txtDate").value =
+            dt.toISOString().split("T")[0];
+
+        document.getElementById(
+            "txtAmount"
+        ).value = row[2];
+
+        document.getElementById(
+            "txtDescription"
+        ).value = row[3];
+
+        document.getElementById(
+            "cmbCategory"
+        ).value = row[4];
+
+        document.getElementById(
+            "cmbMode"
+        ).value = row[5];
+
+        document.getElementById(
+            "cmbPayment"
+        ).value = row[6];
+
+        document.getElementById(
+            "txtRemarks"
+        ).value = row[7];
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+    }
+
+    finally {
+
+        hideLoading();
+
+    }
 }
 

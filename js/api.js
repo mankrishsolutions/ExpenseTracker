@@ -52,7 +52,7 @@ async function getTransactions() {
 }
 
 async function deleteTransaction(id) {
-    //showLoading();
+    showLoading();
     try {
         const response = await fetch(
             CONFIG.apiUrl +
@@ -61,19 +61,12 @@ async function deleteTransaction(id) {
         );
 
         const result = await response.json();
-        //hideLoading();
-        showMessage(
-            result.message || "Deleted successfully",
-            "green"
-        );
+        hideLoading();
         return result;
     }
     catch (err) {
-        //hideLoading();
-        showMessage(
-            "Delete failed",
-            "red"
-        );
+        hideLoading();
+
         console.error(err);
         return {
             success: false
@@ -129,6 +122,32 @@ async function getAdjustments() {
         throw result.message;
 
     return result.data;
+}
+
+async function updateTransaction(data) {
+
+    const qs = new URLSearchParams({
+
+        action: "update",
+
+        id: data.id,
+        date: data.date,
+        amount: data.amount,
+        description: data.description,
+        category: data.category,
+        mode: data.mode,
+        paymentMedium: data.paymentMedium,
+        remarks: data.remarks,
+        updatedOn: data.updatedOn
+
+    });
+
+    const response =
+        await fetch(
+            CONFIG.apiUrl + "?" + qs.toString()
+        );
+
+    return await response.json();
 }
 
 
