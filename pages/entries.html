@@ -73,17 +73,6 @@
 
             </div>
 
-            <!--<div class="filters-panel">
-            <input type="text"
-                   id="txtSearch"
-                   placeholder="🔍 Search Transactions">
-
-            <div class="filter-row">
-                <select id="cmbCategory"></select>
-                <select id="cmbMode"></select>
-            </div>
-        </div>
-        <div id="entriesContainer"></div>-->
 
             <div class="filters-panel">
 
@@ -106,7 +95,87 @@
 
             </div>
 
+            <div class="entries-actions">
+
+                <button id="btnViewAll" class="action-btn">
+                    <i class="fa-solid fa-table-list"></i>
+                    View All Entries
+                </button>
+
+                <button id="btnBalances" class="action-btn">
+                    <i class="fa-solid fa-wallet"></i>
+                    Current Balances
+                </button>
+
+            </div>
+
             <div id="entriesContainer"></div>
+
+
+
+            <!-- ==========================================
+     View All Transactions Modal
+    =========================================== -->
+
+            <div id="allEntriesModal" class="custom-modal">
+
+                <div class="custom-modal-content">
+
+                    <div class="custom-modal-header">
+
+                        <h2>
+                            <i class="fa-solid fa-table-list"></i>
+                            All Transactions
+                        </h2>
+
+                        <button id="btnCloseEntriesModal" class="close-modal">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="custom-modal-body">
+
+                        <div id="allEntriesTableContainer">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Current Balances Modal -->
+
+            <div id="balancesModal" class="custom-modal">
+
+                <div class="custom-modal-content">
+
+                    <div class="custom-modal-header">
+
+                        <h2>
+                            <i class="fa-solid fa-wallet"></i>
+                            Current Available Balances
+                        </h2>
+
+                        <button id="btnCloseBalancesModal" class="close-modal">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="custom-modal-body">
+
+                        <div id="balancesContainer">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </main>
 

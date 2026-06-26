@@ -1,5 +1,8 @@
-let allTransactions = [];
+//let allTransactions = [];
 let filteredTransactions = [];
+//let allAdjustments = [];
+//let allClosing = [];
+
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -32,11 +35,15 @@ async function loadData() {
     
     try {
         showLoading();
-        const data =
-            await getAllTransactions();
 
         allTransactions =
-            data.slice(1);
+            (await getAllTransactions()).slice(1);
+
+        allAdjustments =
+            (await getAdjustments()).slice(1);
+
+        allClosing =
+            (await getMonthlyClosing()).slice(1);
 
         populateMonths(
             allTransactions,
@@ -92,6 +99,56 @@ function wireEvents() {
             "change",
             applyFilters
         );
+
+    document
+        .getElementById("btnViewAll")
+        .addEventListener("click", () => {
+
+            renderAllTransactionsModal();
+
+            document
+                .getElementById("allEntriesModal")
+                .classList.add("show");
+
+        });
+
+    document
+        .getElementById("btnCloseEntriesModal")
+        .addEventListener("click", () => {
+
+            document
+                .getElementById("allEntriesModal")
+                .classList.remove("show");
+        });
+
+    document
+        .getElementById("btnBalances")
+        .addEventListener("click", () => {
+
+            const month =
+                document.getElementById("cmbMonth").value;
+
+            const balances =
+                calculateBalances(month);
+
+            renderBalancesPopup(balances);
+
+            document
+                .getElementById("balancesModal")
+                .classList.add("show");
+
+        });
+
+    document
+        .getElementById("btnCloseBalancesModal")
+        .addEventListener("click", () => {
+
+            document
+                .getElementById("balancesModal")
+                .classList.remove("show");
+
+        });
+
 }
 
 function populateFilters() {
@@ -409,10 +466,11 @@ function renderEntries() {
                     <thead>
                     <tr>
                     <th>Date</th>
+                    <th>Amount</th>
                     <th>Description</th>
+                    <th>Category</th>
                     <th>Mode</th>
                     <th>Pay</th>
-                    <th>Amount</th>
                     <th></th>
                     </tr>
                     </thead>
@@ -426,12 +484,13 @@ function renderEntries() {
                 html += `
                     <tr>
                     <td>${new Date(row[1]).toLocaleDateString("en-GB")}</td>
+                    <td class="amount-cell">
+                    ${amount.toLocaleString("en-IN")}
+                    </td>
                     <td>${row[3]}</td>
+                    <td>${row[4]}</td>
                     <td>${row[5]}</td>
                     <td>${row[6]}</td>
-                    <td class="amount-cell">
-                    ₹${amount.toLocaleString("en-IN")}
-                    </td>
                     <td>
                     <button class="btnEdit" data-id="${row[0]}">
                     <i class="fa fa-pen"></i>
@@ -530,4 +589,194 @@ function bindButtons() {
                     }
                 };
         });
+}
+
+function renderAllTransactionsModal() {
+
+    const container =
+        document.getElementById(
+            "allEntriesTableContainer"
+        );
+
+    let html = `
+
+    <table class="transactions-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Mode</th>
+                <th>Pay</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+    `;
+
+    [...filteredTransactions]
+
+        .sort((a, b) =>
+
+            new Date(b[1]) - new Date(a[1])
+
+        )
+
+        .forEach(row => {
+
+            html += `
+
+            <tr>
+
+                <td>${new Date(row[1]).toLocaleDateString("en-GB")}</td>
+
+                <td class="amount-cell">
+
+                    ₹${Number(row[2]).toLocaleString("en-IN")}
+
+                </td>
+
+                <td>${row[3]}</td>
+
+                <td>${row[4]}</td>
+
+                <td>${row[5]}</td>
+
+                <td>${row[6]}</td>
+
+            </tr>
+
+            `;
+
+        });
+
+    html += `
+
+        </tbody>
+
+    </table>
+
+    `;
+
+    container.innerHTML = html;
+
+}
+
+function renderBalancesPopup(balances) {
+
+    const month =
+        document.getElementById("cmbMonth").value;
+
+    let total = 0;
+
+    [
+        "CASH",
+        "CRHD",
+        "CRAX",
+        "TRHD",
+        "TRPN",
+        "TRCASH",
+        "KRHD"
+    ].forEach(acc => {
+
+        total += Number(balances[acc] || 0);
+
+    });
+
+    document.getElementById("balancesContainer").innerHTML = `
+
+<div class="popup-balance-summary">
+
+    <div class="popup-total-card">
+
+        <div>
+
+            <span>Total Available Balance</span>
+
+            <h2>${formatAmount(total)}</h2>
+
+        </div>
+
+        <div class="popup-wallet">
+
+            <i class="fa-solid fa-wallet"></i>
+
+        </div>
+
+    </div>
+
+
+    <div class="popup-main-balances">
+
+        ${createBalanceCard("CRHD", "fa-building-columns", balances.CRHD, getOpeningBalance("CRHD", month), "online-color")}
+
+        ${createBalanceCard("CASH", "fa-wallet", balances.CASH, getOpeningBalance("CASH", month), "cash-color")}
+
+    </div>
+
+
+    <div class="popup-other-balances">
+
+        ${createBalanceCard("CRAX", "fa-building-columns", balances.CRAX, getOpeningBalance("CRAX", month), "")}
+
+        ${createBalanceCard("TRHD", "fa-building-columns", balances.TRHD, getOpeningBalance("TRHD", month), "")}
+
+        ${createBalanceCard("TRPN", "fa-building-columns", balances.TRPN, getOpeningBalance("TRPN", month), "")}
+
+        ${createBalanceCard("TRCASH", "fa-money-bill-wave", balances.TRCASH, getOpeningBalance("TRCASH", month), "")}
+
+        ${createBalanceCard("KRHD", "fa-piggy-bank", balances.KRHD, getOpeningBalance("KRHD", month), "")}
+
+    </div>
+
+</div>
+`;
+
+}
+
+function createBalanceCard(name, icon, balance, opening, colorClass) {
+
+    return `
+
+<div class="popup-balance-card">
+
+    <div class="popup-balance-icon ${colorClass}">
+
+        <i class="fa-solid ${icon}"></i>
+
+    </div>
+
+    <div>
+
+        <div class="popup-account-name">
+
+            ${name}
+
+        </div>
+
+        <div class="popup-account-balance">
+
+            ${formatAmount(balance)}
+
+        </div>
+
+        <div class="popup-opening">
+
+            OB ${formatAmount(opening).replace("₹", "")}
+
+        </div>
+
+    </div>
+
+</div>
+
+`;
+
 }
