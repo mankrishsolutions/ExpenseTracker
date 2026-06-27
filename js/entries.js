@@ -3,6 +3,33 @@ let filteredTransactions = [];
 //let allAdjustments = [];
 //let allClosing = [];
 
+/*----------------------------------------------------------
+    Payment Mode Groups
+----------------------------------------------------------*/
+
+const PAYMENT_MODE_GROUPS = {
+
+    CASH: [
+        "CashOut",
+        "TRCASH"
+    ],
+
+    ONLINE: [
+        "CRHD",
+        "CRAX",
+        "TRHD",
+        "TRPN",
+        "CC",
+        "CC-KiWi"
+    ],
+
+    CARD: [
+        "CC",
+        "CC-KiWi"
+    ]
+
+};
+
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -296,67 +323,38 @@ function calculateSummary() {
     let totalExpense = 0;
     let cashExpense = 0;
     let onlineExpense = 0;
-    let ccPayment = 0;
+    let cardExpense = 0;
 
     filteredTransactions.forEach(row => {
 
-        const amount =
-            Number(row[2]) || 0;
-
-        const category =
-            row[4];
-
-        const mode =
-            row[5];
-
-        if (
-            mode === "CashOut" ||
-            mode === "TRCASH"
-        ) {
-            cashExpense += amount;
-        }
-
-        if (
-            mode === "CRHD" ||
-            mode === "CRAX" ||
-            mode === "TRHD" ||
-            mode === "TRPN"
-        ) {
-            onlineExpense += amount;
-        }
-
-        if (
-            category === "CC"
-        ) {
-            ccPayment += amount;
-        }
+        const amount = Number(row[2]) || 0;
+        const mode = row[5];
 
         totalExpense += amount;
+
+        if (PAYMENT_MODE_GROUPS.CASH.includes(mode))
+            cashExpense += amount;
+
+        if (PAYMENT_MODE_GROUPS.ONLINE.includes(mode))
+            onlineExpense += amount;
+
+        if (PAYMENT_MODE_GROUPS.CARD.includes(mode))
+            cardExpense += amount;
+
     });
 
-    document.getElementById(
-        "lblTotalExpense"
-    ).textContent =
-        "₹" +
-        totalExpense.toLocaleString("en-IN");
+    document.getElementById("lblTotalExpense").textContent =
+        "₹" + totalExpense.toLocaleString("en-IN");
 
-    document.getElementById(
-        "lblCashExpense"
-    ).textContent =
-        "₹" +
-        cashExpense.toLocaleString("en-IN");
+    document.getElementById("lblCashExpense").textContent =
+        "₹" + cashExpense.toLocaleString("en-IN");
 
-    document.getElementById(
-        "lblOnlineExpense"
-    ).textContent =
-        "₹" +
-        onlineExpense.toLocaleString("en-IN");
+    document.getElementById("lblOnlineExpense").textContent =
+        "₹" + onlineExpense.toLocaleString("en-IN");
 
-    document.getElementById(
-        "lblCCPayment"
-    ).textContent =
-        "₹" +
-        ccPayment.toLocaleString("en-IN");
+    document.getElementById("lblCCPayment").textContent =
+        "₹" + cardExpense.toLocaleString("en-IN");
+
 }
 
 function renderEntries() {

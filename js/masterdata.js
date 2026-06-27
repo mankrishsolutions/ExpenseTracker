@@ -26,14 +26,15 @@ const Modes = [
 "TRPN",
 "TRCASH",
 "KRHD",
-"CC"
+"CC",
+"CCKiWi"
 ];
 
 const PaymentMediums = [
 "CASH",
 "UPI",
 "Bank / DC",
-"CC"
+"KiWi"
 ];
 
 const TransactionTypes = [
