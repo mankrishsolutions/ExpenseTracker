@@ -63,6 +63,29 @@ body {
     text-align: center;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-refresh {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #6d3df5;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    transition: .25s;
+}
+
+.header-refresh:hover {
+    transform: rotate(180deg);
+    background: #f4f0ff;
+}
+
 .dashboard-header h1 {
     font-size: 28px;
     margin-bottom: 8px;

@@ -1,6 +1,5 @@
 async function loadHeader() {
 
-
     const container =
         document.getElementById(
             "headerContainer"
@@ -18,21 +17,33 @@ async function loadHeader() {
             ? "components/header.html"
             : "../components/header.html";
 
-    //console.log("Header JS Loaded");
-    //console.log("Header Path:", headerPath);
-
-
     const response =
         await fetch(headerPath);
-
-    //console.log("Response:", response.status);
 
     container.innerHTML =
         await response.text();
 
     configureHeader(isRootPage);
 
-    //populateMonths();
+    const btnRefresh =
+        document.getElementById(
+            "btnRefresh"
+        );
+
+    if (btnRefresh) {
+
+        btnRefresh.addEventListener(
+            "click",
+            refreshCurrentPageData
+        );
+
+    }
+
+    // Notify pages that header is ready
+    document.dispatchEvent(
+        new CustomEvent("headerLoaded")
+    );
+
 }
 
 function configureHeader(isHomePage) {

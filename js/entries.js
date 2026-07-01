@@ -1,7 +1,5 @@
-//let allTransactions = [];
+
 let filteredTransactions = [];
-//let allAdjustments = [];
-//let allClosing = [];
 
 /*----------------------------------------------------------
     Payment Mode Groups
@@ -30,9 +28,8 @@ const PAYMENT_MODE_GROUPS = {
 
 };
 
-
 document.addEventListener(
-    "DOMContentLoaded",
+    "headerLoaded",
     init
 );
 
@@ -63,14 +60,7 @@ async function loadData() {
     try {
         showLoading();
 
-        allTransactions =
-            (await getAllTransactions()).slice(1);
-
-        allAdjustments =
-            (await getAdjustments()).slice(1);
-
-        allClosing =
-            (await getMonthlyClosing()).slice(1);
+        await loadCachedData();
 
         populateMonths(
             allTransactions,
@@ -583,7 +573,10 @@ function bindButtons() {
 
                     if (result.success) {
 
+                        await refreshExpenseCache(false);
+
                         await loadData();
+
                     }
                 };
         });

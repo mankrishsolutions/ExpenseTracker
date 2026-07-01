@@ -44,7 +44,7 @@ async function getTransactions() {
 
     const response =
         await fetch(
-            APP_URL +
+            CONFIG.apiUrl +
             "?action=getall"
         );
 

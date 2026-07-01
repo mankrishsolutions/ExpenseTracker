@@ -649,3 +649,237 @@ function formatAmount(value) {
                 }
             );
 }
+
+/* ==========================================
+   Expense Cache Functions
+========================================== */
+
+const EXPENSE_CACHE_KEY = "expenseCache";
+
+/**
+ * Returns cached data if available,
+ * otherwise builds a new cache.
+ */
+async function getExpenseCache() {
+
+    const cache =
+        JSON.parse(localStorage.getItem(EXPENSE_CACHE_KEY));
+
+    if (cache && cache.version === 1) {
+
+        //console.log("📦 Expense Cache : Loaded");
+
+        return cache;
+
+    }
+
+    console.log("📦 Expense Cache : Invalid or Missing");
+
+    return await buildExpenseCache();
+
+}
+
+
+/**
+ * Builds cache.
+ * (Currently only a placeholder.)
+ */
+async function buildExpenseCache() {
+
+    //console.log("🔄 Building Expense Cache...");
+
+    const transactions =
+        await getAllTransactions();
+
+    const adjustments =
+        await getAdjustments();
+
+    const monthlyClosing =
+        await getMonthlyClosing();
+
+    const cache = {
+
+        version: 1,
+
+        createdOn: new Date().toISOString(),
+
+        transactions,
+
+        adjustments,
+
+        monthlyClosing
+
+    };
+
+    localStorage.setItem(
+        EXPENSE_CACHE_KEY,
+        JSON.stringify(cache)
+    );
+
+    //console.log("✅ Expense Cache Built");
+
+    return cache;
+
+}
+
+
+/**
+ * Clears cache.
+ */
+function invalidateExpenseCache() {
+
+    console.log("🗑 Expense Cache Cleared");
+
+    localStorage.removeItem(EXPENSE_CACHE_KEY);
+
+}
+
+
+/**
+ * Rebuilds cache.
+ */
+
+async function refreshCurrentPageData() {
+
+    const selectedMonth =
+        document.getElementById("cmbMonth")?.value;
+
+    await refreshExpenseCache(false);
+
+    if (typeof loadDashboardData === "function") {
+
+        await loadDashboardData();
+
+        populateMonths(
+            allTransactions,
+            allAdjustments,
+            selectedMonth
+        );
+
+        loadDashboard();
+
+    }
+
+    if (typeof loadData === "function") {
+
+        await loadData();
+
+    }
+
+    showMessage(
+        "Latest data refreshed successfully.",
+        "green"
+    );
+
+}
+
+async function refreshExpenseCache(showMessageBox = true) {
+
+    try {
+
+        showLoading();
+
+        //console.log("🔄 Refreshing Expense Cache...");
+
+        invalidateExpenseCache();
+
+        const cache =
+            await buildExpenseCache();
+
+        //console.log("✅ Expense Cache Refreshed");
+
+        if (showMessageBox) {
+
+            showMessage(
+                "✅ Latest data loaded successfully.",
+                "green"
+            );
+
+        }
+
+        return cache;
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        if (showMessageBox) {
+
+            showMessage(
+                "❌ Unable to refresh latest data.",
+                "red"
+            );
+
+        }
+
+        throw err;
+
+    }
+    finally {
+
+        hideLoading();
+
+    }
+
+}
+
+/* ==========================================
+   Cached Data Access Functions
+========================================== */
+
+async function getTransactionsData() {
+
+    const cache =
+        await getExpenseCache();
+
+    console.log(cache);
+    console.log(cache.transactions.length);
+    console.log(cache.adjustments.length);
+    console.log(cache.monthlyClosing.length);
+
+    return cache.transactions;
+
+}
+
+async function getAdjustmentsData() {
+
+    const cache =
+        await getExpenseCache();
+
+    return cache.adjustments;
+
+}
+
+async function getMonthlyClosingData() {
+
+    const cache =
+        await getExpenseCache();
+
+    return cache.monthlyClosing;
+
+}
+
+async function ensureExpenseCache() {
+
+    return await getExpenseCache();
+
+}
+
+async function loadCachedData() {
+
+    console.log("📦 Loading Cached Data...");
+
+    const cache =
+        await getExpenseCache();
+
+    allTransactions =
+        cache.transactions.slice(1);
+
+    allAdjustments =
+        cache.adjustments.slice(1);
+
+    allClosing =
+        cache.monthlyClosing.slice(1);
+
+}

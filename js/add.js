@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("headerLoaded", async () => {
 
     loadMasters();
 

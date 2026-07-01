@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("headerLoaded", () => {
 
 	const currentPage =
         window.location.pathname

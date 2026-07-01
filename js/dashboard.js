@@ -1,7 +1,6 @@
 ﻿
-
 document.addEventListener(
-    "DOMContentLoaded",
+    "headerLoaded",
     init
 );
 
@@ -34,17 +33,8 @@ async function init() {
 }
 
 async function loadDashboardData() {
-    allTransactions =
-        (await getAllTransactions())
-            .slice(1);
 
-    allAdjustments =
-        (await getAdjustments())
-            .slice(1);
-
-    allClosing =
-        (await getMonthlyClosing())
-            .slice(1);
+    await loadCachedData();
 }
 
 function loadDashboard() {
