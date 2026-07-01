@@ -213,6 +213,8 @@ async function saveData(e) {
 			document
 				.getElementById("txtAmount")
 				.focus();
+
+            await refreshExpenseCache(false);
         }
         else {
 

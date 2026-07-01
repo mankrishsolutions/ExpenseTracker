@@ -138,34 +138,6 @@ function wireEvents() {
                 .classList.remove("show");
         });
 
-    document
-        .getElementById("btnBalances")
-        .addEventListener("click", () => {
-
-            const month =
-                document.getElementById("cmbMonth").value;
-
-            const balances =
-                calculateBalances(month);
-
-            renderBalancesPopup(balances);
-
-            document
-                .getElementById("balancesModal")
-                .classList.add("show");
-
-        });
-
-    document
-        .getElementById("btnCloseBalancesModal")
-        .addEventListener("click", () => {
-
-            document
-                .getElementById("balancesModal")
-                .classList.remove("show");
-
-        });
-
 }
 
 function populateFilters() {

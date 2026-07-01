@@ -1,16 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/home.css">
+<title>Expense Tracker</title>
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body class="home-page"
@@ -71,7 +70,7 @@
 
         <div class="balances-row">
 
-            <div class="account-card crax">
+           <div class="account-card crax">
 
                 <div class="account-icon">
                     <i class="fa-solid fa-building-columns"></i>
@@ -156,119 +155,89 @@
 
         </div>
 
-        <div class="balance-card">
+        <div class="dashboard-row">
 
-            <div class="balance-left">
+            <!-- Payment Split -->
 
-                <div class="balance-icon">
-                    <i class="fa-solid fa-wallet"></i>
-                </div>
+            <section class="section-card payment-card">
 
-                <div>
-                    <span>Total Expense</span>
-                    <h2 id="lblTotalExpense">₹0</h2>
-                </div>
+                <h3 class="section-title">
+                    Payment Split
+                </h3>
 
-            </div>
+                <canvas id="paymentSplitChart"></canvas>
 
-            <div class="expense-summary-inline">
+            </section>
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-wallet cash-color"></i>
-                    <div>
-                        <span>Cash</span>
-                        <h3 id="lblCashExpense"></h3>
+            <!-- Online Breakup -->
+
+            <section class="section-card breakup-card">
+
+                <h3 class="section-title">
+                    Online Payment Breakup
+                </h3>
+
+                <div class="breakup-list">
+
+                    <div class="breakup-item">
+
+                        <span>UPI</span>
+
+                        <div class="progress">
+                            <div class="progress-fill upi"></div>
+                        </div>
+
+                        <strong id="lblUPI">₹0</strong>
+
                     </div>
-                </div>
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-building-columns online-color"></i>
-                    <div>
-                        <span>Online</span>
-                        <h3 id="lblOnlineExpense"></h3>
+                    <div class="breakup-item">
+
+                        <span>Bank / DC</span>
+
+                        <div class="progress">
+                            <div class="progress-fill bank"></div>
+                        </div>
+
+                        <strong id="lblBankDC">₹0</strong>
+
                     </div>
-                </div>
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-credit-card cc-color"></i>
-                    <div>
-                        <span>Card</span>
-                        <h3 id="lblCCPayment"></h3>
-                    </div>
-                </div>
+                    <div class="breakup-item">
 
-            </div>
+                        <span>Credit Card</span>
 
-        </div>
+                        <div class="progress">
+                            <div class="progress-fill cc"></div>
+                        </div>
 
-        <div class="entries-actions">
-
-            <button id="btnViewAll" class="action-btn">
-                <i class="fa-solid fa-table-list"></i>
-                All Transactions
-            </button>
-
-        </div>
-
-        <div class="filters-panel">
-
-            <div class="filter-item search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text"
-                       id="txtSearch"
-                       placeholder="Search Transactions">
-            </div>
-
-            <div class="filter-item">
-                <i class="fa-solid fa-folder"></i>
-                <select id="cmbCategory"></select>
-            </div>
-
-            <div class="filter-item">
-                <i class="fa-solid fa-filter"></i>
-                <select id="cmbMode"></select>
-
-            </div>
-
-        </div>
-
-
-        <!-- ==========================================
-     View All Transactions Modal
-    =========================================== -->
-
-        <div id="allEntriesModal" class="custom-modal">
-
-            <div class="custom-modal-content">
-
-                <div class="custom-modal-header">
-
-                    <h2>
-                        <i class="fa-solid fa-table-list"></i>
-                        All Transactions
-                    </h2>
-
-                    <button id="btnCloseEntriesModal" class="close-modal">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-
-                </div>
-
-                <div class="custom-modal-body">
-
-                    <div id="allEntriesTableContainer">
+                        <strong id="lblCC">₹0</strong>
 
                     </div>
 
                 </div>
 
-            </div>
+            </section>
 
         </div>
 
-        <div id="entriesContainer"></div>
+        <!-- Trend -->
 
-        <div id="loadingOverlay" style="
+        <section class="section-card">
+
+            <h3 class="section-title">
+                6 Month Expense Trend
+            </h3>
+
+            <canvas id="expenseTrendChart"></canvas>
+
+        </section>
+
+        
+            
+
+
+            <div id="loadingOverlay" style="
 	          position: fixed;
 	          top: 0;
 	          left: 0;
@@ -280,18 +249,16 @@
 	          justify-content: center;
 	          z-index: 9999;
 	          display: none;">
-            <img src="loading.gif" alt="Loading..." style="width: 100px; height: 100px;">
-        </div>
+                <img src="loading.gif" alt="Loading..." style="width: 100px; height: 100px;">
+            </div>
+        </main>
 
-    </main>
+        <script src="js/config.js"></script>
+        <script src="js/header.js"></script>
+        <script src="js/api.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/dashboard.js"></script>
+        <script src="js/navigation.js"></script>
 
-
-    <script src="js/config.js"></script>
-    <script src="js/header.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/common.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/entries.js"></script>
-    <script src="js/navigation.js"></script>
 </body>
 </html>

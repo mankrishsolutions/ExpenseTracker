@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+    <link rel="stylesheet" href="../css/style.css" >
+    <link rel="stylesheet" href="../css/entries.css">
+
+<html>
+
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+        <title>Expense History</title>
+		<link rel="icon" type="image/x-icon" href="../favicon.ico">
+        <link rel="stylesheet"
+        href="../css/style.css">
+
+        <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    </head>
+    <body data-title="Transactions"
+          data-subtitle="Expense History"
+          data-show-month="true">
+
+        <div id="headerContainer"></div>
+
+        <!-- Top Row -->
+        <main class="dashboard-container">
+            <div class="balance-card">
+
+                <div class="balance-left">
+
+                    <div class="balance-icon">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+
+                    <div>
+                        <span>Total Expense</span>
+                        <h2 id="lblTotalExpense">₹0</h2>
+                    </div>
+
+                </div>
+
+                <div class="expense-summary-inline">
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-wallet cash-color"></i>
+                        <div>
+                            <span>Cash</span>
+                            <h3 id="lblCashExpense"></h3>
+                        </div>
+                    </div>
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-building-columns online-color"></i>
+                        <div>
+                            <span>Online</span>
+                            <h3 id="lblOnlineExpense"></h3>
+                        </div>
+                    </div>
+
+                    <div class="summary-item">
+                        <i class="fa-solid fa-credit-card cc-color"></i>
+                        <div>
+                            <span>Card</span>
+                            <h3 id="lblCCPayment"></h3>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="filters-panel">
+
+                <div class="filter-item search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text"
+                           id="txtSearch"
+                           placeholder="Search Transactions">
+                </div>
+
+                <div class="filter-item">
+                    <i class="fa-solid fa-folder"></i>
+                    <select id="cmbCategory"></select>
+                </div>
+
+                <div class="filter-item">
+                    <i class="fa-solid fa-filter"></i>
+                    <select id="cmbMode"></select>
+                </div>
+
+            </div>
+
+            <div class="entries-actions">
+
+                <button id="btnViewAll" class="action-btn">
+                    <i class="fa-solid fa-table-list"></i>
+                    View All Entries
+                </button>
+
+            </div>
+
+            <div id="entriesContainer"></div>
+
+
+
+            <!-- ==========================================
+             View All Transactions Modal
+            =========================================== -->
+
+            <div id="allEntriesModal" class="custom-modal">
+
+                <div class="custom-modal-content">
+
+                    <div class="custom-modal-header">
+
+                        <h2>
+                            <i class="fa-solid fa-table-list"></i>
+                            All Transactions
+                        </h2>
+
+                        <button id="btnCloseEntriesModal" class="close-modal">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="custom-modal-body">
+
+                        <div id="allEntriesTableContainer">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Current Balances Modal -->
+
+            <div id="balancesModal" class="custom-modal">
+
+                <div class="custom-modal-content">
+
+                    <div class="custom-modal-header">
+
+                        <h2>
+                            <i class="fa-solid fa-wallet"></i>
+                            Current Available Balances
+                        </h2>
+
+                        <button id="btnCloseBalancesModal" class="close-modal">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="custom-modal-body">
+
+                        <div id="balancesContainer">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+        <div id="loadingOverlay" style="
+	              position: fixed;
+	              top: 0;
+	              left: 0;
+	              width: 100%;
+	              height: 100%;
+	              background: rgba(255,255,255,0.6);
+	              display: flex;
+	              align-items: center;
+	              justify-content: center;
+	              z-index: 9999;
+	              display: none;">
+            <img src="../loading.gif" alt="Loading..." style="width: 100px; height: 100px;">
+        </div>
+
+        <script src="../js/config.js"></script>
+        <script src="../js/masterdata.js"></script>
+        <script src="../js/common.js"></script>
+        <script src="../js/header.js"></script>
+        <script src="../js/api.js"></script>
+        <script src="../js/entries.js"></script>
+        <script src="../js/navigation.js"></script>
+
+    </body>
+</html>
