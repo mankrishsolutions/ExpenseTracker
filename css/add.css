@@ -10,8 +10,8 @@
 
 .form-card {
     background: white;
-    margin-top: 20px;
-    padding: 25px;
+    margin-top: 5px;
+    padding: 10px;
     border-radius: 22px;
     box-shadow: 0 8px 25px rgba(0,0,0,.08);
 }
@@ -78,13 +78,6 @@
         transform: translateY(-1px);
         box-shadow: 0 8px 20px rgba(79,70,229,.25);
     }
-
-#msgBox {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 14px;
-}
 
 /* ==========================
    MOBILE

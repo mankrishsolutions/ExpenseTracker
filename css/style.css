@@ -141,6 +141,7 @@ h3 {
 }
 
 
+
 /* ==========================================================
    6. HEADER
 ========================================================== */
@@ -205,6 +206,15 @@ h3 {
     .header-refresh:hover {
         transform: rotate(180deg);
     }
+
+
+#msgBox {
+    margin-top: 0px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
 
 .back-btn {
     position: absolute;
@@ -318,9 +328,10 @@ h3 {
 }
 
 .balance-label {
-    font-size: 15px;
+    font-size: 18px;
     color: var(--text-light);
-    margin-bottom: 6px;
+    margin-bottom: 0px;
+    font-weight: 700;
 }
 
 .balance-value {
@@ -336,8 +347,8 @@ h3 {
 }
 
     .cash-info span {
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: 700;
         color: var(--text-light);
     }
 
@@ -348,8 +359,8 @@ h3 {
     }
 
 .opening-balance {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     color: var(--primary);
 }
 
@@ -424,8 +435,8 @@ h3 {
 }
 
     .account-info span {
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 700;
         color: var(--text-light);
         text-transform: uppercase;
         letter-spacing: .5px;
@@ -525,9 +536,9 @@ h3 {
     gap: 30px;
     background: var(--card);
     border-radius: 22px;
-    padding: 22px;
+    padding: 12px;
     box-shadow: var(--shadow);
-    margin-bottom: 18px;
+    margin-bottom: 10px;
 }
 
 .balance-left {
@@ -586,6 +597,8 @@ h3 {
         display: block;
         font-size: 13px;
         color: var(--text-light);
+        font-size: 14px;
+        font-weight: 700;
     }
 
     .summary-item h3 {
@@ -1276,13 +1289,77 @@ h3 {
     /* Category */
 
     .category-header {
-        align-items: flex-start;
-        flex-direction: column;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 18px;
     }
 
     .category-total {
         margin-left: 66px;
         font-size: 22px;
+    }
+
+    .category-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .category-progress-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+        width: 100%;
+    }
+
+    .txn-count {
+        width: 65px;
+        font-size: 12px;
+        color: #666;
+        flex-shrink: 0;
+    }
+
+    .category-progress {
+        flex: 1;
+        height: 8px;
+        background: #ececec;
+        border-radius: 30px;
+        overflow: hidden;
+        min-width: 120px;
+    }
+
+    .category-progress-fill {
+        height: 100%;
+        background: linear-gradient( 90deg, var(--primary), var(--primary-light) );
+        border-radius: 20px;
+    }
+
+    .percent {
+        width: 48px;
+        text-align: right;
+        font-size: 12px;
+        color: #666;
+    }
+
+    .avg-text {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #888;
+    }
+
+    .category-right {
+        min-width: 140px;
+        text-align: right;
+    }
+
+    .category-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        flex: 1;
     }
 
     /* Table */
@@ -1358,6 +1435,7 @@ h3 {
         bottom: 12px;
     }
 }
+
 
 
 
