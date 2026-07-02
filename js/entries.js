@@ -322,14 +322,10 @@ function calculateSummary() {
 function renderEntries() {
 
     const container =
-        document.getElementById(
-            "entriesContainer"
-        );
+        document.getElementById("entriesContainer");
 
     if (!container) {
-        console.error(
-            "entriesContainer not found"
-        );
+        console.error("entriesContainer not found");
         return;
     }
 
@@ -337,12 +333,20 @@ function renderEntries() {
 
     const grouped = {};
 
+    // Grand Total
+    const grandTotal =
+        filteredTransactions.reduce(
+            (sum, row) =>
+                sum + Number(row[2] || 0),
+            0
+        );
+
+    // Group by Category
     filteredTransactions.forEach(row => {
 
         const category = row[4];
 
         if (!grouped[category]) {
-
             grouped[category] = [];
         }
 
@@ -350,61 +354,86 @@ function renderEntries() {
 
     });
 
-    Object.keys(grouped)
-        .sort()
-        .forEach(category => {
+    // Convert to Array & Sort by Highest Expense
+    const categories =
+        Object.entries(grouped)
+            .map(([category, rows]) => {
 
-            const rows =
-                grouped[category];
+                const total =
+                    rows.reduce(
+                        (sum, r) =>
+                            sum + Number(r[2] || 0),
+                        0
+                    );
 
-            const total =
-                rows.reduce(
-                    (sum, r) =>
-                        sum + Number(r[2] || 0),
-                    0
-                );
+                return {
+                    category,
+                    rows,
+                    total
+                };
 
-            const card =
-                document.createElement("div");
+            })
+            .sort((a, b) => b.total - a.total);
 
-            card.className =
-                "category-card";
+    // Render Cards
+    categories.forEach(item => {
 
-            card.innerHTML = `
+        const category = item.category;
+        const rows = item.rows;
+        const total = item.total;
 
-            <div class="category-header">
+        const percentage =
+            grandTotal > 0
+                ? ((total / grandTotal) * 100).toFixed(2)
+                : "0.00";
 
-                <div class="category-left">
+        const average =
+            rows.length > 0
+                ? (total / rows.length).toFixed(0)
+                : 0;
 
-                    <div class="category-icon">
+        const card =
+            document.createElement("div");
 
-                        <i class="fa-solid ${getCategoryIcon(category)}"></i>
+        card.className = "category-card";
 
-                    </div>
+        card.innerHTML = `
 
-                    <div>
+        <div class="category-header">
 
-                        <div class="category-name">
+            <div class="category-left">
 
-                            ${category}
-
-                        </div>
-
-                        <div class="category-count">
-
-                            ${rows.length} Entries
-
-                        </div>
-
-                    </div>
-
+                <div class="category-icon">
+                    <i class="fa-solid ${getCategoryIcon(category)}"></i>
                 </div>
 
-                <div>
+                <div class="category-info">
 
-                    <div class="category-total">
+                    <div class="category-name">
+                        ${category}
+                    </div>
 
-                        ₹${total.toLocaleString("en-IN")}
+                    <div class="category-progress-row">
+
+                        <span class="txn-count">
+
+                            ${rows.length} Txns
+
+                        </span>
+
+                        <div class="category-progress">
+
+                            <div class="category-progress-fill"
+                                 style="width:${percentage}%;">
+                            </div>
+
+                        </div>
+
+                        <span class="percent">
+
+                            ${percentage}%
+
+                        </span>
 
                     </div>
 
@@ -412,19 +441,33 @@ function renderEntries() {
 
             </div>
 
-            <div class="category-transactions">
+            <div class="category-right">
+
+                <div class="category-total">
+
+                    ₹${total.toLocaleString("en-IN")}
+
+                </div>
 
             </div>
+
+        </div>
+
+        <div class="category-transactions"></div>
 
         `;
 
-            const details =
-                card.querySelector(".category-transactions");
+        const details =
+            card.querySelector(".category-transactions");
 
-                let html = `
-                    <table class="transactions-table">
-                    <thead>
-                    <tr>
+        let html = `
+
+        <table class="transactions-table">
+
+            <thead>
+
+                <tr>
+
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Description</th>
@@ -432,65 +475,88 @@ function renderEntries() {
                     <th>Mode</th>
                     <th>Pay</th>
                     <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    `;
 
-            rows.forEach(row => {
+                </tr>
 
-                const amount = Number(row[2]) || 0;
+            </thead>
 
-                html += `
-                    <tr>
-                    <td>${new Date(row[1]).toLocaleDateString("en-GB")}</td>
-                    <td class="amount-cell">
-                    ${amount.toLocaleString("en-IN")}
-                    </td>
-                    <td>${row[3]}</td>
-                    <td>${row[4]}</td>
-                    <td>${row[5]}</td>
-                    <td>${row[6]}</td>
-                    <td>
-                    <button class="btnEdit" data-id="${row[0]}">
-                    <i class="fa fa-pen"></i>
-                    </button>
+            <tbody>
 
-                    <button class="btnDelete" data-id="${row[0]}">
-                    <i class="fa fa-trash"></i>
-                    </button>
-                    </td>
-                    </tr>
-                    `;
-            });
+        `;
+
+        rows.forEach(row => {
+
+            const amount =
+                Number(row[2]) || 0;
 
             html += `
-            </tbody>
-            </table>
+
+            <tr>
+
+                <td>
+                    ${new Date(row[1]).toLocaleDateString("en-GB")}
+                </td>
+
+                <td class="amount-cell">
+                    ₹${amount.toLocaleString("en-IN")}
+                </td>
+
+                <td>${row[3]}</td>
+
+                <td>${row[4]}</td>
+
+                <td>${row[5]}</td>
+
+                <td>${row[6]}</td>
+
+                <td>
+
+                    <button class="btnEdit"
+                            data-id="${row[0]}">
+
+                        <i class="fa fa-pen"></i>
+
+                    </button>
+
+                    <button class="btnDelete"
+                            data-id="${row[0]}">
+
+                        <i class="fa fa-trash"></i>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
             `;
-
-            details.innerHTML = html;
-
-            card
-                .querySelector(
-                    ".category-header"
-                )
-                .addEventListener(
-                    "click",
-                    () => {
-
-                        card.classList.toggle(
-                            "expanded"
-                        );
-
-                    }
-                );
-
-            container.appendChild(card);
 
         });
 
+        html += `
+
+            </tbody>
+
+        </table>
+
+        `;
+
+        details.innerHTML = html;
+
+        card
+            .querySelector(".category-header")
+            .addEventListener("click", () => {
+
+                card.classList.toggle("expanded");
+
+            });
+
+        container.appendChild(card);
+
+    });
+
     bindButtons();
+
 }
 
 function getCategoryIcon(category) {
