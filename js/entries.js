@@ -520,7 +520,7 @@ function bindButtons() {
             btn.onclick = function () {
 
                 location.href =
-                    "add.html?id=" +
+                    "pages/add.html?id=" +
                     this.dataset.id;
             };
         });
