@@ -2,6 +2,7 @@
 let allAdjustments = [];
 let allClosing = [];
 
+
 function showMessage(msg, color) {
 
     const box =
@@ -20,6 +21,18 @@ function showLoading() {
 
 function hideLoading() {
     document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+function showMessage(msg, color) {
+
+    const box =
+        document.getElementById("msgBox");
+
+    box.style.color =
+        color;
+
+    box.innerHTML =
+        msg;
 }
 
 function getExpenseMonth(dateObj) {
@@ -174,6 +187,185 @@ function populateMonths(
             sortedMonths.length - 1
             ];
     }
+}
+
+function populateFilters() {
+
+    const cmbCategory =
+        document.getElementById(
+            "cmbCategory"
+        );
+
+    const cmbMode =
+        document.getElementById(
+            "cmbMode"
+        );
+
+    cmbCategory.innerHTML =
+        '<option value="">All Categories</option>';
+
+    cmbMode.innerHTML =
+        '<option value="">All Modes</option>';
+
+    const categories =
+        new Set();
+
+    const modes =
+        new Set();
+
+    allTransactions.forEach(row => {
+
+        categories.add(
+            row[4]
+        );
+
+        modes.add(
+            row[5]
+        );
+
+    });
+
+    [...categories]
+        .sort()
+        .forEach(category => {
+
+            cmbCategory.innerHTML +=
+                `<option value="${category}">
+                    ${category}
+                </option>`;
+        });
+
+    [...modes]
+        .sort()
+        .forEach(mode => {
+
+            cmbMode.innerHTML +=
+                `<option value="${mode}">
+                    ${mode}
+                </option>`;
+        });
+
+    cmbMode.value = "";
+}
+
+function applyFilters() {
+
+    const search =
+        document
+            .getElementById(
+                "txtSearch"
+            )
+            .value
+            .toLowerCase()
+            .trim();
+
+    const month =
+        document
+            .getElementById(
+                "cmbMonth"
+            )
+            .value;
+
+    const category =
+        document
+            .getElementById(
+                "cmbCategory"
+            )
+            .value;
+
+    const mode =
+        document
+            .getElementById(
+                "cmbMode"
+            )
+            .value;
+
+    filteredTransactions =
+        allTransactions.filter(row => {
+
+            const date =
+                new Date(row[1]);
+
+            const rowMonth = getExpenseMonth(date);
+
+            const matchesSearch =
+
+                search === "" ||
+
+                row[3]
+                    .toLowerCase()
+                    .includes(search) ||
+
+                row[4]
+                    .toLowerCase()
+                    .includes(search);
+
+            const matchesMonth =
+
+                month === "" ||
+                rowMonth === month;
+
+            const matchesCategory =
+
+                category === "" ||
+                row[4] === category;
+
+            const matchesMode =
+
+                mode === "" ||
+                row[5] === mode;
+
+            return (
+
+                matchesSearch &&
+                matchesMonth &&
+                matchesCategory &&
+                matchesMode
+            );
+        });
+
+    calculateSummary();
+
+    renderEntries();
+}
+
+function calculateSummary() {
+
+    let totalExpense = 0;
+    let cashExpense = 0;
+    let onlineExpense = 0;
+    let cardExpense = 0;
+
+    filteredTransactions.forEach(row => {
+
+        const amount = Number(row[2]) || 0;
+        const mode = row[5];
+
+        totalExpense += amount;
+
+        if (PAYMENT_MODE_GROUPS.CASH.includes(mode))
+            cashExpense += amount;
+
+        if (PAYMENT_MODE_GROUPS.ONLINE.includes(mode))
+            onlineExpense += amount;
+
+        if (PAYMENT_MODE_GROUPS.CARD.includes(mode))
+            cardExpense += amount;
+
+    });
+
+    document.getElementById("lblTotalExpense").textContent =
+        "₹" + totalExpense.toLocaleString("en-IN");
+
+    document.getElementById("lblCashExpense").textContent =
+        "₹" + cashExpense.toLocaleString("en-IN");
+
+    document.getElementById("lblOnlineExpense").textContent =
+        "₹" + onlineExpense.toLocaleString("en-IN");
+
+    document.getElementById("lblCCPayment").textContent =
+        "₹" + cardExpense.toLocaleString("en-IN");
+
 }
 
 function calculateBalances(
@@ -883,3 +1075,169 @@ async function loadCachedData() {
         cache.monthlyClosing.slice(1);
 
 }
+
+async function saveTransaction(data) {
+
+    const qs = new URLSearchParams({
+
+        action: "save",
+
+        id: data.id,
+        date: data.date,
+        amount: data.amount,
+        description: data.description,
+        category: data.category,
+        mode: data.mode,
+        paymentMedium: data.paymentMedium,
+        remarks: data.remarks,
+        createdOn: data.createdOn,
+        updatedOn: data.updatedOn
+
+    });
+
+    const response = await fetch(
+        CONFIG.apiUrl + "?" + qs.toString()
+    );
+
+    return await response.json();
+}
+
+async function getAllTransactions() {
+
+    const response = await fetch(
+        CONFIG.apiUrl +
+        "?action=getall"
+    );
+
+    const result =
+        await response.json();
+
+    if (!result.success)
+        throw result.message;
+
+    return result.data;
+}
+
+async function deleteTransaction(id) {
+    showLoading();
+    try {
+        const response = await fetch(
+            CONFIG.apiUrl +
+            "?action=delete&id=" +
+            encodeURIComponent(id)
+        );
+
+        const result = await response.json();
+        hideLoading();
+        return result;
+    }
+    catch (err) {
+        hideLoading();
+
+        console.error(err);
+        return {
+            success: false
+        };
+    }
+}
+
+async function getTransactionById(id) {
+
+    const response =
+        await fetch(
+
+            CONFIG.apiUrl +
+
+            "?action=getbyid&id=" +
+
+            encodeURIComponent(id)
+
+        );
+
+    return await response.json();
+}
+
+async function getMonthlyClosing() {
+
+    const response =
+        await fetch(
+            CONFIG.apiUrl +
+            "?action=getmonthlyclosing"
+        );
+
+    const result =
+        await response.json();
+
+    if (!result.success)
+        throw result.message;
+
+    return result.data;
+}
+
+async function getAdjustments() {
+
+    const response =
+        await fetch(
+            CONFIG.apiUrl +
+            "?action=getadjustments"
+        );
+
+    const result =
+        await response.json();
+
+    if (!result.success)
+        throw result.message;
+
+    return result.data;
+}
+
+async function updateTransaction(data) {
+
+    const qs = new URLSearchParams({
+
+        action: "update",
+
+        id: data.id,
+        date: data.date,
+        amount: data.amount,
+        description: data.description,
+        category: data.category,
+        mode: data.mode,
+        paymentMedium: data.paymentMedium,
+        remarks: data.remarks,
+        updatedOn: data.updatedOn
+
+    });
+
+    const response =
+        await fetch(
+            CONFIG.apiUrl + "?" + qs.toString()
+        );
+
+    return await response.json();
+}
+
+/----------------------------------------------------------Payment Mode Groups----------------------------------------------------------/
+
+const PAYMENT_MODE_GROUPS = {
+
+    CASH: [
+        "CashOut",
+        "TRCASH"
+    ],
+
+    ONLINE: [
+        "CRHD",
+        "CRAX",
+        "TRHD",
+        "TRPN",
+        "CC",
+        "CC-KiWi"
+    ],
+
+    CARD: [
+        "CC",
+        "CC-KiWi"
+    ]
+
+};

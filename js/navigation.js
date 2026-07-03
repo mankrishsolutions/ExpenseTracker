@@ -39,8 +39,8 @@ document.addEventListener("headerLoaded", () => {
 
 		</a>
 
-		<a href="pages/yearly.html"
-		   data-page="yearly.html">
+		<a href="pages/analytics.html"
+		   data-page="analytics.html">
 
 			<i class="fa-solid fa-chart-column"></i>
 

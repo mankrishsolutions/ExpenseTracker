@@ -1,0 +1,1048 @@
+/* ==========================================================
+   EXPENSES ANALYTICS
+   Premium Finance Dashboard
+   Part 1
+========================================================== */
+
+/* ==========================================================
+   ROOT VARIABLES
+========================================================== */
+
+:root {
+    --primary: #2563eb;
+    --primary-light: #dbeafe;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --purple: #7c3aed;
+    --cyan: #0891b2;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --card-bg: rgba(255,255,255,.95);
+    --border: #e5e7eb;
+    --page-bg: linear-gradient( 180deg, #f6f9ff, #eef4fb );
+    --shadow-small: 0 4px 12px rgba(0,0,0,.06);
+    --shadow-medium: 0 10px 30px rgba(0,0,0,.08);
+    --radius: 18px;
+}
+
+/* ==========================================================
+   PAGE
+========================================================== */
+
+body {
+    background: var(--page-bg);
+}
+
+.analytics-page {
+    max-width: 1600px;
+    margin: auto;
+    padding: 14px 18px;
+}
+
+/* ==========================================================
+   PAGE TITLE
+========================================================== */
+
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+    .page-title h2 {
+        margin: 0;
+        font-size: 34px;
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .page-title p {
+        margin-top: 6px;
+        color: var(--text-light);
+        font-size: 15px;
+    }
+
+/* ==========================================================
+   FILTER CARD
+========================================================== */
+
+.filter-card {
+    background: rgba(255,255,255,.80);
+    backdrop-filter: blur(12px);
+    border-radius: 22px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255,255,255,.6);
+    box-shadow: var(--shadow-small);
+    margin-bottom: 14px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(250px,1fr));
+    gap: 22px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+    .filter-item label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 8px;
+    }
+
+    .filter-item select {
+        height: 46px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 14px;
+        font-size: 15px;
+        transition: .30s;
+    }
+
+        .filter-item select:hover {
+            border-color: var(--primary);
+        }
+
+        .filter-item select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+        }
+
+/* ==========================================================
+   SUMMARY GRID
+========================================================== */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+/* ==========================================================
+   SUMMARY CARD
+========================================================== */
+
+.summary-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--card-bg);
+    backdrop-filter: blur(18px);
+    border-radius: 22px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,.7);
+    box-shadow: var(--shadow-small);
+    transition: .35s;
+    min-height: 90px;
+}
+
+    /* Top Glow */
+
+    .summary-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+    }
+
+    /* Card Colors */
+
+    .summary-card.income::before {
+        background: linear-gradient( 90deg, #22c55e, #86efac );
+    }
+
+    .summary-card.expense::before {
+        background: linear-gradient( 90deg, #ef4444, #fca5a5 );
+    }
+
+    .summary-card.transaction::before {
+        background: linear-gradient( 90deg, #2563eb, #60a5fa );
+    }
+
+    .summary-card.average::before {
+        background: linear-gradient( 90deg, #f59e0b, #fde68a );
+    }
+
+    /* Hover */
+
+    .summary-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-medium);
+    }
+
+/* ==========================================================
+   SUMMARY HEADER
+========================================================== */
+
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ==========================================================
+   ICON
+========================================================== */
+
+.summary-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+/* Individual Colors */
+
+.income .summary-icon {
+    background: linear-gradient( 135deg, #22c55e, #16a34a );
+}
+
+.expense .summary-icon {
+    background: linear-gradient( 135deg, #ef4444, #dc2626 );
+}
+
+.transaction .summary-icon {
+    background: linear-gradient( 135deg, #2563eb, #1d4ed8 );
+}
+
+.average .summary-icon {
+    background: linear-gradient( 135deg, #f59e0b, #d97706 );
+}
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.summary-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* ==========================================================
+   VALUE
+========================================================== */
+
+.summary-value {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: .5px;
+    transition: .25s;
+}
+
+/* ==========================================================
+   CHANGE BADGE
+========================================================== */
+
+.summary-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+    .summary-change.positive {
+        color: var(--success);
+        background: var(--success-light);
+    }
+
+    .summary-change.negative {
+        color: var(--danger);
+        background: var(--danger-light);
+    }
+
+    .summary-change.neutral {
+        color: #666;
+        background: #edf2f7;
+    }
+
+/* ==========================================================
+   SPARKLINE
+========================================================== */
+
+.sparkline {
+    margin-top: 6px;
+    height: 18px !important;
+    width: 100% !important;
+}
+
+/* ==========================================================
+   FLOATING GLOW
+========================================================== */
+
+.summary-card::after {
+    content: "";
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+    opacity: .08;
+}
+
+.income::after {
+    background: #22c55e;
+}
+
+.expense::after {
+    background: #ef4444;
+}
+
+.transaction::after {
+    background: #2563eb;
+}
+
+.average::after {
+    background: #f59e0b;
+}
+
+/* ==========================================================
+   ANIMATION
+========================================================== */
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.summary-card {
+    animation: fadeUp .6s ease;
+}
+
+/* ==========================================================
+   ANALYTICS GRID
+========================================================== */
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    gap: 14px;
+    margin-bottom: 30px;
+}
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.analytics-card {
+    position: relative;
+    grid-column: span 3;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(18px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.75);
+    box-shadow: var(--shadow-small);
+    transition: .35s;
+}
+
+
+    .analytics-card.small {
+        grid-column: span 3;
+    }
+
+/*    .analytics-card.medium {
+        grid-column: span 4;
+    }*/
+
+    .analytics-card.large {
+        grid-column: span 6;
+    }
+
+    .analytics-card.full {
+        grid-column: span 12;
+    }
+
+    .analytics-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-medium);
+    }
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    min-height: 42px;
+    color: #fff;
+    background: linear-gradient( 135deg, #2563eb, #3b82f6 );
+}
+
+/* Different gradients */
+
+.analytics-card:nth-child(2) .card-header {
+    background: linear-gradient( 135deg, #7c3aed, #8b5cf6 );
+}
+
+.analytics-card:nth-child(4) .card-header {
+    background: linear-gradient( 135deg, #059669, #10b981 );
+}
+
+.analytics-card:nth-child(5) .card-header {
+    background: linear-gradient( 135deg, #0891b2, #06b6d4 );
+}
+
+.analytics-card:nth-child(6) .card-header {
+    background: linear-gradient( 135deg, #dc2626, #ef4444 );
+}
+
+.analytics-card:nth-child(7) .card-header {
+    background: linear-gradient( 135deg, #d97706, #f59e0b );
+}
+
+.analytics-card:nth-child(8) .card-header {
+    background: linear-gradient( 135deg, #2563eb, #60a5fa );
+}
+
+.analytics-card:nth-child(9) .card-header {
+    background: linear-gradient( 135deg, #7c3aed, #a855f7 );
+}
+
+.analytics-card:nth-child(10) .card-header {
+    background: linear-gradient( 135deg, #059669, #22c55e );
+}
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.card-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .3px;
+}
+
+/* ==========================================================
+   OPTIONAL ICON
+========================================================== */
+
+.card-header i {
+    font-size: 22px;
+    opacity: .95;
+}
+
+/* ==========================================================
+   CARD BODY
+========================================================== */
+
+.analytics-card canvas {
+    padding: 8px;
+    width: 100% !important;
+    height: 170px !important;
+}
+
+/* ==========================================================
+   LIST AREA
+========================================================== */
+
+#topCategories,
+#topExpenses {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    max-height: 360px;
+    overflow: auto;
+}
+
+    /* Custom Scrollbar */
+
+    #topCategories::-webkit-scrollbar,
+    #topExpenses::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #topCategories::-webkit-scrollbar-thumb,
+    #topExpenses::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 20px;
+    }
+
+/* ==========================================================
+   LIST ITEM
+========================================================== */
+
+.analytics-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 18px;
+    border-radius: 14px;
+    border: 1px solid #edf2f7;
+    background: #f8fbff;
+    transition: .25s;
+}
+
+    .analytics-list-item:hover {
+        background: #eef6ff;
+        border-color: #bfdbfe;
+        transform: translateX(6px);
+    }
+
+/* ==========================================================
+   LEFT SIDE
+========================================================== */
+
+.analytics-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ==========================================================
+   RANK BADGE
+========================================================== */
+
+.rank-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* Top 3 */
+
+.rank-1 {
+    background: #f59e0b;
+}
+
+.rank-2 {
+    background: #94a3b8;
+}
+
+.rank-3 {
+    background: #b45309;
+}
+
+/* Others */
+
+.rank-default {
+    background: #2563eb;
+}
+
+/* ==========================================================
+   TEXT
+========================================================== */
+
+.analytics-item-title {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.analytics-item-subtitle {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ==========================================================
+   VALUE BADGE
+========================================================== */
+
+.analytics-value {
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 8px 14px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ==========================================================
+   CATEGORY TAG
+========================================================== */
+
+.analytics-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-size: 12px;
+    background: #eef2ff;
+    color: #4338ca;
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.analytics-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    color: #94a3b8;
+    padding: 50px;
+}
+
+    .analytics-empty i {
+        font-size: 60px;
+        margin-bottom: 18px;
+        opacity: .6;
+    }
+
+    .analytics-empty h4 {
+        margin: 0 0 10px;
+        color: #64748b;
+    }
+
+    .analytics-empty p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+/* ==========================================================
+   LOADING PLACEHOLDER
+========================================================== */
+
+.analytics-loading {
+    position: relative;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+
+    .analytics-loading::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient( 90deg, transparent, rgba(255,255,255,.7), transparent );
+        animation: loading 1.2s infinite;
+    }
+
+@keyframes loading {
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ==========================================================
+   CARD APPEAR ANIMATION
+========================================================== */
+
+.analytics-card {
+    animation: fadeCard .6s ease;
+}
+
+@keyframes fadeCard {
+
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .card-title i {
+        font-size: 15px;
+    }
+
+.card-title h3 {
+    margin: 0;
+}
+
+/* ==========================================================
+   RESPONSIVE DESIGN
+========================================================== */
+
+/* Large Desktop */
+
+@media (min-width:1600px) {
+
+    .analytics-page {
+        max-width: 1750px;
+    }
+}
+
+/* ==========================================================
+   Desktop
+========================================================== */
+
+@media (max-width:1400px) {
+
+    .summary-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+/* ==========================================================
+   Tablet
+========================================================== */
+
+@media (max-width:1100px) {
+
+    .analytics-page {
+        padding: 18px;
+    }
+
+    .filter-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .analytics-card {
+        grid-column: span 12;
+    }
+
+    .analytics-card canvas {
+        height: 220px !important;
+        padding: 10px;
+    }
+}
+
+/* ==========================================================
+   Mobile
+========================================================== */
+
+@media (max-width:768px) {
+
+    .analytics-page {
+        padding: 12px;
+    }
+
+    .page-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        margin-bottom: 18px;
+    }
+
+        .page-title h2 {
+            font-size: 28px;
+        }
+
+        .page-title p {
+            font-size: 13px;
+        }
+
+    .filter-card {
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .summary-card {
+        padding: 18px;
+    }
+
+    .summary-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+
+    .summary-value {
+        font-size: 28px;
+    }
+
+    .summary-change {
+        font-size: 11px;
+    }
+
+    .analytics-grid {
+        gap: 18px;
+    }
+
+    .analytics-card {
+        border-radius: 18px;
+    }
+
+    .card-header {
+        padding: 10px;
+    }
+
+        .card-header h3 {
+            font-size: 13px;
+        }
+
+    .analytics-card canvas {
+        height: 260px !important;
+        padding: 14px;
+    }
+
+    #topCategories,
+    #topExpenses {
+        padding: 15px;
+    }
+
+    .analytics-list-item {
+        padding: 12px;
+    }
+
+    .analytics-value {
+        font-size: 13px;
+        padding: 7px 12px;
+    }
+}
+
+/* ==========================================================
+   Small Mobile
+========================================================== */
+
+@media (max-width:480px) {
+
+    .analytics-page {
+        padding: 10px;
+    }
+
+    .page-title h2 {
+        font-size: 24px;
+    }
+
+    .summary-value {
+        font-size: 24px;
+    }
+
+    .summary-header {
+        gap: 12px;
+    }
+
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 20px;
+    }
+
+    .card-header {
+        padding: 14px;
+    }
+
+    .card-title {
+        gap: 8px;
+    }
+
+        .card-title i {
+            font-size: 15px;
+        }
+
+        .card-title h3 {
+            font-size: 13px;
+        }
+
+    .analytics-card canvas {
+        height: 220px !important;
+    }
+}
+
+/* ==========================================================
+   UTILITY CLASSES
+========================================================== */
+
+.text-success {
+    color: var(--success);
+}
+
+.text-danger {
+    color: var(--danger);
+}
+
+.text-warning {
+    color: var(--warning);
+}
+
+.text-primary {
+    color: var(--primary);
+}
+
+.bg-success {
+    background: var(--success-light);
+}
+
+.bg-danger {
+    background: var(--danger-light);
+}
+
+.bg-warning {
+    background: var(--warning-light);
+}
+
+.bg-primary {
+    background: var(--primary-light);
+}
+
+.shadow-hover {
+    transition: .30s;
+}
+
+    .shadow-hover:hover {
+        box-shadow: var(--shadow-medium);
+    }
+
+.rounded {
+    border-radius: var(--radius);
+}
+
+/* ==========================================================
+   CHART CONTAINER
+========================================================== */
+
+.chart-wrapper {
+    position: relative;
+    flex: 1;
+    min-height: 170px;
+}
+
+    .chart-wrapper canvas {
+        position: absolute;
+        inset: 0;
+    }
+
+/* ==========================================================
+   SMOOTH TRANSITIONS
+========================================================== */
+
+button,
+select,
+.analytics-card,
+.summary-card,
+.analytics-list-item {
+    transition: background .25s, color .25s, border-color .25s, box-shadow .25s, transform .25s;
+}
+
+    /* ==========================================================
+   ACCESSIBILITY
+========================================================== */
+
+    button:focus-visible,
+    select:focus-visible {
+        outline: 3px solid rgba(37,99,235,.35);
+        outline-offset: 2px;
+    }
+
+    .analytics-card:focus-within {
+        box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+
+/* ==========================================================
+   READY FOR DARK MODE
+========================================================== */
+
+body.dark {
+    --card-bg: #1e293b;
+    --text-dark: #f8fafc;
+    --text-light: #cbd5e1;
+    --border: #334155;
+    --page-bg: linear-gradient( 180deg, #0f172a, #111827 );
+    --shadow-small: 0 8px 18px rgba(0,0,0,.35);
+    --shadow-medium: 0 18px 40px rgba(0,0,0,.45);
+}
+
+    body.dark .filter-item select {
+        background: #1f2937;
+        color: #f8fafc;
+    }
+
+    body.dark .analytics-list-item {
+        background: #1f2937;
+        border-color: #374151;
+    }
+
+    body.dark .analytics-value {
+        background: #1e3a8a;
+        color: #dbeafe;
+    }
+
+/* ==========================================================
+   PRINT MODE
+========================================================== */
+
+@media print {
+
+    body {
+        background: #fff;
+    }
+
+    .filter-card {
+        display: none;
+    }
+
+    .analytics-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .summary-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+.analytics-panel {
+    display: none;
+}
+
+.analytics-panel.active {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    gap: 14px;
+}
