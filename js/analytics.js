@@ -4,6 +4,8 @@ let filteredClosing = [];
 let categoryChart = null;
 let paymentChart = null;
 let monthlyTrendChart = null;
+let monthlyComparisonChart = null;
+
 
 Chart.register(ChartDataLabels);
 
@@ -182,6 +184,7 @@ function applyFilters() {
     renderCategoryChart();
     renderPaymentChart();
     renderMonthlyTrendChart();
+    renderMonthlyComparisonChart();
 }
 
 function renderSummary() {
@@ -826,4 +829,225 @@ function renderMonthlyTrendChart() {
 
     });
 
+}
+
+
+/* ==========================================
+   MONTHLY COMPARISON
+========================================== */
+
+function calculateMonthlyComparison() {
+
+    const months = {};
+
+    allTransactions.forEach(row => {
+
+        const month =
+            getExpenseMonth(
+                new Date(row[1])
+            );
+
+        if (!months[month]) {
+
+            months[month] = {
+
+                income: 0,
+                expense: 0
+
+            };
+
+        }
+
+        months[month].expense +=
+            Number(row[2] || 0);
+
+    });
+
+    allAdjustments.forEach(row => {
+
+        const month =
+            getExpenseMonth(
+                new Date(row[1])
+            );
+
+        if (!months[month]) {
+
+            months[month] = {
+
+                income: 0,
+                expense: 0
+
+            };
+
+        }
+
+        if (
+            String(row[5])
+                .startsWith("External")
+        ) {
+
+            months[month].income +=
+                Number(row[2] || 0);
+
+        }
+
+    });
+
+    const labels =
+        Object.keys(months);
+
+    labels.sort(sortExpenseMonths);
+
+    const selectedMonth =
+        document
+            .getElementById("cmbMonth")
+            .value;
+
+    let index =
+        labels.indexOf(selectedMonth);
+
+    if (index < 0)
+        index = labels.length - 1;
+
+    const lastMonths =
+        labels.slice(
+            Math.max(0, index - 5),
+            index + 1
+        );
+
+    return {
+
+        labels: lastMonths,
+
+        income:
+            lastMonths.map(
+                m => months[m].income
+            ),
+
+        expense:
+            lastMonths.map(
+                m => months[m].expense
+            )
+
+    };
+
+}
+
+/* ==========================================
+   MONTHLY COMPARISON CHART
+========================================== */
+
+
+function renderMonthlyComparisonChart() {
+
+    const data =
+        calculateMonthlyComparison();
+
+    const canvas =
+        document.getElementById(
+            "monthlyComparisonChart"
+        );
+
+    if (!canvas)
+        return;
+
+    if (monthlyComparisonChart) {
+
+        monthlyComparisonChart.destroy();
+
+    }
+
+    monthlyComparisonChart =
+        new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels:
+                    data.labels,
+                datasets: [
+                    {
+                        label: "Income",
+                        data:
+                            data.income,
+                        backgroundColor:
+                            "#22c55e",
+                        borderRadius: 8
+                    },
+                    {
+                        label: "Expense",
+                        data:
+                            data.expense,
+                        backgroundColor:
+                            "#ef4444",
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
+
+                    },
+
+                    // 👇 ADD/REPLACE THIS
+                    datalabels: {
+
+                        color: "#ffffff",
+
+                        anchor: "center",
+
+                        align: "center",
+
+                        font: {
+
+                            weight: "bold",
+
+                            size: 12
+
+                        },
+
+                        formatter: value =>
+
+                            "₹" +
+
+                            Number(value).toLocaleString(
+                                "en-IN",
+                                {
+                                    maximumFractionDigits: 0
+                                }
+                            )
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: value =>
+
+                                "₹" +
+
+                                (value / 1000) +
+
+                                "K"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
 }
