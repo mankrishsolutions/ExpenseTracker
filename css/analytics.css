@@ -5,32 +5,6 @@
 ========================================================== */
 
 /* ==========================================================
-   ROOT VARIABLES
-========================================================== */
-
-:root {
-    --primary: #5b43f3;
-    --primary-dark: #4630dd;
-    --primary-light: #7c3aed;
-    --success: #16a34a;
-    --success-light: #dcfce7;
-    --danger: #dc2626;
-    --danger-light: #fee2e2;
-    --warning: #d97706;
-    --warning-light: #fef3c7;
-    --purple: #7c3aed;
-    --cyan: #0891b2;
-    --text-dark: #1f2937;
-    --text-light: #6b7280;
-    --card-bg: rgba(255,255,255,.95);
-    --border: #e5e7eb;
-    --page-bg: linear-gradient( 180deg, #f6f9ff, #eef4fb );
-    --shadow-small: 0 4px 12px rgba(0,0,0,.06);
-    --shadow-medium: 0 10px 30px rgba(0,0,0,.08);
-    --radius: 18px;
-}
-
-/* ==========================================================
    PAGE
 ========================================================== */
 
