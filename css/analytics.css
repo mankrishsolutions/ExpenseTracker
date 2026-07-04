@@ -9,6 +9,9 @@
 ========================================================== */
 
 :root {
+    --primary: #5b43f3;
+    --primary-dark: #4630dd;
+    --primary-light: #7c3aed;
     --success: #16a34a;
     --success-light: #dcfce7;
     --danger: #dc2626;
