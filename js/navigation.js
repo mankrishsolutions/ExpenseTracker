@@ -30,6 +30,15 @@ document.addEventListener("headerLoaded", () => {
 
 			<i class="fa-solid fa-plus"></i>
 
+		</a>
+
+		<a href="pages/entries.html"
+		   data-page="entries.html">
+
+			<i class="fa-solid fa-list"></i>
+
+		</a>
+
 		<a href="pages/analytics.html"
 		   data-page="analytics.html">
 
