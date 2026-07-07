@@ -27,7 +27,7 @@ const Modes = [
 "TRCASH",
 "KRHD",
 "CC",
-"CCKiWi"
+"CC-KiWi"
 ];
 
 const PaymentMediums = [
