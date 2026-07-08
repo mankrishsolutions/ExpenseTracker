@@ -32,13 +32,6 @@ document.addEventListener("headerLoaded", () => {
 
 		</a>
 
-		<a href="pages/entries.html"
-		   data-page="entries.html">
-
-			<i class="fa-solid fa-list"></i>
-
-		</a>
-
 		<a href="pages/analytics.html"
 		   data-page="analytics.html">
 
@@ -57,47 +50,8 @@ document.addEventListener("headerLoaded", () => {
 
 		<a href="../index.html"
 		   data-page="index.html">
-
 			<i class="fa-solid fa-house"></i>
-
 		</a>
-
-		<a href="add.html"
-		   data-page="add.html"
-		   class="add-menu">
-
-			<i class="fa-solid fa-plus"></i>
-
-		</a>
-
-		<a href="entries.html"
-		   data-page="entries.html">
-
-			<i class="fa-solid fa-list"></i>
-
-		</a>
-
-		<a href="monthly.html"
-		   data-page="monthly.html">
-
-			<i class="fa-solid fa-calendar"></i>
-
-		</a>
-
-		<a href="yearly.html"
-		   data-page="yearly.html">
-
-			<i class="fa-solid fa-chart-column"></i>
-
-		</a>
-
-		<a href="more.html"
-		   data-page="more.html">
-
-			<i class="fa-solid fa-gear"></i>
-
-		</a>
-
 	`;
 
     document.body.appendChild(nav);
