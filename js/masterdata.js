@@ -31,7 +31,7 @@ const Modes = [
 ];
 
 const PaymentMediums = [
-"CASH",
+"Cash",
 "UPI",
 "Bank / DC",
 "KiWi"
@@ -41,3 +41,13 @@ const TransactionTypes = [
     "Expense",
     "Income"
 ];
+
+const ACCOUNT_NAMES = {
+    CASH: "Cash",
+    CRHD: "HDFC",
+    CRAX: "Axis",
+    TRHD: "Trupti HDFC",
+    TRPN: "PNB",
+    TRCASH: "Trupti Cash",
+    KRHD: "Krishna HDFC"
+};

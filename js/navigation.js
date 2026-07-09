@@ -48,10 +48,6 @@ document.addEventListener("headerLoaded", () => {
 
 	` : `
 
-		<a href="../index.html"
-		   data-page="index.html">
-			<i class="fa-solid fa-house"></i>
-		</a>
 	`;
 
     document.body.appendChild(nav);

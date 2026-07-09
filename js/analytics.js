@@ -5,6 +5,8 @@ let categoryChart = null;
 let paymentChart = null;
 let monthlyTrendChart = null;
 let monthlyComparisonChart = null;
+let onlineBreakupChart = null;
+let balanceDistributionChart = null;
 
 
 Chart.register(ChartDataLabels);
@@ -185,6 +187,8 @@ function applyFilters() {
     renderPaymentChart();
     renderMonthlyTrendChart();
     renderMonthlyComparisonChart();
+    renderOnlineBreakupChart();
+    renderBalanceDistributionChart();
 }
 
 function renderSummary() {
@@ -1049,5 +1053,218 @@ function renderMonthlyComparisonChart() {
 
             }
 
+        });
+}
+
+/* ==========================================
+   OnlineBreakup
+========================================== */
+function calculateOnlineBreakup() {
+    const breakup = {
+        "Cash": 0,
+        "UPI": 0,
+        "Bank / DC": 0,
+        "KiWi": 0
+    };
+    filteredTransactions.forEach(row => {
+        const medium =
+            row[6];
+        const amount =
+            Number(row[2]) || 0;
+        if (breakup.hasOwnProperty(medium)) {
+            breakup[medium] += amount;
+        }
+    });
+    return breakup;
+}
+
+function renderOnlineBreakupChart() {
+    const breakup =
+        calculateOnlineBreakup();
+    const labels =
+        Object.keys(breakup);
+    const values =
+        Object.values(breakup);
+    const canvas =
+        document.getElementById(
+            "onlineBreakupChart"
+        );
+    if (!canvas)
+        return;
+    if (onlineBreakupChart) {
+        onlineBreakupChart.destroy();
+    }
+
+    onlineBreakupChart =
+        new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    borderRadius: 8,
+                    backgroundColor: "#2563eb"
+                }]
+            },
+            options: {
+                indexAxis: "y",
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    datalabels: {
+                        color: "#ffffff",
+                        anchor: "end",
+                        align: "left",
+                        formatter: value =>
+                            formatAmount(value)
+                    }
+                },
+
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value =>
+                                "₹" +
+                                (value / 1000) +
+                                "K"
+                        }
+                    }
+                }
+            }
+        });
+
+}
+
+/* ==========================================
+   BALANCE DISTRIBUTION
+========================================== */
+
+/* ==========================================
+   BALANCE DISTRIBUTION
+========================================== */
+
+function calculateBalanceDistribution() {
+    const balances =
+        calculateBalances(
+            document
+                .getElementById("cmbMonth")
+                .value
+        );
+    const labels = [];
+    const values = [];
+    Object.entries(balances).forEach(([account, amount]) => {
+        if (amount <= 0)
+            return;
+        labels.push(account);
+        values.push(amount);
+    });
+    return {
+        labels,
+        values
+   };
+
+}
+
+
+
+function renderBalanceDistributionChart() {
+
+    const data =
+        calculateBalanceDistribution();
+
+    const canvas =
+        document.getElementById(
+            "balanceDistributionChart"
+        );
+
+    if (!canvas)
+        return;
+
+    if (balanceDistributionChart) {
+
+        balanceDistributionChart.destroy();
+
+    }
+
+    // Sort Highest → Lowest
+
+    const rows =
+        data.labels.map((label, i) => ({
+
+            label,
+
+            value: data.values[i]
+
+        }))
+            .sort((a, b) => b.value - a.value);
+
+    balanceDistributionChart =
+        new Chart(canvas, {
+
+            type: "polarArea",
+
+            data: {
+                labels: rows.map(r => r.label),
+                datasets: [{
+                    data: rows.map(r => r.value),
+                    backgroundColor: [
+                        "#2563eb",
+                        "#10b981",
+                        "#f59e0b",
+                        "#8b5cf6",
+                        "#ef4444",
+                        "#06b6d4",
+                        "#84cc16"
+                    ],
+                    borderColor: "#ffffff",
+                    borderWidth: 2
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            padding: 10,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx =>
+                                ctx.label +
+                                ": " +
+                                formatAmount(ctx.raw)
+                        }
+                    },
+                    datalabels: {
+                        display: false
+                    }
+                },
+                scales: {
+                    r: {
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            color: "#eceff5"
+                        },
+                        angleLines: {
+                            color: "#eceff5"
+                        }
+                    }
+                }
+            }
         });
 }
