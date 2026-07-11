@@ -7,7 +7,8 @@ let monthlyTrendChart = null;
 let monthlyComparisonChart = null;
 let onlineBreakupChart = null;
 let balanceDistributionChart = null;
-
+let balanceHistoryChart = null;
+let categoryTrendChart = null;
 
 Chart.register(ChartDataLabels);
 
@@ -189,6 +190,10 @@ function applyFilters() {
     renderMonthlyComparisonChart();
     renderOnlineBreakupChart();
     renderBalanceDistributionChart();
+    renderBalanceHistoryChart();
+    renderTopCategories();
+    renderTopExpenses();
+    renderCategoryTrendChart();
 }
 
 function renderSummary() {
@@ -1169,8 +1174,6 @@ function calculateBalanceDistribution() {
 
 }
 
-
-
 function renderBalanceDistributionChart() {
 
     const data =
@@ -1267,4 +1270,595 @@ function renderBalanceDistributionChart() {
                 }
             }
         });
+}
+
+/* ==========================================
+   BALANCE HISTORY
+========================================== */
+
+function calculateBalanceHistory() {
+
+    const months = [
+        ...new Set([
+            ...allTransactions.map(r =>
+                getExpenseMonth(
+                    new Date(r[1])
+                )
+            ),
+            ...allAdjustments.map(r =>
+                getExpenseMonth(
+                    new Date(r[1])
+                )
+            )
+        ])
+    ];
+    months.sort(sortExpenseMonths);
+    const selected =
+        document
+            .getElementById("cmbMonth")
+            .value;
+    let index =
+        months.indexOf(selected);
+    if (index < 0)
+        index = months.length - 1;
+    const historyMonths =
+        months.slice(
+            Math.max(0, index - 5),
+            index + 1
+        );
+    return historyMonths.map(month => ({
+        month,
+        balances:
+            calculateBalances(month)
+    }));
+}
+
+function renderBalanceHistoryChart() {
+    const history =
+        calculateBalanceHistory();
+    const canvas =
+        document.getElementById(
+            "balanceHistoryChart"
+        );
+    if (!canvas)
+        return;
+    if (balanceHistoryChart) {
+        balanceHistoryChart.destroy();
+    }
+    balanceHistoryChart =
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels:
+                    history.map(h => h.month),
+                datasets: [
+                    {
+                        label: "CR HDFC",
+                        data:
+                            history.map(
+                                h => h.balances.CRHD || 0
+                            ),
+                        borderColor: "#2563eb",
+                        backgroundColor: "#2563eb",
+                        tension: .35,
+                        borderWidth: 3,
+                        pointRadius: history.map((_, index) =>
+                            index === history.length - 1 ? 6 : 3
+                        ),
+
+                        pointHoverRadius: 8,
+                    },
+                    {
+                        label: "TR HDFC",
+                        data:
+                            history.map(
+                                h => h.balances.TRHD || 0
+                            ),
+                        borderColor: "#10b981",
+                        backgroundColor: "#10b981",
+                        tension: .35,
+                        borderWidth: 3,
+                        pointRadius: history.map((_, index) =>
+                            index === history.length - 1 ? 6 : 3
+                        ),
+
+                        pointHoverRadius: 8,
+                    },
+                    {
+                        label: "KR HDFC",
+                        data:
+                            history.map(
+                                h => h.balances.KRHD || 0
+                            ),
+                        borderColor: "#f59e0b",
+                        backgroundColor: "#f59e0b",
+                        tension: .35,
+                        borderWidth: 3,
+                        pointRadius: history.map((_, index) =>
+                            index === history.length - 1 ? 6 : 3
+                        ),
+
+                        pointHoverRadius: 8,
+                    },
+                    {
+                        label: "Cash",
+                        data:
+                            history.map(
+                                h => h.balances.CASH || 0
+                            ),
+                        borderColor: "#8b5cf6",
+                        backgroundColor: "#8b5cf6",
+                        tension: .35,
+                        borderWidth: 3,
+                        pointRadius: history.map((_, index) =>
+                            index === history.length - 1 ? 6 : 3
+                        ),
+
+                        pointHoverRadius: 8,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: "index",
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: "top",
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle"
+                        }
+                    },
+                    datalabels: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx =>
+                                ctx.dataset.label +
+                                ": " +
+                                formatAmount(ctx.raw)
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value =>
+                                "₹" +
+                                (value / 1000) +
+                                "K"
+                        }
+                    }
+                }
+            }
+        });
+}
+
+/* ==========================================
+   TOP CATEGORIES
+========================================== */
+
+function calculateTopCategories() {
+
+    const totals = {};
+
+    filteredTransactions.forEach(row => {
+
+        const category = row[4];
+        const amount = Number(row[2]) || 0;
+
+        totals[category] =
+            (totals[category] || 0) + amount;
+
+    });
+
+    return Object.entries(totals)
+
+        .map(([category, amount]) => ({
+
+            category,
+            amount
+
+        }))
+
+        .sort((a, b) =>
+
+            b.amount - a.amount
+
+        )
+
+        .slice(0, 5);
+
+}
+
+function renderTopCategories() {
+
+    const list =
+        document.getElementById(
+            "topCategoriesList"
+        );
+
+    if (!list)
+        return;
+
+    const data =
+        calculateTopCategories();
+
+    const total =
+        data.reduce(
+            (sum, c) => sum + c.amount,
+            0
+        );
+
+    list.innerHTML = "";
+
+    data.forEach((item, index) => {
+
+        const percent =
+            total
+                ? (item.amount * 100 / total)
+                : 0;
+
+        list.innerHTML += `
+
+<div class="top-item">
+
+    <div class="top-header">
+
+        <span>
+
+            <strong>${index + 1}.</strong>
+
+            <i class="fa-solid ${getCategoryIcon(item.category)}"></i>
+
+            ${item.category}
+
+        </span>
+
+        <span>
+
+            ${formatAmount(item.amount)}
+
+        </span>
+
+    </div>
+
+    <div class="top-progress">
+
+        <div class="top-fill"
+
+             style="width:${percent}%">
+
+        </div>
+
+    </div>
+
+    <div class="top-percent">
+
+        ${percent.toFixed(1)}%
+
+    </div>
+
+</div>
+
+`;
+
+    });
+
+}
+
+/* ==========================================
+   TOP EXPENSES
+========================================== */
+
+function calculateTopExpenses() {
+
+    return [...filteredTransactions]
+
+        .sort((a, b) =>
+
+            Number(b[2]) - Number(a[2])
+
+        )
+
+        .slice(0, 5);
+
+}
+
+function renderTopExpenses() {
+
+    const list =
+        document.getElementById(
+            "topExpensesList"
+        );
+
+    if (!list)
+        return;
+
+    const data =
+        calculateTopExpenses();
+
+    list.innerHTML = "";
+
+    data.forEach((row, index) => {
+
+        const amount =
+            Number(row[2]) || 0;
+
+        const description =
+            row[3];
+
+        const category =
+            row[4];
+
+        const medium =
+            row[6];
+
+        list.innerHTML += `
+
+<div class="top-item">
+
+    <div class="top-header">
+
+        <span>
+
+            <strong>${index + 1}.</strong>
+
+            <i class="fa-solid ${getCategoryIcon(category)}"></i>
+
+            ${description}
+
+        </span>
+
+        <span>
+
+            ${formatAmount(amount)}
+
+        </span>
+
+    </div>
+
+    <div class="top-subtitle">
+
+        ${category}
+
+        &nbsp;•&nbsp;
+
+        ${medium}
+
+    </div>
+
+</div>
+
+`;
+
+    });
+
+}
+
+/* ==========================================
+   CATEGORY TREND
+========================================== */
+
+function calculateCategoryTrend() {
+
+    const topCategories =
+        calculateTopCategories()
+            .slice(0, 3)
+            .map(c => c.category);
+
+    const months = [
+
+        ...new Set([
+
+            ...allTransactions.map(r =>
+                getExpenseMonth(
+                    new Date(r[1])
+                )
+            )
+
+        ])
+
+    ];
+
+    months.sort(sortExpenseMonths);
+
+    const selectedMonth =
+        document
+            .getElementById("cmbMonth")
+            .value;
+
+    let index =
+        months.indexOf(selectedMonth);
+
+    if (index < 0)
+        index = months.length - 1;
+
+    const lastMonths =
+        months.slice(
+            Math.max(0, index - 5),
+            index + 1
+        );
+
+    const series = {};
+
+    topCategories.forEach(cat => {
+
+        series[cat] = [];
+
+        lastMonths.forEach(month => {
+
+            const total = allTransactions
+
+                .filter(t =>
+
+                    getExpenseMonth(
+                        new Date(t[1])
+                    ) === month &&
+
+                    t[4] === cat
+
+                )
+
+                .reduce(
+                    (sum, t) =>
+                        sum + Number(t[2]),
+                    0
+                );
+
+            series[cat].push(total);
+
+        });
+
+    });
+
+    return {
+
+        months: lastMonths,
+
+        series
+
+    };
+
+}
+
+function renderCategoryTrendChart() {
+
+    const trend =
+        calculateCategoryTrend();
+
+    const canvas =
+        document.getElementById(
+            "categoryTrendChart"
+        );
+
+    if (!canvas)
+        return;
+
+    if (categoryTrendChart) {
+
+        categoryTrendChart.destroy();
+
+    }
+
+    const colors = [
+
+        "#2563eb",
+
+        "#10b981",
+
+        "#f59e0b"
+
+    ];
+
+    const datasets =
+
+        Object.keys(trend.series)
+
+            .map((cat, index) => ({
+
+                label: cat,
+
+                data:
+                    trend.series[cat],
+
+                borderColor:
+                    colors[index],
+
+                backgroundColor:
+                    colors[index],
+
+                borderWidth: 3,
+
+                tension: .35,
+
+                pointRadius: 4,
+
+                fill: false
+
+            }));
+
+    categoryTrendChart =
+        new Chart(canvas, {
+
+            type: "line",
+
+            data: {
+
+                labels:
+                    trend.months,
+
+                datasets
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    },
+
+                    datalabels: {
+
+                        display: false
+
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+
+                        grid: {
+
+                            display: false
+
+                        }
+
+                    },
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: value =>
+
+                                "₹" +
+
+                                (value / 1000) +
+
+                                "K"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
 }

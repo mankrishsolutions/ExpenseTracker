@@ -350,24 +350,6 @@ function renderEntries() {
 
 }
 
-function getCategoryIcon(category) {
-
-    const icons = {
-
-        "Household": "fa-house",
-        "Mobile": "fa-mobile-screen",
-        "Vehicle": "fa-car",
-        "Education": "fa-graduation-cap",
-        "Entertainment": "fa-film",
-        "Grocery": "fa-cart-shopping",
-        "Medical": "fa-briefcase-medical",
-        "Policy": "fa-shield",
-        "Personal": "fa-user"
-    };
-
-    return icons[category] || "fa-folder";
-
-}
 
 function bindButtons() {
 
