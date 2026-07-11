@@ -8,6 +8,31 @@
    PAGE
 ========================================================== */
 
+.analytics-tabs {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 520px;
+    margin: 10px auto;
+    padding: 0px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+    
+.analytics-tab.active {
+    background: linear-gradient( 135deg, #2563eb, #4f46e5 );
+    color: white;
+    box-shadow: 0 6px 15px rgba(37,99,235,.25);
+}
+
+.analytics-tab:hover {
+    background: #eef4ff;
+    color: #2563eb;
+}
+
+
 body {
     background: var(--page-bg);
 }
@@ -1020,4 +1045,45 @@ body.dark {
     display: grid;
     grid-template-columns: repeat(6,1fr);
     gap: 14px;
+}
+
+.top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+.top-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+}
+.top-progress {
+    height: 7px;
+    background: #edf2f7;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.top-fill {
+    height: 100%;
+    background: linear-gradient( 90deg, #2563eb, #60a5fa );
+    border-radius: 10px;
+}
+.top-percent {
+    font-size: 11px;
+    color: #64748b;
+    text-align: right;
+}
+.top-subtitle {
+    margin-top: 3px;
+    margin-left: 24px;
+    font-size: 12px;
+    color: #64748b;
 }
