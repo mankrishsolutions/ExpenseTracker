@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Year Dashboard</title>
+
+    <link rel="stylesheet"
+          href="../css/yearly.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+</head>
+
+<body>
+
+    <div id="header-container"></div>
+
+    <main class="dashboard-container yearly-page">
+
+        <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+        <section class="dashboard-header">
+
+            <button class="back-btn"
+                    onclick="history.back()">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </button>
+
+            <div class="dashboard-title">
+
+                <h2>
+                    Year Dashboard
+                </h2>
+
+                <span id="lblFinancialYear">
+                    Financial Year
+                </span>
+
+                <div id="lblDateRange"
+                     class="financial-range">
+
+                    07-Apr-2026 to 06-Apr-2027
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-actions">
+
+                <select id="cmbFinancialYear">
+                </select>
+
+                <button id="btnRefreshYear"
+                        class="refresh-btn">
+
+                    <i class="fa-solid fa-rotate"></i>
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================================
+         SUMMARY GRID
+    ====================================================== -->
+
+        <section class="year-grid">
+
+            <!-- =========================================
+         MONTH SUMMARY
+    ========================================== -->
+
+            <div class="card month-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-calendar-days"></i>
+
+                        Monthly Summary
+
+                    </h3>
+
+                </div>
+
+                <table id="tblMonths"
+                       class="summary-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Month</th>
+
+                            <th>Amount</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr>
+
+                            <th>Total</th>
+
+                            <th id="monthGrandTotal">
+
+                                ₹0
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+            <!-- =========================================
+         CATEGORY SUMMARY
+    ========================================== -->
+
+            <div class="card category-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Category Summary
+
+                    </h3>
+
+                </div>
+
+                <table id="tblCategories"
+                       class="summary-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Category</th>
+
+                            <th>Amount</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr>
+
+                            <th>Total</th>
+
+                            <th id="categoryGrandTotal">
+
+                                ₹0
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+            <!-- =========================================
+         TOP CATEGORY CHART
+    ========================================== -->
+
+            <div class="card chart-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-chart-pie"></i>
+
+                        Top 7 Categories
+
+                    </h3>
+
+                </div>
+
+                <div class="chart-body">
+
+                    <canvas id="yearCategoryChart">
+                    </canvas>
+
+                </div>
+
+            </div>
+
+            
+            <!-- =========================================
+         YEARLY EXPENSE CHART
+    ========================================== -->
+
+            <div class="card expense-chart-card">
+
+                <div class="card-header">
+
+                    <h3>
+
+                        <i class="fa-solid fa-chart-column"></i>
+
+                        Yearly Expense Trend
+
+                    </h3>
+
+                </div>
+
+                <div class="chart-body">
+
+                    <canvas id="yearExpenseChart">
+                    </canvas>
+
+                </div>
+
+            </div>
+
+            <!-- =========================================
+         MODE SUMMARY
+    ========================================== -->
+            <div class="right-panel">
+                <div class="card mode-card">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fa-solid fa-wallet"></i>
+
+                            Payment Mode Summary
+
+                        </h3>
+
+                    </div>
+
+                    <table id="tblModes"
+                           class="summary-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Mode</th>
+
+                                <th>Amount</th>
+
+                                <th>%</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- =========================================
+                     STATISTICS
+                ========================================== -->
+
+                <div class="card stats-card">
+
+                    <div class="card-header">
+
+                        <h3>
+
+                            <i class="fa-solid fa-chart-line"></i>
+
+                            Year Statistics
+
+                        </h3>
+
+                    </div>
+
+                    <div class="stats-grid">
+
+                        <div class="stat-box">
+
+                            <span>
+
+                                Highest Category
+
+                            </span>
+
+                            <strong id="lblHighestCategory">
+
+                            </strong>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span>
+
+                                Highest Value
+
+                            </span>
+
+                            <strong id="lblHighestValue">
+
+                            </strong>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span>
+
+                                Lowest Category
+
+                            </span>
+
+                            <strong id="lblLowestCategory">
+
+                            </strong>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span>
+
+                                Lowest Value
+
+                            </span>
+
+                            <strong id="lblLowestValue">
+
+                            </strong>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span>
+
+                                Total Expense
+
+                            </span>
+
+                            <strong id="lblYearExpense">
+
+                            </strong>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span>
+
+                                Top 3 %
+
+                            </span>
+
+                            <strong id="lblTop3Percent">
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =========================================
+         TOP 5 EXPENSES
+    ========================================== -->
+
+        <section class="card top-expense-card">
+
+            <div class="card-header">
+
+                <h3>
+
+                    <i class="fa-solid fa-trophy"></i>
+
+                    Top 5 Expenses
+
+                </h3>
+
+            </div>
+
+            <div id="topExpenseContainer"
+                 class="top-expense-grid">
+
+                <!-- JS -->
+
+            </div>
+
+        </section>
+
+        <div id="loadingOverlay" style="
+	          position: fixed;
+	          top: 0;
+	          left: 0;
+	          width: 100%;
+	          height: 100%;
+	          background: rgba(255,255,255,0.6);
+	          display: flex;
+	          align-items: center;
+	          justify-content: center;
+	          z-index: 9999;
+	          display: none;">
+            <img src="loading.gif" alt="Loading..." style="width: 100px; height: 100px;">
+        </div>
+
+    </main>
+
+    <div id="bottom-nav-container"></div>
+
+    <script src="../js/config.js"></script>
+
+    <script src="../js/masterdata.js"></script>
+
+    <script src="../js/common.js"></script>
+
+    <script src="../js/header.js"></script>
+
+    <script src="../js/yearly.js"></script>
+
+</body>
+
+</html>
