@@ -37,7 +37,7 @@ document.addEventListener("headerLoaded", () => {
 
 		<a href="pages/yearly.html"
 		   data-page="yearly.html">
-			<i class="fa-solid fa-chart-column"></i>
+			<i class="fa-solid fa-calendar"></i>
 		</a>
 
         <a href="${basePath}pages/more.html"
