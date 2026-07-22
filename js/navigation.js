@@ -35,15 +35,11 @@ document.addEventListener("headerLoaded", () => {
             <i class="fa-solid fa-chart-column"></i>
         </a>
 
-		<a href="pages/yearly.html"
-		   data-page="yearly.html">
-			<i class="fa-solid fa-calendar"></i>
-		</a>
-
-        <a href="${basePath}pages/more.html"
-           data-page="more.html">
-            <i class="fa-solid fa-gear"></i>
+        <a href="${basePath}pages/yearly.html"
+           data-page="yearly.html">
+            <i class="fa-solid fa-calendar"></i>
         </a>
+		
     `;
 
     document.body.appendChild(nav);
