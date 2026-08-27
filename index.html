@@ -21,46 +21,52 @@
 
     <main class="dashboard-container">
 
-        <section class="balance-overview">
-            <div class="balance-expense">
-                <div class="balance-label">
-                    Total Available Balance
+
+
+        <div class="balance-card">
+
+            <div class="balance-left">
+
+                <div class="balance-icon">
+                    <i class="fa-solid fa-wallet"></i>
                 </div>
-                <div id="lblTotalBalance"
-                     class="balance-value">
-                    ₹0
+
+                <div>
+                    <span>Total Expense</span>
+                    <h2 id="lblTotalExpense">₹0</h2>
                 </div>
+
             </div>
 
+            <div class="expense-summary-inline">
 
-            <!--<div class="account-card cash">-->
+                <div class="summary-item">
+                    <i class="fa-solid fa-wallet cash-color"></i>
+                    <div>
+                        <span>Cash</span>
+                        <h3 id="lblCashExpense"></h3>
+                    </div>
+                </div>
 
-            <div class="cash-info">
+                <div class="summary-item">
+                    <i class="fa-solid fa-building-columns online-color"></i>
+                    <div>
+                        <span>Online</span>
+                        <h3 id="lblOnlineExpense"></h3>
+                    </div>
+                </div>
 
-                <span>CRHD</span>
-                <strong id="lblCRHD">
-                    ₹0
-                </strong>
-                <small id="lblCRHDOpening" class="opening-balance">
-                    OB ₹0
-                </small>
+                <div class="summary-item">
+                    <i class="fa-solid fa-credit-card cc-color"></i>
+                    <div>
+                        <span>Card</span>
+                        <h3 id="lblCCPayment"></h3>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="cash-info">
-                <span>CASH</span>
-                <strong id="lblCash">
-                    ₹0
-                </strong>
-                <small id="lblCashOpening" class="opening-balance">
-                    OB ₹0
-                </small>
-            </div>
-
-
-            <div class="balance-wallet">
-                <i class="fa-solid fa-wallet"></i>
-            </div>
-        </section>
+        </div>
 
         <!-- Account Balances -->
 
@@ -155,50 +161,49 @@
 
         </div>
 
-        <div class="balance-card">
+        <!-- Total Available Balance -->
 
-            <div class="balance-left">
-
-                <div class="balance-icon">
-                    <i class="fa-solid fa-wallet"></i>
+        <section class="balance-overview">
+            <div class="balance-expense">
+                <div class="balance-label">
+                    Total Available Balance
                 </div>
-
-                <div>
-                    <span>Total Expense</span>
-                    <h2 id="lblTotalExpense">₹0</h2>
+                <div id="lblTotalBalance"
+                     class="balance-value">
+                    ₹0
                 </div>
-
             </div>
 
-            <div class="expense-summary-inline">
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-wallet cash-color"></i>
-                    <div>
-                        <span>Cash</span>
-                        <h3 id="lblCashExpense"></h3>
-                    </div>
-                </div>
+            <!--<div class="account-card cash">-->
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-building-columns online-color"></i>
-                    <div>
-                        <span>Online</span>
-                        <h3 id="lblOnlineExpense"></h3>
-                    </div>
-                </div>
+            <div class="cash-info">
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-credit-card cc-color"></i>
-                    <div>
-                        <span>Card</span>
-                        <h3 id="lblCCPayment"></h3>
-                    </div>
-                </div>
-
+                <span>CRHD</span>
+                <strong id="lblCRHD">
+                    ₹0
+                </strong>
+                <small id="lblCRHDOpening" class="opening-balance">
+                    OB ₹0
+                </small>
             </div>
 
-        </div>
+            <div class="cash-info">
+                <span>CASH</span>
+                <strong id="lblCash">
+                    ₹0
+                </strong>
+                <small id="lblCashOpening" class="opening-balance">
+                    OB ₹0
+                </small>
+            </div>
+
+
+            <div class="balance-wallet">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+        </section>
+
 
         <div class="entries-actions">
 
