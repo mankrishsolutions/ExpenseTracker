@@ -597,6 +597,11 @@ function processMonth(
                 row[4] || ""
             ).trim();
 
+        const adjType =
+            String(
+                row[5] || ""
+            ).trim();
+
         const fromIsAccount =
             accounts.includes(
                 fromMode
@@ -607,30 +612,32 @@ function processMonth(
                 toMode
             );
 
-        // -------------------
-        // Internal Transfer
-        // -------------------
-
+        //// -------------------
+        //// Internal Transfer
+        //// -------------------
         if (
+            fromMode === "TRCASH" &&
+            toMode === "CASH" &&
+            adjType === "Internal"
+        ) {
+            balances["TRCASH"] -= amount;
+            balances["CASH"] += amount;
+        }
+        else if (
             fromMode === "TRCASH" &&
             toMode === "CASH"
         ) {
-
-            // CASH receives money
-
+            // Keep existing historical behaviour
             balances["CASH"] += amount;
-
         }
         else if (
             fromIsAccount &&
             toIsAccount
         ) {
-
             balances[fromMode] -= amount;
-
             balances[toMode] += amount;
-
         }
+
 
         // -------------------
         // Outward Investment
@@ -823,10 +830,13 @@ function calculateAccountClosing(
                 r[4] || ""
             ).trim();
 
-        // Special Rule
-        // TRCASH -> CASH
-        // increases CASH only
-        // does NOT reduce TRCASH
+
+
+
+        //// Special Rule
+        //// TRCASH -> CASH
+        //// increases CASH only
+        //// does NOT reduce TRCASH
 
         if (
             fromMode === "TRCASH" &&
@@ -836,28 +846,20 @@ function calculateAccountClosing(
             if (account === "CASH") {
 
                 balance += amount;
-
             }
 
         }
         else {
-
             if (
                 fromMode === account
             ) {
-
                 balance -= amount;
-
             }
-
             if (
                 toMode === account
             ) {
-
                 balance += amount;
-
             }
-
         }
 
     });
