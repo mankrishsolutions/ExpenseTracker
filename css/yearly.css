@@ -4,8 +4,8 @@
 
 .yearly-page {
     max-width: 1600px;
-    margin: 20px auto 90px;
-    padding: 0 18px;
+    margin: 20px 10px 30px;
+    padding: 0 10px;
 }
 
 
@@ -83,7 +83,7 @@
 
 .year-grid {
     display: grid;
-    grid-template-columns: 190px 260px 1fr 300px;
+    grid-template-columns: 229px 315px 590px 450px;
     grid-template-rows: 330px auto;
     gap: 15px;
     grid-template-areas:
@@ -114,17 +114,20 @@
 .month-card {
     grid-area: month;
     overflow: hidden;
+    width: 210px;
 }
 
 .category-card {
     grid-area: category;
     display: flex;
     flex-direction: column;
+    width: 295px;
 }
 
 .category-card {
     display: flex;
     flex-direction: column;
+
 }
 
 .category-card tbody {
@@ -144,16 +147,17 @@
 .chart-card {
     grid-area: chart;
     padding-bottom: 5px;
-
+    width: 567px;
 }
 
 
 .expense-chart-card {
     grid-column: 1 / span 3;
+    height: 270px;
 }
 
 .expense-chart-card .chart-body {
-    height: 180px;
+    height: 230px;
 }
 
 
@@ -319,7 +323,8 @@
 ========================================================== */
 
 .top-expense-card {
-    margin-top: 20px;
+    margin-top: 5px;
+    width: 1605px;
 }
 
 .top-expense-grid {
