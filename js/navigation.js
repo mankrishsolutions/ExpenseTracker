@@ -42,7 +42,15 @@ document.addEventListener("headerLoaded", () => {
 		
     `;
 
-    document.body.appendChild(nav);
+    // Home page: the navigation lives inside the top bar (laptop) / stays fixed at the bottom (phone)
+    const topBar = document.querySelector(".dashboard-header");
+
+    if (document.body.classList.contains("home-page") && topBar) {
+        topBar.appendChild(nav);
+    }
+    else {
+        document.body.appendChild(nav);
+    }
 
     nav.querySelectorAll("a").forEach(link => {
         if (link.dataset.page === currentPage) {
@@ -50,4 +58,4 @@ document.addEventListener("headerLoaded", () => {
         }
     });
 
-});
+});

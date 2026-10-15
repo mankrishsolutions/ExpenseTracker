@@ -1,4 +1,4 @@
-﻿
+
 
 document.addEventListener("headerLoaded", init);
 
@@ -88,6 +88,25 @@ function wireEvents() {
         );
 
     document
+        .querySelectorAll("#modeSeg button")
+        .forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                activeModeGroup =
+                    btn.dataset.group || "";
+
+                document
+                    .querySelectorAll("#modeSeg button")
+                    .forEach(b =>
+                        b.classList.toggle("on", b === btn)
+                    );
+
+                applyFilters();
+            });
+        });
+
+    document
         .getElementById("btnViewAll")
         .addEventListener("click", () => {
 
@@ -121,6 +140,8 @@ function renderEntries() {
     }
 
     container.innerHTML = "";
+
+    renderRecent();
 
     const grouped = {};
 
@@ -166,6 +187,23 @@ function renderEntries() {
             })
             .sort((a, b) => b.total - a.total);
 
+    const countEl =
+        document.getElementById("lblCatCount");
+
+    if (countEl) {
+        countEl.textContent =
+            categories.length +
+            (categories.length === 1 ? " category" : " categories");
+    }
+
+    if (categories.length === 0) {
+
+        container.innerHTML =
+            '<div class="empty-state">No transactions match these filters.</div>';
+
+        return;
+    }
+
     // Render Cards
     categories.forEach(item => {
 
@@ -192,55 +230,43 @@ function renderEntries() {
 
     <div class="category-header">
 
-        <div class="category-left">
+        <div class="category-icon">
+            <i class="fa-solid ${getCategoryIcon(category)}"></i>
+        </div>
 
-            <div class="category-icon">
-                <i class="fa-solid ${getCategoryIcon(category)}"></i>
+        <div class="category-info">
+
+            <div class="category-name">
+                ${category}
             </div>
 
-            <div class="category-info">
-
-                <div class="category-name">
-                    ${category}
-                </div>
-
-                <div class="category-progress-row">
-
-                    <span class="txn-count">
-
-                        ${rows.length} Txns
-
-                    </span>
-
-                    <div class="category-progress">
-
-                        <div class="category-progress-fill"
-                             style="width:${percentage}%;">
-                        </div>
-
-                    </div>
-
-                    <span class="percent">
-
-                        ${percentage}%
-
-                    </span>
-
-                </div>
-
+            <div class="category-count">
+                ${rows.length} ${rows.length === 1 ? "transaction" : "transactions"}
             </div>
 
         </div>
 
-        <div class="category-right">
+        <div class="category-bar">
 
-            <div class="category-total">
+            <div class="category-progress">
 
-                ₹${total.toLocaleString("en-IN")}
+                <div class="category-progress-fill"
+                     style="width:${percentage}%;">
+                </div>
 
             </div>
 
+            <span class="percent">
+                ${percentage}% of spend
+            </span>
+
         </div>
+
+        <div class="category-total">
+            ${formatMoney(total)}
+        </div>
+
+        <i class="fa-solid fa-chevron-down category-arrow"></i>
 
     </div>
 
@@ -289,7 +315,7 @@ function renderEntries() {
             </td>
 
             <td class="amount-cell">
-                ₹${amount.toLocaleString("en-IN")}
+                ${formatMoney(amount)}
             </td>
 
             <td>${row[3]}</td>
@@ -443,7 +469,7 @@ function renderAllTransactionsModal() {
 
             <td class="amount-cell">
 
-                ₹${Number(row[2]).toLocaleString("en-IN")}
+                ${formatMoney(row[2])}
 
             </td>
 
@@ -583,4 +609,57 @@ function createBalanceCard(name, icon, balance, opening, colorClass) {
 
 `;
 
+}
+
+/**
+ * "Recent" panel on the home page: the 5 latest transactions
+ * that match the current filters (display only).
+ */
+function renderRecent() {
+
+    const list = document.getElementById("recentList");
+
+    if (!list) return;
+
+    const esc = text =>
+        String(text == null ? "" : text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+
+    const latest = filteredTransactions
+        .slice()
+        .sort((a, b) =>
+            new Date(b[1]) - new Date(a[1])
+        )
+        .slice(0, 5);
+
+    if (latest.length === 0) {
+        list.innerHTML =
+            '<div class="recent-empty">No transactions yet.</div>';
+        return;
+    }
+
+    list.innerHTML = latest.map(row => {
+
+        const d = new Date(row[1]);
+
+        const day = isNaN(d) ? "" : d.getDate();
+
+        const mon = isNaN(d)
+            ? ""
+            : d.toLocaleDateString("en-GB", { month: "short" });
+
+        return `
+        <div class="recent-row">
+            <div class="recent-date"><b>${day}</b><small>${mon}</small></div>
+            <div class="recent-info">
+                <div class="recent-desc">${esc(row[3])}</div>
+                <div class="recent-meta">${esc(row[4])} · ${esc(row[5])}</div>
+            </div>
+            <div class="recent-amt">${formatMoney(row[2])}</div>
+        </div>`;
+
+    }).join("");
 }

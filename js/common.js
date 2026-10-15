@@ -1,6 +1,9 @@
-﻿let allTransactions = [];
+let allTransactions = [];
 let allAdjustments = [];
 let allClosing = [];
+
+// Payment-type segment on the home page ("", "CASH", "ONLINE", "CARD")
+let activeModeGroup = "";
 
 
 const CHART_COLORS = [
@@ -351,12 +354,19 @@ function applyFilters() {
                 mode === "" ||
                 row[5] === mode;
 
+            const matchesGroup =
+
+                activeModeGroup === "" ||
+                (PAYMENT_MODE_GROUPS[activeModeGroup] || [])
+                    .includes(row[5]);
+
             return (
 
                 matchesSearch &&
                 matchesMonth &&
                 matchesCategory &&
-                matchesMode
+                matchesMode &&
+                matchesGroup
             );
         });
 
@@ -391,16 +401,61 @@ function calculateSummary() {
     });
 
     document.getElementById("lblTotalExpense").textContent =
-        "₹" + totalExpense.toLocaleString("en-IN");
+        formatMoney(totalExpense);
 
     document.getElementById("lblCashExpense").textContent =
-        "₹" + cashExpense.toLocaleString("en-IN");
+        formatMoney(cashExpense);
 
     document.getElementById("lblOnlineExpense").textContent =
-        "₹" + onlineExpense.toLocaleString("en-IN");
+        formatMoney(onlineExpense);
 
     document.getElementById("lblCCPayment").textContent =
-        "₹" + cardExpense.toLocaleString("en-IN");
+        formatMoney(cardExpense);
+
+    // Split bar + percentages (home page only, safe if elements are missing)
+    const share = amount =>
+        totalExpense > 0
+            ? (amount / totalExpense) * 100
+            : 0;
+
+    const setText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+
+    const setWidth = (id, pct) => {
+        const el = document.getElementById(id);
+        if (el) el.style.width = pct + "%";
+    };
+
+    // Ring chart (circumference of r=50)
+    const C = 2 * Math.PI * 50;
+    const gap = (cashExpense > 0 && onlineExpense > 0) ? 3 : 0;
+    const cashLen = Math.max(0, C * share(cashExpense) / 100 - gap);
+    const onlineLen = Math.max(0, C * share(onlineExpense) / 100 - gap);
+
+    const ringCash = document.getElementById("ringCash");
+    const ringOnline = document.getElementById("ringOnline");
+
+    if (ringCash) {
+        ringCash.style.strokeDasharray = cashLen + " " + C;
+        ringCash.style.strokeDashoffset = 0;
+    }
+
+    if (ringOnline) {
+        ringOnline.style.strokeDasharray = onlineLen + " " + C;
+        ringOnline.style.strokeDashoffset =
+            -(C * share(cashExpense) / 100);
+    }
+
+    setText("ringPct", Math.round(share(onlineExpense)) + "%");
+
+    setWidth("barCash", share(cashExpense));
+    setWidth("barOnline", share(onlineExpense));
+
+    setText("pctCash", Math.round(share(cashExpense)) + "%");
+    setText("pctOnline", Math.round(share(onlineExpense)) + "%");
+    setText("pctCard", Math.round(share(cardExpense)) + "%");
 
 }
 
@@ -880,6 +935,26 @@ function formatAmount(value) {
             );
 }
 
+/**
+ * Same as formatAmount, but always shows two decimals
+ * when the value is not a whole number (75131.4 -> ₹75,131.40)
+ */
+function formatMoney(value) {
+
+    const n =
+        Math.round((Number(value) || 0) * 100) / 100;
+
+    return "₹" +
+        n.toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits:
+                    Number.isInteger(n) ? 0 : 2,
+                maximumFractionDigits: 2
+            }
+        );
+}
+
 /* ==========================================
    Expense Cache Functions
 ========================================== */
@@ -1278,4 +1353,4 @@ const PAYMENT_MODE_GROUPS = {
         "CC-KiWi"
     ]
 
-};
+};
