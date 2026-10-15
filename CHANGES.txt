@@ -1,0 +1,10 @@
+Option 2 - Night Ledger (dark + light theme)
+Replace these files (same folders as in your project):
+  index.html, css/style.css, js/common.js, js/dashboard.js, js/transactions.js
+Add this NEW file:
+  js/home-ui.js   (theme switch, month arrows, Add button)
+Do NOT use together with the Option 1 files - this package replaces them.
+navigation.js is NOT changed here; if you applied Option 1, restore your original navigation.js.
+Theme: sun/moon button in the top row; choice saved in this browser.
+Default for first visit: edit "dark" in the small script at top of index.html.
+Calculations and data loading are unchanged; other pages are unaffected.

@@ -1,14 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0B0F23" id="metaThemeColor">
 
     <title>Expense Tracker</title>
+
+    <!-- Apply the saved theme before the page paints (no light/dark flash).
+         To change the default for a first visit, edit 'dark' below to 'light'. -->
+    <script>
+        (function () {
+            var theme = "dark";
+            try { theme = localStorage.getItem("expenseTheme") || "dark"; } catch (e) { }
+            document.documentElement.setAttribute("data-theme", theme === "light" ? "light" : "dark");
+        })();
+    </script>
+
     <link rel="stylesheet" href="css/style.css">
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Home page font (falls back to Segoe UI if offline) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap">
+
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
@@ -17,229 +36,228 @@
       data-subtitle="FY 2026-27"
       data-show-month="true">
 
+    <!-- Top row: title, FY badge, month stepper, refresh, theme switch, Add button.
+         Side rail / bottom bar navigation is created by navigation.js -->
     <div id="headerContainer"></div>
 
     <main class="dashboard-container">
 
+        <!-- ======================================
+             ROW 1: Total expense + Available balance
+        ====================================== -->
+        <section class="r1">
 
+            <div class="hp-panel exp-panel">
 
-        <div class="balance-card">
+                <div class="exp-main">
 
-            <div class="balance-left">
+                    <div class="hp-label">
+                        Total expense &middot; <span id="lblSpentMonth">this month</span>
+                    </div>
 
-                <div class="balance-icon">
-                    <i class="fa-solid fa-wallet"></i>
+                    <div id="lblTotalExpense" class="hp-big">₹0</div>
+
+                    <ul class="legend">
+                        <li>
+                            <span class="hp-dot dot-cash"></span>
+                            <span class="lg-name">Cash</span>
+                            <b id="lblCashExpense">₹0</b>
+                            <small id="pctCash"></small>
+                        </li>
+                        <li>
+                            <span class="hp-dot dot-online"></span>
+                            <span class="lg-name">Online</span>
+                            <b id="lblOnlineExpense">₹0</b>
+                            <small id="pctOnline"></small>
+                        </li>
+                        <li>
+                            <span class="hp-dot dot-card"></span>
+                            <span class="lg-name">Card <em>(part of Online)</em></span>
+                            <b id="lblCCPayment">₹0</b>
+                            <small id="pctCard"></small>
+                        </li>
+                    </ul>
+
                 </div>
 
-                <div>
-                    <span>Total Expense</span>
-                    <h2 id="lblTotalExpense">₹0</h2>
-                </div>
-
-            </div>
-
-            <div class="expense-summary-inline">
-
-                <div class="summary-item">
-                    <i class="fa-solid fa-wallet cash-color"></i>
-                    <div>
-                        <span>Cash</span>
-                        <h3 id="lblCashExpense"></h3>
+                <div class="ring" aria-hidden="true">
+                    <svg viewBox="0 0 120 120">
+                        <circle class="ring-track" cx="60" cy="60" r="50"></circle>
+                        <circle id="ringCash" class="ring-cash" cx="60" cy="60" r="50"
+                                transform="rotate(-90 60 60)"></circle>
+                        <circle id="ringOnline" class="ring-online" cx="60" cy="60" r="50"
+                                transform="rotate(-90 60 60)"></circle>
+                    </svg>
+                    <div class="ring-center">
+                        <b id="ringPct">0%</b>
+                        <span>online</span>
                     </div>
                 </div>
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-building-columns online-color"></i>
+            </div>
+
+            <div class="hp-panel bal-panel">
+
+                <div class="bal-head">
                     <div>
-                        <span>Online</span>
-                        <h3 id="lblOnlineExpense"></h3>
+                        <div class="hp-label">Available balance</div>
+                        <div id="lblTotalBalance" class="hp-big">₹0</div>
                     </div>
+                    <span id="chipVsOpening" class="hp-chip"></span>
                 </div>
 
-                <div class="summary-item">
-                    <i class="fa-solid fa-credit-card cc-color"></i>
-                    <div>
-                        <span>Card</span>
-                        <h3 id="lblCCPayment"></h3>
-                    </div>
-                </div>
+                <div id="balComp" class="comp" aria-hidden="true"></div>
+                <div id="balLegend" class="comp-legend"></div>
 
             </div>
 
-        </div>
-
-        <!-- Account Balances -->
-
-        <h3 class="section-title">
-            Available Balances
-        </h3>
-
-        <div class="balances-row">
-
-            <div class="account-card crax">
-
-                <div class="account-icon">
-                    <i class="fa-solid fa-building-columns"></i>
-                </div>
-
-                <div class="account-info">
-
-                    <span>CRAX</span>
-                    <strong id="lblCRAX">
-                        ₹0
-                    </strong>
-                    <small id="lblCRAXOpening" class="opening-balance">
-                        OB ₹0
-                    </small>
-                </div>
-            </div>
-
-            <div class="account-card trhd">
-                <div class="account-icon">
-                    <i class="fa-solid fa-building-columns"></i>
-                </div>
-                <div class="account-info">
-                    <span>TRHD</span>
-                    <strong id="lblTRHD">
-                        ₹0
-                    </strong>
-                    <small id="lblTRHDOpening" class="opening-balance">
-                        OB ₹0
-                    </small>
-                </div>
-            </div>
-
-            <div class="account-card trpn">
-                <div class="account-icon">
-                    <i class="fa-solid fa-building-columns"></i>
-                </div>
-
-                <div class="account-info">
-
-                    <span>TRPN</span>
-                    <strong id="lblTRPN">
-                        ₹0
-                    </strong>
-                    <small id="lblTRPNOpening" class="opening-balance">
-                        OB ₹0
-                    </small>
-                </div>
-            </div>
-
-            <div class="account-card trcash">
-                <div class="account-icon">
-                    <i class="fa-solid fa-money-bill-transfer"></i>
-                </div>
-                <div class="account-info">
-                    <span>TRCASH</span>
-                    <strong id="lblTRCASH">
-                        ₹0
-                    </strong>
-                    <small id="lblTRCASHOpening" class="opening-balance">
-                        OB ₹0
-                    </small>
-                </div>
-
-            </div>
-
-            <div class="account-card krhd">
-
-                <div class="account-icon">
-                    <i class="fa-solid fa-piggy-bank"></i>
-                </div>
-                <div class="account-info">
-                    <span>KRHD</span>
-                    <strong id="lblKRHD">
-                        ₹0
-                    </strong>
-                    <small id="lblKRHDOpening" class="opening-balance">
-                        OB ₹0
-                    </small>
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Total Available Balance -->
-
-        <section class="balance-overview">
-            <div class="balance-expense">
-                <div class="balance-label">
-                    Total Available Balance
-                </div>
-                <div id="lblTotalBalance"
-                     class="balance-value">
-                    ₹0
-                </div>
-            </div>
-
-
-            <!--<div class="account-card cash">-->
-
-            <div class="cash-info">
-
-                <span>CRHD</span>
-                <strong id="lblCRHD">
-                    ₹0
-                </strong>
-                <small id="lblCRHDOpening" class="opening-balance">
-                    OB ₹0
-                </small>
-            </div>
-
-            <div class="cash-info">
-                <span>CASH</span>
-                <strong id="lblCash">
-                    ₹0
-                </strong>
-                <small id="lblCashOpening" class="opening-balance">
-                    OB ₹0
-                </small>
-            </div>
-
-
-            <div class="balance-wallet">
-                <i class="fa-solid fa-wallet"></i>
-            </div>
         </section>
 
 
-        <div class="entries-actions">
-
-            <button id="btnViewAll" class="action-btn">
-                <i class="fa-solid fa-table-list"></i>
-                All Transactions
-            </button>
-
+        <!-- ======================================
+             ACCOUNTS
+        ====================================== -->
+        <div class="sec-head">
+            <h2>Accounts</h2>
+            <span>balance vs opening balance (OB)</span>
         </div>
 
-        <div class="filters-panel">
+        <section class="tiles">
 
-            <div class="filter-item search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text"
-                       id="txtSearch"
-                       placeholder="Search Transactions">
+            <div class="tile" data-acc="CRAX" title="Axis">
+                <div class="tile-k"><span class="hp-dot"></span>CRAX</div>
+                <strong id="lblCRAX" class="tile-v">₹0</strong>
+                <small id="lblCRAXOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbCRAX"></i></div>
+                <span id="dltCRAX" class="tile-delta"></span>
             </div>
 
-            <div class="filter-item">
-                <i class="fa-solid fa-folder"></i>
-                <select id="cmbCategory"></select>
+            <div class="tile" data-acc="TRHD" title="Trupti HDFC">
+                <div class="tile-k"><span class="hp-dot"></span>TRHD</div>
+                <strong id="lblTRHD" class="tile-v">₹0</strong>
+                <small id="lblTRHDOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbTRHD"></i></div>
+                <span id="dltTRHD" class="tile-delta"></span>
             </div>
 
-            <div class="filter-item">
-                <i class="fa-solid fa-filter"></i>
-                <select id="cmbMode"></select>
+            <div class="tile" data-acc="TRPN" title="PNB">
+                <div class="tile-k"><span class="hp-dot"></span>TRPN</div>
+                <strong id="lblTRPN" class="tile-v">₹0</strong>
+                <small id="lblTRPNOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbTRPN"></i></div>
+                <span id="dltTRPN" class="tile-delta"></span>
+            </div>
+
+            <div class="tile" data-acc="TRCASH" title="Trupti Cash">
+                <div class="tile-k"><span class="hp-dot"></span>TRCASH</div>
+                <strong id="lblTRCASH" class="tile-v">₹0</strong>
+                <small id="lblTRCASHOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbTRCASH"></i></div>
+                <span id="dltTRCASH" class="tile-delta"></span>
+            </div>
+
+            <div class="tile" data-acc="KRHD" title="Krishna HDFC">
+                <div class="tile-k"><span class="hp-dot"></span>KRHD</div>
+                <strong id="lblKRHD" class="tile-v">₹0</strong>
+                <small id="lblKRHDOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbKRHD"></i></div>
+                <span id="dltKRHD" class="tile-delta"></span>
+            </div>
+
+            <div class="tile" data-acc="CRHD" title="HDFC">
+                <div class="tile-k"><span class="hp-dot"></span>CRHD</div>
+                <strong id="lblCRHD" class="tile-v">₹0</strong>
+                <small id="lblCRHDOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbCRHD"></i></div>
+                <span id="dltCRHD" class="tile-delta"></span>
+            </div>
+
+            <div class="tile" data-acc="CASH" title="Cash in hand">
+                <div class="tile-k"><span class="hp-dot"></span>CASH</div>
+                <strong id="lblCash" class="tile-v">₹0</strong>
+                <small id="lblCashOpening" class="opening-balance">OB ₹0</small>
+                <div class="tile-bar"><i id="tbCASH"></i></div>
+                <span id="dltCASH" class="tile-delta"></span>
+            </div>
+
+        </section>
+
+
+        <!-- ======================================
+             FILTERS + CATEGORIES   |   RECENT
+        ====================================== -->
+        <section class="r3">
+
+            <div class="col-main">
+
+                <div class="sec-head">
+                    <h2>Where it went</h2>
+                    <span id="lblCatCount"></span>
+                </div>
+
+                <div class="filters-panel">
+
+                    <div class="filters-row r-a">
+
+                        <div class="filter-item search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text"
+                                   id="txtSearch"
+                                   autocomplete="off"
+                                   placeholder="Search transactions">
+                        </div>
+
+                        <button id="btnViewAll" class="action-btn" type="button">
+                            <i class="fa-solid fa-table-list"></i>
+                            <span class="btn-text">All transactions</span>
+                        </button>
+
+                    </div>
+
+                    <div class="filters-row r-b">
+
+                        <div class="seg-control" id="modeSeg" role="group" aria-label="Payment type">
+                            <button type="button" class="on" data-group="">All</button>
+                            <button type="button" data-group="CASH">Cash</button>
+                            <button type="button" data-group="ONLINE">Online</button>
+                            <button type="button" data-group="CARD">Card</button>
+                        </div>
+
+                        <div class="filter-item">
+                            <i class="fa-solid fa-folder"></i>
+                            <select id="cmbCategory" aria-label="Category"></select>
+                        </div>
+
+                        <div class="filter-item">
+                            <i class="fa-solid fa-filter"></i>
+                            <select id="cmbMode" aria-label="Account / mode"></select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div id="entriesContainer"></div>
 
             </div>
 
-        </div>
+            <aside class="col-side">
+
+                <div class="sec-head">
+                    <h2>Recent</h2>
+                    <span>latest 5</span>
+                </div>
+
+                <div id="recentList" class="hp-panel recent-panel"></div>
+
+            </aside>
+
+        </section>
 
 
         <!-- ==========================================
-     View All Transactions Modal
-    =========================================== -->
+             View All Transactions Modal
+        =========================================== -->
 
         <div id="allEntriesModal" class="custom-modal">
 
@@ -252,7 +270,7 @@
                         All Transactions
                     </h2>
 
-                    <button id="btnCloseEntriesModal" class="close-modal">
+                    <button id="btnCloseEntriesModal" class="close-modal" type="button" aria-label="Close">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
 
@@ -269,8 +287,6 @@
             </div>
 
         </div>
-
-        <div id="entriesContainer"></div>
 
         <div id="loadingOverlay" style="
 	          position: fixed;
@@ -297,5 +313,6 @@
     <script src="js/dashboard.js"></script>
     <script src="js/transactions.js"></script>
     <script src="js/navigation.js"></script>
+    <script src="js/home-ui.js"></script>
 </body>
 </html>
