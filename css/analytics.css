@@ -1,1089 +1,355 @@
 /* ==========================================================
-   EXPENSES ANALYTICS
-   Premium Finance Dashboard
-   Part 1
+   ANALYTICS PAGE  -  "NIGHT LEDGER"  (dark + light)
+   ----------------------------------------------------------
+   Uses the same theme colours as the home page (they come from
+   style.css, section "Home page redesign"), so the theme switch
+   and look stay identical on both pages.
+
+   Everything is scoped to  body.analytics-page.
 ========================================================== */
+
+body.analytics-page .back-btn {
+    display: none;              /* the side rail / bottom bar handles navigation */
+}
+
+body.analytics-page .dashboard-container {
+    display: block;
+}
+
 
 /* ==========================================================
-   PAGE
+   SUMMARY TILES
 ========================================================== */
 
-.analytics-tabs {
+body.analytics-page .kpis {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 8px;
-    width: 100%;
-    max-width: 520px;
-    margin: 10px auto;
-    padding: 0px;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,.08);
-}
-    
-.analytics-tab.active {
-    background: linear-gradient( 135deg, #2563eb, #4f46e5 );
-    color: white;
-    box-shadow: 0 6px 15px rgba(37,99,235,.25);
-}
-
-.analytics-tab:hover {
-    background: #eef4ff;
-    color: #2563eb;
-}
-
-
-body {
-    background: var(--page-bg);
-}
-
-.analytics-page {
-    max-width: 1600px;
-    margin: auto;
-    padding: 14px 18px;
-}
-
-/* ==========================================================
-   PAGE TITLE
-========================================================== */
-
-.page-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-    .page-title h2 {
-        margin: 0;
-        font-size: 34px;
-        font-weight: 700;
-        color: var(--text-dark);
-    }
-
-    .page-title p {
-        margin-top: 6px;
-        color: var(--text-light);
-        font-size: 15px;
-    }
-
-/* ==========================================================
-   FILTER CARD
-========================================================== */
-
-.filter-card {
-    background: rgba(255,255,255,.80);
-    backdrop-filter: blur(12px);
-    border-radius: 22px;
-    padding: 12px 16px;
-    border: 1px solid rgba(255,255,255,.6);
-    box-shadow: var(--shadow-small);
-    margin-bottom: 14px;
-}
-
-.filter-grid {
-    display: grid;
-    grid-template-columns: repeat(2,minmax(250px,1fr));
-    gap: 22px;
-}
-
-.filter-item {
-    display: flex;
-    flex-direction: column;
-}
-
-    .filter-item label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #666;
-        margin-bottom: 8px;
-    }
-
-    .filter-item select {
-        height: 46px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        background: #fff;
-        padding: 0 14px;
-        font-size: 15px;
-        transition: .30s;
-    }
-
-        .filter-item select:hover {
-            border-color: var(--primary);
-        }
-
-        .filter-item select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37,99,235,.12);
-        }
-
-/* ==========================================================
-   SUMMARY GRID
-========================================================== */
-
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-/* ==========================================================
-   SUMMARY CARD
-========================================================== */
-
-.summary-card {
-    position: relative;
-    overflow: hidden;
-    background: var(--card-bg);
-    backdrop-filter: blur(18px);
-    border-radius: 22px;
-    padding: 14px 16px;
-    border: 1px solid rgba(255,255,255,.7);
-    box-shadow: var(--shadow-small);
-    transition: .35s;
-    min-height: 90px;
-}
-
-    /* Top Glow */
-
-    .summary-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-    }
-
-    /* Card Colors */
-
-    .summary-card.income::before {
-        background: linear-gradient( 90deg, #22c55e, #86efac );
-    }
-
-    .summary-card.expense::before {
-        background: linear-gradient( 90deg, #ef4444, #fca5a5 );
-    }
-
-    .summary-card.transaction::before {
-        background: linear-gradient( 90deg, #2563eb, #60a5fa );
-    }
-
-    .summary-card.average::before {
-        background: linear-gradient( 90deg, #f59e0b, #fde68a );
-    }
-
-    /* Hover */
-
-    .summary-card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--shadow-medium);
-    }
-
-/* ==========================================================
-   SUMMARY HEADER
-========================================================== */
-
-.summary-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* ==========================================================
-   ICON
-========================================================== */
-
-.summary-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 18px;
-    flex-shrink: 0;
-}
-
-/* Individual Colors */
-
-.income .summary-icon {
-    background: linear-gradient( 135deg, #22c55e, #16a34a );
-}
-
-.expense .summary-icon {
-    background: linear-gradient( 135deg, #ef4444, #dc2626 );
-}
-
-.transaction .summary-icon {
-    background: linear-gradient( 135deg, #2563eb, #1d4ed8 );
-}
-
-.average .summary-icon {
-    background: linear-gradient( 135deg, #f59e0b, #d97706 );
-}
-
-/* ==========================================================
-   TITLE
-========================================================== */
-
-.summary-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-light);
-}
-
-/* ==========================================================
-   VALUE
-========================================================== */
-
-.summary-value {
-    margin-top: 10px;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-dark);
-    letter-spacing: .5px;
-    transition: .25s;
-}
-
-/* ==========================================================
-   CHANGE BADGE
-========================================================== */
-
-.summary-change {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 4px;
-    padding: 4px 10px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-    .summary-change.positive {
-        color: var(--success);
-        background: var(--success-light);
-    }
-
-    .summary-change.negative {
-        color: var(--danger);
-        background: var(--danger-light);
-    }
-
-    .summary-change.neutral {
-        color: #666;
-        background: #edf2f7;
-    }
-
-/* ==========================================================
-   SPARKLINE
-========================================================== */
-
-.sparkline {
-    margin-top: 6px;
-    height: 18px !important;
-    width: 100% !important;
-}
-
-/* ==========================================================
-   FLOATING GLOW
-========================================================== */
-
-.summary-card::after {
-    content: "";
-    position: absolute;
-    right: -40px;
-    top: -40px;
-    width: 145px;
-    height: 145px;
-    border-radius: 50%;
-    opacity: .08;
-}
-
-.income::after {
-    background: #22c55e;
-}
-
-.expense::after {
-    background: #ef4444;
-}
-
-.transaction::after {
-    background: #2563eb;
-}
-
-.average::after {
-    background: #f59e0b;
-}
-
-/* ==========================================================
-   ANIMATION
-========================================================== */
-
-@keyframes fadeUp {
-
-    from {
-        opacity: 0;
-        transform: translateY(18px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.summary-card {
-    animation: fadeUp .6s ease;
-}
-
-/* ==========================================================
-   ANALYTICS GRID
-========================================================== */
-
-.analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(12,1fr);
-    gap: 14px;
-    margin-bottom: 30px;
-}
-
-/* ==========================================================
-   CARD
-========================================================== */
-
-.analytics-card {
-    position: relative;
-    grid-column: span 3;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: rgba(255,255,255,.92);
-    backdrop-filter: blur(18px);
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,.75);
-    box-shadow: var(--shadow-small);
-    transition: .35s;
-}
-
-
-    .analytics-card.small {
-        grid-column: span 3;
-    }
-
-/*    .analytics-card.medium {
-        grid-column: span 4;
-    }*/
-
-    .analytics-card.large {
-        grid-column: span 6;
-    }
-
-    .analytics-card.full {
-        grid-column: span 12;
-    }
-
-    .analytics-card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--shadow-medium);
-    }
-
-/* ==========================================================
-   HEADER
-========================================================== */
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    min-height: 42px;
-    color: #fff;
-    background: linear-gradient( 135deg, #2563eb, #3b82f6 );
-}
-
-/* Different gradients */
-
-.analytics-card:nth-child(2) .card-header {
-    background: linear-gradient( 135deg, #7c3aed, #8b5cf6 );
-}
-
-.analytics-card:nth-child(4) .card-header {
-    background: linear-gradient( 135deg, #059669, #10b981 );
-}
-
-.analytics-card:nth-child(5) .card-header {
-    background: linear-gradient( 135deg, #0891b2, #06b6d4 );
-}
-
-.analytics-card:nth-child(6) .card-header {
-    background: linear-gradient( 135deg, #dc2626, #ef4444 );
-}
-
-.analytics-card:nth-child(7) .card-header {
-    background: linear-gradient( 135deg, #d97706, #f59e0b );
-}
-
-.analytics-card:nth-child(8) .card-header {
-    background: linear-gradient( 135deg, #2563eb, #60a5fa );
-}
-
-.analytics-card:nth-child(9) .card-header {
-    background: linear-gradient( 135deg, #7c3aed, #a855f7 );
-}
-
-.analytics-card:nth-child(10) .card-header {
-    background: linear-gradient( 135deg, #059669, #22c55e );
-}
-
-/* ==========================================================
-   TITLE
-========================================================== */
-
-.card-header h3 {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: .3px;
-}
-
-/* ==========================================================
-   OPTIONAL ICON
-========================================================== */
-
-.card-header i {
-    font-size: 22px;
-    opacity: .95;
-}
-
-/* ==========================================================
-   CARD BODY
-========================================================== */
-
-.analytics-card canvas {
-    padding: 8px;
-    width: 100% !important;
-    height: 170px !important;
-}
-
-/* ==========================================================
-   LIST AREA
-========================================================== */
-
-#topCategories,
-#topExpenses {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 20px;
-    max-height: 360px;
-    overflow: auto;
-}
-
-    /* Custom Scrollbar */
-
-    #topCategories::-webkit-scrollbar,
-    #topExpenses::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    #topCategories::-webkit-scrollbar-thumb,
-    #topExpenses::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 20px;
-    }
-
-/* ==========================================================
-   LIST ITEM
-========================================================== */
-
-.analytics-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 18px;
-    border-radius: 14px;
-    border: 1px solid #edf2f7;
-    background: #f8fbff;
-    transition: .25s;
-}
-
-    .analytics-list-item:hover {
-        background: #eef6ff;
-        border-color: #bfdbfe;
-        transform: translateX(6px);
-    }
-
-/* ==========================================================
-   LEFT SIDE
-========================================================== */
-
-.analytics-item-left {
-    display: flex;
-    align-items: center;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
 }
 
-/* ==========================================================
-   RANK BADGE
-========================================================== */
+body.analytics-page .kpi {
+    --k: var(--accent);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px 18px 15px;
+    box-shadow: var(--card-shadow);
+    min-width: 0;
+}
 
-.rank-badge {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
+body.analytics-page .kpi-income  { --k: var(--pos); }
+body.analytics-page .kpi-expense { --k: var(--neg); }
+body.analytics-page .kpi-count   { --k: var(--accent); }
+body.analytics-page .kpi-avg     { --k: var(--a-TRCASH); }
+
+body.analytics-page .kpi-top {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 700;
+    gap: 10px;
+}
+
+body.analytics-page .kpi-ic {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
     font-size: 14px;
-    flex-shrink: 0;
+    color: var(--k);
+    background: color-mix(in srgb, var(--k) 15%, transparent);
+    flex: none;
 }
 
-/* Top 3 */
-
-.rank-1 {
-    background: #f59e0b;
-}
-
-.rank-2 {
-    background: #94a3b8;
-}
-
-.rank-3 {
-    background: #b45309;
-}
-
-/* Others */
-
-.rank-default {
-    background: #2563eb;
-}
-
-/* ==========================================================
-   TEXT
-========================================================== */
-
-.analytics-item-title {
+body.analytics-page .kpi-name {
+    font-size: 13.5px;
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--mu);
 }
 
-.analytics-item-subtitle {
-    margin-top: 3px;
-    font-size: 12px;
-    color: #6b7280;
-}
-
-/* ==========================================================
-   VALUE BADGE
-========================================================== */
-
-.analytics-value {
-    background: #eff6ff;
-    color: #2563eb;
-    padding: 8px 14px;
-    border-radius: 40px;
+body.analytics-page .kpi-val {
+    margin-top: 12px;
+    font-size: 28px;
+    line-height: 1.1;
     font-weight: 700;
-    font-size: 14px;
+    letter-spacing: -.02em;
     white-space: nowrap;
 }
 
+body.analytics-page .kpi-sub {
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--mu);
+}
+
+
 /* ==========================================================
-   CATEGORY TAG
+   TABS  (segmented control)
 ========================================================== */
 
-.analytics-tag {
+body.analytics-page .analytics-tabs {
+    display: inline-flex;
+    gap: 4px;
+    margin: 22px 0 16px;
+    padding: 4px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+body.analytics-page .analytics-tab {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    border-radius: 30px;
-    font-size: 12px;
-    background: #eef2ff;
-    color: #4338ca;
-}
-
-/* ==========================================================
-   EMPTY STATE
-========================================================== */
-
-.analytics-empty {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    height: 100%;
-    color: #94a3b8;
-    padding: 50px;
+    gap: 8px;
+    height: 38px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: var(--mu);
+    font: 600 13.5px "Inter", "Segoe UI", sans-serif;
+    cursor: pointer;
+    box-shadow: none;
 }
 
-    .analytics-empty i {
-        font-size: 60px;
-        margin-bottom: 18px;
-        opacity: .6;
-    }
+body.analytics-page .analytics-tab i {
+    font-size: 13px;
+}
 
-    .analytics-empty h4 {
-        margin: 0 0 10px;
-        color: #64748b;
-    }
+body.analytics-page .analytics-tab:hover {
+    background: var(--panel2);
+    color: var(--tx);
+}
 
-    .analytics-empty p {
-        margin: 0;
-        font-size: 14px;
-    }
+body.analytics-page .analytics-tab.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+}
+
 
 /* ==========================================================
-   LOADING PLACEHOLDER
+   PANELS + CARDS
 ========================================================== */
 
-.analytics-loading {
-    position: relative;
-    overflow: hidden;
-    background: #f3f4f6;
-}
-
-    .analytics-loading::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        transform: translateX(-100%);
-        background: linear-gradient( 90deg, transparent, rgba(255,255,255,.7), transparent );
-        animation: loading 1.2s infinite;
-    }
-
-@keyframes loading {
-
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-/* ==========================================================
-   CARD APPEAR ANIMATION
-========================================================== */
-
-.analytics-card {
-    animation: fadeCard .6s ease;
-}
-
-@keyframes fadeCard {
-
-    from {
-        opacity: 0;
-        transform: translateY(18px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-.card-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-    .card-title i {
-        font-size: 15px;
-    }
-
-.card-title h3 {
-    margin: 0;
-}
-
-/* ==========================================================
-   RESPONSIVE DESIGN
-========================================================== */
-
-/* Large Desktop */
-
-@media (min-width:1600px) {
-
-    .analytics-page {
-        max-width: 1750px;
-    }
-}
-
-/* ==========================================================
-   Desktop
-========================================================== */
-
-@media (max-width:1400px) {
-
-    .summary-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-}
-
-/* ==========================================================
-   Tablet
-========================================================== */
-
-@media (max-width:1100px) {
-
-    .analytics-page {
-        padding: 18px;
-    }
-
-    .filter-grid {
-        grid-template-columns: repeat(2,1fr);
-    }
-
-    .analytics-card {
-        grid-column: span 12;
-    }
-
-    .analytics-card canvas {
-        height: 220px !important;
-        padding: 10px;
-    }
-}
-
-/* ==========================================================
-   Mobile
-========================================================== */
-
-@media (max-width:768px) {
-
-    .analytics-page {
-        padding: 12px;
-    }
-
-    .page-title {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-        margin-bottom: 18px;
-    }
-
-        .page-title h2 {
-            font-size: 28px;
-        }
-
-        .page-title p {
-            font-size: 13px;
-        }
-
-    .filter-card {
-        padding: 16px;
-        border-radius: 18px;
-    }
-
-    .filter-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .summary-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .summary-card {
-        padding: 18px;
-    }
-
-    .summary-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 22px;
-    }
-
-    .summary-value {
-        font-size: 28px;
-    }
-
-    .summary-change {
-        font-size: 11px;
-    }
-
-    .analytics-grid {
-        gap: 18px;
-    }
-
-    .analytics-card {
-        border-radius: 18px;
-    }
-
-    .card-header {
-        padding: 10px;
-    }
-
-        .card-header h3 {
-            font-size: 13px;
-        }
-
-    .analytics-card canvas {
-        height: 260px !important;
-        padding: 14px;
-    }
-
-    #topCategories,
-    #topExpenses {
-        padding: 15px;
-    }
-
-    .analytics-list-item {
-        padding: 12px;
-    }
-
-    .analytics-value {
-        font-size: 13px;
-        padding: 7px 12px;
-    }
-}
-
-/* ==========================================================
-   Small Mobile
-========================================================== */
-
-@media (max-width:480px) {
-
-    .analytics-page {
-        padding: 10px;
-    }
-
-    .page-title h2 {
-        font-size: 24px;
-    }
-
-    .summary-value {
-        font-size: 24px;
-    }
-
-    .summary-header {
-        gap: 12px;
-    }
-
-    .summary-icon {
-        width: 46px;
-        height: 46px;
-        font-size: 20px;
-    }
-
-    .card-header {
-        padding: 14px;
-    }
-
-    .card-title {
-        gap: 8px;
-    }
-
-        .card-title i {
-            font-size: 15px;
-        }
-
-        .card-title h3 {
-            font-size: 13px;
-        }
-
-    .analytics-card canvas {
-        height: 220px !important;
-    }
-}
-
-/* ==========================================================
-   UTILITY CLASSES
-========================================================== */
-
-.text-success {
-    color: var(--success);
-}
-
-.text-danger {
-    color: var(--danger);
-}
-
-.text-warning {
-    color: var(--warning);
-}
-
-.text-primary {
-    color: var(--primary);
-}
-
-.bg-success {
-    background: var(--success-light);
-}
-
-.bg-danger {
-    background: var(--danger-light);
-}
-
-.bg-warning {
-    background: var(--warning-light);
-}
-
-.bg-primary {
-    background: var(--primary-light);
-}
-
-.shadow-hover {
-    transition: .30s;
-}
-
-    .shadow-hover:hover {
-        box-shadow: var(--shadow-medium);
-    }
-
-.rounded {
-    border-radius: var(--radius);
-}
-
-/* ==========================================================
-   CHART CONTAINER
-========================================================== */
-
-.chart-wrapper {
-    position: relative;
-    flex: 1;
-    min-height: 170px;
-}
-
-    .chart-wrapper canvas {
-        position: absolute;
-        inset: 0;
-    }
-
-/* ==========================================================
-   SMOOTH TRANSITIONS
-========================================================== */
-
-button,
-select,
-.analytics-card,
-.summary-card,
-.analytics-list-item {
-    transition: background .25s, color .25s, border-color .25s, box-shadow .25s, transform .25s;
-}
-
-    /* ==========================================================
-   ACCESSIBILITY
-========================================================== */
-
-    button:focus-visible,
-    select:focus-visible {
-        outline: 3px solid rgba(37,99,235,.35);
-        outline-offset: 2px;
-    }
-
-    .analytics-card:focus-within {
-        box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-    }
-
-/* ==========================================================
-   READY FOR DARK MODE
-========================================================== */
-
-body.dark {
-    --card-bg: #1e293b;
-    --text-dark: #f8fafc;
-    --text-light: #cbd5e1;
-    --border: #334155;
-    --page-bg: linear-gradient( 180deg, #0f172a, #111827 );
-    --shadow-small: 0 8px 18px rgba(0,0,0,.35);
-    --shadow-medium: 0 18px 40px rgba(0,0,0,.45);
-}
-
-    body.dark .filter-item select {
-        background: #1f2937;
-        color: #f8fafc;
-    }
-
-    body.dark .analytics-list-item {
-        background: #1f2937;
-        border-color: #374151;
-    }
-
-    body.dark .analytics-value {
-        background: #1e3a8a;
-        color: #dbeafe;
-    }
-
-/* ==========================================================
-   PRINT MODE
-========================================================== */
-
-@media print {
-
-    body {
-        background: #fff;
-    }
-
-    .filter-card {
-        display: none;
-    }
-
-    .analytics-card {
-        break-inside: avoid;
-        box-shadow: none;
-        border: 1px solid #ddd;
-    }
-
-    .summary-card {
-        box-shadow: none;
-        border: 1px solid #ddd;
-    }
-}
-
-.analytics-panel {
+body.analytics-page .analytics-panel {
     display: none;
 }
 
-.analytics-panel.active {
+body.analytics-page .analytics-panel.active {
     display: grid;
-    grid-template-columns: repeat(6,1fr);
-    gap: 14px;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
 }
 
-.top-list {
+body.analytics-page .span-6  { grid-column: span 6; }
+body.analytics-page .span-12 { grid-column: span 12; }
+
+body.analytics-page .analytics-card {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 16px;
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
 }
-.top-item {
+
+body.analytics-page .card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px 6px;
+}
+
+body.analytics-page .card-head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+body.analytics-page .card-ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    flex: none;
+}
+
+body.analytics-page .card-note {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--mu);
+    white-space: nowrap;
+}
+
+body.analytics-page .chart-box {
+    position: relative;
+    height: 300px;
+    padding: 8px 14px 16px;
+}
+
+body.analytics-page .span-12 .chart-box {
+    height: 320px;
+}
+
+
+/* ==========================================================
+   TOP LISTS  (rows are created by analytics.js)
+========================================================== */
+
+body.analytics-page .top-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 16px;
+    padding: 14px 18px 20px;
 }
-.top-header {
+
+body.analytics-page .top-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+body.analytics-page .top-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 13px;
+    gap: 12px;
+    font-size: 14px;
     font-weight: 600;
 }
-.top-progress {
+
+body.analytics-page .top-header > span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+body.analytics-page .top-header > span:last-child {
+    white-space: nowrap;
+}
+
+body.analytics-page .top-header strong {
+    color: var(--mu);
+    font-weight: 600;
+    min-width: 16px;
+}
+
+body.analytics-page .top-header i {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    flex: none;
+}
+
+body.analytics-page .top-progress {
     height: 7px;
-    background: #edf2f7;
-    border-radius: 10px;
+    border-radius: 7px;
+    background: var(--track);
     overflow: hidden;
 }
-.top-fill {
+
+body.analytics-page .top-fill {
     height: 100%;
-    background: linear-gradient( 90deg, #2563eb, #60a5fa );
-    border-radius: 10px;
+    border-radius: 7px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
 }
-.top-percent {
-    font-size: 11px;
-    color: #64748b;
+
+body.analytics-page .top-percent {
+    font-size: 11.5px;
+    color: var(--mu);
     text-align: right;
 }
-.top-subtitle {
-    margin-top: 3px;
-    margin-left: 24px;
+
+body.analytics-page .top-subtitle {
+    margin: -2px 0 0 53px;
     font-size: 12px;
-    color: #64748b;
+    color: var(--mu);
+}
+
+/* each "top expense" row is a short two-line item, give it a divider */
+body.analytics-page #topExpensesList .top-item {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+}
+
+body.analytics-page #topExpensesList .top-item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+
+/* ==========================================================
+   LAPTOP (narrow) / TABLET / PHONE
+========================================================== */
+
+@media (max-width: 1100px) {
+
+    body.analytics-page .kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    body.analytics-page .kpi {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    body.analytics-page .kpi-val {
+        margin-top: 10px;
+        font-size: 22px;
+    }
+
+    body.analytics-page .analytics-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        margin: 16px 0 12px;
+    }
+
+    body.analytics-page .analytics-tab {
+        padding: 0 6px;
+    }
+
+    body.analytics-page .analytics-panel.active {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    body.analytics-page .span-6,
+    body.analytics-page .span-12 {
+        grid-column: auto;
+    }
+
+    body.analytics-page .analytics-card {
+        border-radius: 18px;
+    }
+
+    body.analytics-page .chart-box,
+    body.analytics-page .span-12 .chart-box {
+        height: 280px;
+        padding: 6px 10px 14px;
+    }
+
+    body.analytics-page .top-list {
+        padding: 12px 16px 18px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    body.analytics-page .analytics-tab i {
+        display: none;
+    }
 }
