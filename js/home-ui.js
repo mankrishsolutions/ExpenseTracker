@@ -41,6 +41,9 @@
         }
 
         refreshThemeButton();
+
+        // Pages with charts re-colour them when this fires
+        document.dispatchEvent(new CustomEvent("themechange"));
     }
 
     function refreshThemeButton() {
@@ -152,7 +155,11 @@
             // Add expense (laptop only - phone uses the bottom bar)
             const add = document.createElement("a");
             add.className = "hp-add-btn";
-            add.href = "pages/add.html";
+            // index.html is in the root, the other pages are in /pages/
+            add.href =
+                location.pathname.indexOf("/pages/") !== -1
+                    ? "add.html"
+                    : "pages/add.html";
             add.innerHTML =
                 '<i class="fa-solid fa-plus"></i> Add expense';
             right.appendChild(add);
