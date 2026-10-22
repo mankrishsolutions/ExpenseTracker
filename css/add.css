@@ -1,121 +1,263 @@
-/* ==========================
-   ADD TRANSACTION
-========================== */
+/* ==========================================================
+   ADD / EDIT TRANSACTION  -  "NIGHT LEDGER"  (dark + light)
+   ----------------------------------------------------------
+   Uses the same theme colours as the home page (from style.css).
+   Everything is scoped to  body.add-page.
+========================================================== */
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 20px;
+/* the side rail / bottom bar handles navigation here */
+body.add-page .back-btn {
+    display: none;
 }
 
-.form-card {
-    background: white;
-    margin-top: 5px;
-    padding: 10px;
+/* theme button sits straight in the top row on this page */
+body.add-page .dashboard-header > .hp-icon-btn {
+    order: 6;
+}
+
+body.add-page .dashboard-container {
+    display: block;
+    max-width: 880px;
+    padding-top: 22px;
+}
+
+
+/* ---------- card ---------- */
+
+body.add-page .form-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
     border-radius: 22px;
-    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    padding: 26px 28px 28px;
+    box-shadow: var(--card-shadow);
 }
 
-.form-group {
+body.add-page .transaction-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: 18px;
+    padding: 7px 13px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
 }
 
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #374151;
-        font-size: 14px;
-    }
+body.add-page .transaction-info .label {
+    color: var(--mu);
+    font-weight: 600;
+}
 
-    .form-group i {
-        margin-right: 8px;
-        color: #4f46e5;
-    }
 
-#txtAmount {
+/* ---------- form grid ---------- */
+
+body.add-page .form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 18px 16px;
+    margin-bottom: 22px;
+}
+
+body.add-page .form-group {
+    grid-column: span 2;
+    margin: 0;
+    min-width: 0;
+}
+
+body.add-page .fg-date { grid-column: span 3; }
+body.add-page .fg-amount { grid-column: span 3; }
+body.add-page .fg-desc,
+body.add-page .fg-remarks { grid-column: 1 / -1; }
+
+body.add-page .form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mu);
+}
+
+body.add-page .form-group label i {
+    margin: 0;
+    width: 16px;
+    text-align: center;
+    color: var(--accent);
+    font-size: 13px;
+}
+
+body.add-page .form-group input,
+body.add-page .form-group select,
+body.add-page .form-group textarea {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--field);
+    color: var(--tx);
+    font: 500 15px "Inter", "Segoe UI", system-ui, sans-serif;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+body.add-page .form-group textarea {
+    height: auto;
+    min-height: 92px;
+    padding: 13px 15px;
+    resize: vertical;
+}
+
+body.add-page .form-group input::placeholder,
+body.add-page .form-group textarea::placeholder {
+    color: var(--mu);
+    opacity: .75;
+}
+
+body.add-page .form-group select {
+    cursor: pointer;
+}
+
+body.add-page .form-group select option {
+    background: var(--panel);
+    color: var(--tx);
+}
+
+body.add-page .form-group input:hover,
+body.add-page .form-group select:hover,
+body.add-page .form-group textarea:hover {
+    border-color: var(--mu);
+}
+
+body.add-page .form-group input:focus,
+body.add-page .form-group select:focus,
+body.add-page .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+
+/* ---------- amount (the main field) ---------- */
+
+body.add-page .amount-wrap {
+    position: relative;
+}
+
+body.add-page .amount-wrap .rupee {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
     font-size: 20px;
     font-weight: 700;
+    color: var(--accent);
+    pointer-events: none;
+}
+
+body.add-page #txtAmount {
+    padding-left: 38px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -.01em;
     text-align: right;
-    background: #eef4ff;
+    background: var(--accent-soft);
+    border-color: transparent;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
-    font-size: 15px;
-    background: #fafafa;
-    transition: .2s;
+body.add-page #txtAmount:focus {
+    background: var(--field);
 }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: #4f46e5;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(79,70,229,.12);
-    }
 
-.save-btn {
+/* ---------- save button ---------- */
+
+body.add-page .save-btn {
     width: 100%;
-    padding: 15px;
-    border: none;
+    height: 52px;
+    border: 0;
     border-radius: 14px;
-    background: linear-gradient( 135deg, #4f46e5, #7c3aed );
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font: 700 15.5px "Inter", "Segoe UI", system-ui, sans-serif;
     cursor: pointer;
-    transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: none;
+    transition: filter .2s, transform .2s;
 }
 
-    .save-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(79,70,229,.25);
+body.add-page .save-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+    box-shadow: none;
+}
+
+body.add-page .save-btn:active {
+    transform: none;
+}
+
+
+/* ==========================================================
+   SMALLER SCREENS
+========================================================== */
+
+@media (max-width: 1100px) {
+
+    body.add-page .dashboard-container {
+        padding: 12px 12px 112px;
     }
 
-/* ==========================
-   MOBILE
-========================== */
-
-@media (max-width:768px) {
-
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
+    body.add-page .form-card {
+        padding: 18px 16px 20px;
+        border-radius: 20px;
     }
 
-    .form-card {
-        padding: 20px;
-        border-radius: 18px;
+    body.add-page .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 12px;
+        margin-bottom: 18px;
     }
 
-    .form-group {
-        margin-bottom: 14px;
+    /* amount first on a phone, full width */
+    body.add-page .fg-date { grid-column: span 1; }
+    body.add-page .fg-amount { grid-column: span 1; }
+
+    body.add-page .form-group { grid-column: span 1; }
+
+    body.add-page .fg-desc,
+    body.add-page .fg-remarks,
+    body.add-page .form-group:nth-of-type(6) { grid-column: 1 / -1; }
+}
+
+@media (max-width: 520px) {
+
+    body.add-page .fg-date,
+    body.add-page .fg-amount,
+    body.add-page .form-group {
+        grid-column: 1 / -1;
     }
 
-        .form-group label {
-            font-size: 13px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 13px;
-            font-size: 14px;
-        }
-
-    #txtAmount {
-        font-size: 18px;
+    body.add-page #txtAmount {
+        font-size: 24px;
     }
+}
 
-    .save-btn {
-        padding: 14px;
-        font-size: 15px;
+
+/* the "+" button is the current page here - keep it filled */
+body.add-page .bottom-nav a.add-menu.active {
+    background: var(--accent) !important;
+    color: var(--accent-ink) !important;
+}
+
+@media (max-width: 1100px) {
+
+    /* theme button next to the title on a phone */
+    body.add-page .dashboard-header > .hp-icon-btn {
+        order: 3;
     }
 }
