@@ -71,7 +71,9 @@
 
     function buildStepper(right) {
 
-        const select = document.getElementById("cmbMonth");
+        const select =
+            document.getElementById("cmbMonth") ||
+            document.getElementById("cmbFinancialYear");
 
         if (!select) return;
 
@@ -136,6 +138,8 @@
     document.addEventListener("headerLoaded", () => {
 
         const right = document.querySelector(".header-right");
+        const isAddPage =
+            location.pathname.toLowerCase().indexOf("add.html") !== -1;
 
         if (right) {
 
@@ -150,19 +154,27 @@
                 "click",
                 () => setTheme(getTheme() === "dark" ? "light" : "dark", true)
             );
-            right.appendChild(theme);
 
-            // Add expense (laptop only - phone uses the bottom bar)
-            const add = document.createElement("a");
-            add.className = "hp-add-btn";
-            // index.html is in the root, the other pages are in /pages/
-            add.href =
-                location.pathname.indexOf("/pages/") !== -1
-                    ? "add.html"
-                    : "pages/add.html";
-            add.innerHTML =
-                '<i class="fa-solid fa-plus"></i> Add expense';
-            right.appendChild(add);
+            // The Add page hides the right-hand group, so the theme button
+            // goes straight into the top row there (and no Add button).
+            if (isAddPage) {
+                document.querySelector(".dashboard-header").appendChild(theme);
+            }
+            else {
+                right.appendChild(theme);
+
+                // Add expense (laptop only - phone uses the bottom bar)
+                const add = document.createElement("a");
+                add.className = "hp-add-btn";
+                // index.html is in the root, the other pages are in /pages/
+                add.href =
+                    location.pathname.indexOf("/pages/") !== -1
+                        ? "add.html"
+                        : "pages/add.html";
+                add.innerHTML =
+                    '<i class="fa-solid fa-plus"></i> Add expense';
+                right.appendChild(add);
+            }
         }
 
         refreshThemeButton();
