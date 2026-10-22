@@ -6,22 +6,41 @@
 	<meta charset="UTF-8">
 	<link rel="icon" type="image/x-icon" href="../favicon.ico">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#0B0F23" id="metaThemeColor">
 
 	<title>Add / Edit Transaction</title>
+
+	<!-- Apply the saved theme before the page paints (same setting as the other pages) -->
+	<script>
+		(function () {
+			var theme = "dark";
+			try { theme = localStorage.getItem("expenseTheme") || "dark"; } catch (e) { }
+			document.documentElement.setAttribute("data-theme", theme === "light" ? "light" : "dark");
+		})();
+	</script>
+
 	<link rel="stylesheet" href="../css/style.css">
 	<link rel="stylesheet" href="../css/add.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet"
+		  href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap">
+
 </head>
 
-<body data-title="Add / Edit Transaction"
+<body class="home-page add-page"
+	  data-title="Add / Edit Transaction"
 	  data-subtitle="Expense Entry"
 	  data-show-month="false">
 
 	<div id="headerContainer"></div>
 
 	<main class="dashboard-container">
+
 		<div class="form-card">
+
 			<form id="expenseForm">
 
 				<div id="transactionInfo" class="transaction-info" style="display:none;">
@@ -31,27 +50,34 @@
 				<input type="hidden" id="txtTransactionId">
 
 				<div class="form-grid">
-					<div class="form-group">
-						<label>
+
+					<div class="form-group fg-date">
+						<label for="txtDate">
 							<i class="fa-solid fa-calendar"></i>
 							Date
 						</label>
 						<input type="date"
 							   id="txtDate">
 					</div>
-					<div class="form-group">
-						<label>
+
+					<div class="form-group fg-amount">
+						<label for="txtAmount">
 							<i class="fa-solid fa-indian-rupee-sign"></i>
 							Amount
 						</label>
-						<input type="number"
-							   id="txtAmount"
-							   placeholder="Enter Amount"
-							   step="0.01"
-							   min="0">
+						<div class="amount-wrap">
+							<span class="rupee">₹</span>
+							<input type="number"
+								   id="txtAmount"
+								   placeholder="0.00"
+								   step="0.01"
+								   min="0"
+								   inputmode="decimal">
+						</div>
 					</div>
-					<div class="form-group">
-						<label>
+
+					<div class="form-group fg-desc">
+						<label for="txtDescription">
 							<i class="fa-solid fa-file-lines"></i>
 							Description
 						</label>
@@ -59,15 +85,17 @@
 							   id="txtDescription"
 							   placeholder="Enter Description">
 					</div>
+
 					<div class="form-group">
-						<label>
+						<label for="cmbCategory">
 							<i class="fa-solid fa-layer-group"></i>
 							Category
 						</label>
 						<select id="cmbCategory"></select>
 					</div>
+
 					<div class="form-group">
-						<label>
+						<label for="cmbMode">
 							<i class="fa-solid fa-arrow-right-arrow-left"></i>
 							Mode
 						</label>
@@ -75,21 +103,23 @@
 					</div>
 
 					<div class="form-group">
-						<label>
+						<label for="cmbPayment">
 							<i class="fa-solid fa-wallet"></i>
 							Payment Medium
 						</label>
 						<select id="cmbPayment"></select>
 					</div>
-				</div>
-				<div class="form-group">
-					<label>
-						<i class="fa-solid fa-note-sticky"></i>
-						Remarks
-					</label>
-					<textarea id="txtRemarks"
-							  rows="3"
-							  placeholder="Optional Remarks"></textarea>
+
+					<div class="form-group fg-remarks">
+						<label for="txtRemarks">
+							<i class="fa-solid fa-note-sticky"></i>
+							Remarks
+						</label>
+						<textarea id="txtRemarks"
+								  rows="3"
+								  placeholder="Optional Remarks"></textarea>
+					</div>
+
 				</div>
 
 				<button type="submit"
@@ -97,9 +127,11 @@
 					<i class="fa-solid fa-floppy-disk"></i>
 					Save Transaction
 				</button>
+
 			</form>
-			<div id="msgBox"></div>
+
 		</div>
+
 	</main>
 
 	<div id="loadingOverlay" style="
@@ -122,8 +154,14 @@
 	<script src="../js/common.js"></script>
 	<!--<script src="../js/api.js"></script>-->
 	<script src="../js/header.js"></script>
+
+	<!-- Side rail / bottom bar navigation -->
+	<script src="../js/navigation.js"></script>
+
+	<!-- Page look: theme switch (display only) -->
+	<script src="../js/home-ui.js"></script>
+
 	<script src="../js/add.js"></script>
-	<!--<script src="../js/navigation.js"></script>-->
 
 </body>
 </html>
