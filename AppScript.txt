@@ -1,0 +1,573 @@
+function doGet(e) {
+
+  try {
+
+    const action = (e.parameter.action || "").toLowerCase();
+
+    switch (action) {
+
+      case "save":
+        return saveTransaction(e);
+
+      case "getall":
+        return getAllTransactions();
+
+      case "delete":
+        return deleteTransaction(e);
+
+      case "update":
+        return updateTransaction(e);
+
+      case "getbyid":
+      return getTransactionById(e);
+
+      case "getmonthlyclosing":
+      return getMonthlyClosing();
+
+      case "getadjustments":
+      return getAdjustments();
+
+      case "test":
+      return testConnection();
+
+      default:
+        return getAllTransactions();
+    }
+
+    if(action === "getTransactions"){
+
+        return getAllTransactions();
+    }
+
+  }
+  catch (err) {
+
+    return ContentService
+      .createTextOutput(
+        JSON.stringify({
+          success: false,
+          message: err.toString()
+        })
+      )
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function saveTransaction(e) {
+
+  const sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Transactions");
+
+  const lastRow = sheet.getLastRow();
+
+  // Current date as DDMMYYYY
+  const today = new Date();
+
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const yyyy = today.getFullYear();
+
+  const datePart = dd + mm + yyyy;
+
+  let seq = 1;
+
+  if (lastRow > 1) {
+
+    const lastId = sheet
+      .getRange(lastRow, 1)
+      .getValue()
+      .toString()
+      .trim();
+
+    // Get last 3 digits from previous ID
+    const lastSeq = parseInt(
+      lastId.slice(-3),
+      10
+    );
+
+    seq = isNaN(lastSeq) ? 1 : lastSeq + 1;
+  }
+
+  const nextId =
+    "TXN" +
+    datePart +
+    String(seq).padStart(3, "0");
+
+  sheet.appendRow([
+    nextId,
+    e.parameter.date || "",
+    e.parameter.amount || "",
+    e.parameter.description || "",
+    e.parameter.category || "",
+    e.parameter.mode || "",
+    e.parameter.paymentMedium || "",
+    e.parameter.remarks || "",
+    e.parameter.createdOn || "",
+    e.parameter.updatedOn || ""
+  ]);
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success: true,
+        transactionId: nextId
+      })
+    )
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getAllTransactions() {
+
+  const sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Transactions");
+
+  const data = sheet.getDataRange().getValues();
+
+  const formattedData = data.map((row, index) => {
+
+    if (index === 0) return row;
+
+    const newRow = [...row];
+
+    // Force Date column to string
+    if (newRow[1]) {
+
+      newRow[1] = Utilities.formatDate(
+        new Date(newRow[1]),
+        Session.getScriptTimeZone(),
+        "yyyy-MM-dd"
+      );
+    }
+
+    // CreatedOn
+    if (newRow[8]) {
+
+      newRow[8] = Utilities.formatDate(
+        new Date(newRow[8]),
+        Session.getScriptTimeZone(),
+        "dd/MM/yyyy hh:mm:ss a"
+      );
+    }
+
+    // UpdatedOn
+    if (newRow[9]) {
+
+      newRow[9] = Utilities.formatDate(
+        new Date(newRow[9]),
+        Session.getScriptTimeZone(),
+        "dd/MM/yyyy hh:mm:ss a"
+      );
+    }
+
+    return newRow;
+  });
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success: true,
+        data: formattedData
+      })
+    )
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function updateTransaction(e) {
+
+  const id = e.parameter.id;
+
+  const sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Transactions");
+
+  const data =
+    sheet.getDataRange().getValues();
+
+  for(let r = 1; r < data.length; r++) {
+
+    if(data[r][0] == id) {
+
+      sheet.getRange(r + 1, 2).setValue(
+        e.parameter.date || ""
+      );
+
+      sheet.getRange(r + 1, 3).setValue(
+        e.parameter.amount || ""
+      );
+
+      sheet.getRange(r + 1, 4).setValue(
+        e.parameter.description || ""
+      );
+
+      sheet.getRange(r + 1, 5).setValue(
+        e.parameter.category || ""
+      );
+
+      sheet.getRange(r + 1, 6).setValue(
+        e.parameter.mode || ""
+      );
+
+      sheet.getRange(r + 1, 7).setValue(
+        e.parameter.paymentMedium || ""
+      );
+
+      sheet.getRange(r + 1, 8).setValue(
+        e.parameter.remarks || ""
+      );
+
+      sheet.getRange(r + 1, 10).setValue(
+          e.parameter.updatedOn || new Date()
+      );
+
+      return ContentService
+        .createTextOutput(
+          JSON.stringify({
+            success:true
+          })
+        )
+        .setMimeType(
+          ContentService.MimeType.JSON
+        );
+    }
+  }
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success:false,
+        message:"Transaction not found"
+      })
+    )
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
+}
+
+function deleteTransaction(e) {
+
+  const id = e.parameter.id;
+
+  const sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Transactions");
+
+  const data =
+    sheet.getDataRange().getValues();
+
+  for(let r = 1; r < data.length; r++) {
+
+    if(data[r][0] == id) {
+
+      sheet.deleteRow(
+        r + 1
+      );
+
+      return ContentService
+        .createTextOutput(
+          JSON.stringify({
+            success:true
+          })
+        )
+        .setMimeType(
+          ContentService.MimeType.JSON
+        );
+    }
+  }
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success:false,
+        message:"Transaction not found"
+      })
+    )
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
+}
+
+function testDate() {
+
+  const sheet =
+    SpreadsheetApp.getActiveSpreadsheet()
+      .getSheetByName("Transactions");
+
+  const value =
+    sheet.getRange("B2").getValue();
+
+  Logger.log(value);
+  Logger.log(typeof value);
+  Logger.log(value instanceof Date);
+}
+
+function getTransactionById(e) {
+
+  const id = e.parameter.id;
+
+  const sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Transactions");
+
+  const data =
+    sheet.getDataRange().getValues();
+
+  for(let r = 1; r < data.length; r++) {
+
+    if(data[r][0] == id) {
+
+      return ContentService
+        .createTextOutput(
+          JSON.stringify({
+            success:true,
+            data:data[r]
+          })
+        )
+        .setMimeType(
+          ContentService.MimeType.JSON
+        );
+    }
+  }
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success:false,
+        message:"Transaction not found"
+      })
+    )
+    .setMimeType(
+      ContentService.MimeType.JSON
+    );
+}
+
+function getMonthlyClosing() {
+
+    const sheet = SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName("MonthlyBalances");
+
+    const data =
+        sheet.getDataRange().getValues();
+
+    return ContentService
+        .createTextOutput(
+            JSON.stringify({
+                success: true,
+                data: data
+            })
+        )
+        .setMimeType(
+            ContentService.MimeType.JSON
+        );
+}
+
+function getAdjustments() {
+
+    const sheet = SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName("Adjustments");
+
+    const data =
+        sheet.getDataRange().getValues();
+
+    const formattedData =
+        data.map((row, index) => {
+
+            if (index === 0)
+                return row;
+
+            const newRow =
+                [...row];
+
+            if (newRow[1]) {
+
+                newRow[1] =
+                    Utilities.formatDate(
+                        new Date(newRow[1]),
+                        Session.getScriptTimeZone(),
+                        "yyyy-MM-dd"
+                    );
+            }
+
+            return newRow;
+        });
+
+    return ContentService
+        .createTextOutput(
+            JSON.stringify({
+                success: true,
+                data: formattedData
+            })
+        )
+        .setMimeType(
+            ContentService.MimeType.JSON
+        );
+}
+
+function testConnection() {
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success: true,
+        message: "Expense Sync Service is Online",
+        time: new Date()
+      })
+    )
+    .setMimeType(ContentService.MimeType.JSON);
+
+}
+
+/******************************************************
+ * Excel Sync Endpoint
+ * Receives JSON array from Excel and appends rows
+ ******************************************************/
+function doPost(e) {
+
+  try {
+
+    const SPREADSHEET_ID = "1BZQ-Ae2RmJ2Lbujspdv_N0C-L7jlJokgMj2mVfAocGY";
+    const SHEET_NAME = "Transactions";
+
+    if (!e || !e.postData || !e.postData.contents) {
+      return jsonResponse(false, "No data received.");
+    }
+
+    const records = JSON.parse(e.postData.contents);
+
+    if (!Array.isArray(records) || records.length === 0) {
+      return jsonResponse(false, "No records found.");
+    }
+
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sh = ss.getSheetByName(SHEET_NAME);
+
+    if (!sh) {
+      return jsonResponse(false, "Transactions sheet not found.");
+    }
+
+    const scriptTZ = Session.getScriptTimeZone();
+
+    let lastRow = sh.getLastRow();
+
+    // ---------- Generate Transaction ID ----------
+
+    let nextSequence = 1;
+
+    if (lastRow > 1) {
+
+      const lastID = sh.getRange(lastRow, 1).getValue().toString().trim();
+
+      // Extract only the sequence after the date
+      // TXN14072026449 -> 449
+      const lastSeq = parseInt(lastID.substring(11), 10);
+
+      nextSequence = lastSeq + 1;
+
+    }
+
+    const output = [];
+
+    records.forEach(function (r, index) {
+
+      // ---------- Validation ----------
+
+      if (!r.date)
+        throw new Error("Row " + (index + 1) + ": Date missing.");
+
+      if (r.amount === "" || r.amount == null)
+        throw new Error("Row " + (index + 1) + ": Amount missing.");
+
+      if (!r.description)
+        throw new Error("Row " + (index + 1) + ": Description missing.");
+
+      if (!r.category)
+        throw new Error("Row " + (index + 1) + ": Category missing.");
+
+      if (!r.mode)
+        throw new Error("Row " + (index + 1) + ": Mode missing.");
+
+      if (!r.medium)
+        throw new Error("Row " + (index + 1) + ": Payment Medium missing.");
+
+      const dt = new Date(r.date);
+
+      if (isNaN(dt.getTime()))
+        throw new Error("Row " + (index + 1) + ": Invalid Date.");
+
+      const amount = parseFloat(r.amount);
+
+      if (isNaN(amount))
+        throw new Error("Row " + (index + 1) + ": Invalid Amount.");
+
+      // ---------- Generate Transaction ID ----------
+
+      const txnID =
+      "TXN" +
+      Utilities.formatDate(dt, scriptTZ, "ddMMyyyy") +
+      (nextSequence++);
+
+      const trxDate =
+        Utilities.formatDate(dt, scriptTZ, "yyyy-MM-dd");
+
+      const today =
+        Utilities.formatDate(new Date(), scriptTZ, "yyyy-MM-dd");
+
+      output.push([
+        txnID,                 // A
+        trxDate,               // B
+        amount,                // C
+        r.description.trim(),  // D
+        r.category.trim(),     // E
+        r.mode.trim(),         // F
+        r.medium.trim(),       // G
+        "-",                   // H Remarks
+        today,                 // I CreatedOn
+        today                  // J UpdatedOn
+      ]);
+
+    });
+
+    // Batch Insert
+
+    sh.getRange(
+      sh.getLastRow() + 1,
+      1,
+      output.length,
+      output[0].length
+    ).setValues(output);
+
+    SpreadsheetApp.flush();
+
+    return jsonResponse(true, output.length + " record(s) uploaded successfully.");
+
+  }
+  catch (err) {
+
+    return jsonResponse(false, err.message);
+
+  }
+
+}
+
+
+/******************************************************
+ * Standard JSON Response
+ ******************************************************/
+function jsonResponse(success, message) {
+
+  return ContentService
+    .createTextOutput(
+      JSON.stringify({
+        success: success,
+        message: message,
+        timestamp: new Date()
+      })
+    )
+    .setMimeType(ContentService.MimeType.JSON);
+
+}
+
+
