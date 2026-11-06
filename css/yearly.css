@@ -1,0 +1,431 @@
+/* ==========================================================
+   YEAR DASHBOARD  -  "NIGHT LEDGER"  (dark + light)
+   ----------------------------------------------------------
+   Uses the same theme colours as the home page (from style.css).
+   Everything is scoped to  body.yearly-page.
+========================================================== */
+
+/* ---------- top row ---------- */
+
+body.yearly-page .financial-range {
+    order: 3;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--mu);
+    white-space: nowrap;
+}
+
+body.yearly-page .dashboard-header {
+    margin-bottom: 0;
+}
+
+body.yearly-page .dashboard-container {
+    display: block;
+}
+
+
+/* ---------- summary tiles ---------- */
+
+body.yearly-page .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+body.yearly-page .kpi {
+    --k: var(--accent);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px 18px 15px;
+    box-shadow: var(--card-shadow);
+    min-width: 0;
+}
+
+body.yearly-page .kpi-total { --k: var(--accent); }
+body.yearly-page .kpi-high  { --k: var(--neg); }
+body.yearly-page .kpi-low   { --k: var(--pos); }
+body.yearly-page .kpi-top3  { --k: var(--a-TRCASH); }
+
+body.yearly-page .kpi-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body.yearly-page .kpi-ic {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    color: var(--k);
+    background: color-mix(in srgb, var(--k) 15%, transparent);
+    flex: none;
+}
+
+body.yearly-page .kpi-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--mu);
+}
+
+body.yearly-page .kpi-val {
+    margin-top: 12px;
+    min-height: 31px;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    white-space: nowrap;
+}
+
+body.yearly-page .kpi-sub {
+    margin-top: 5px;
+    min-height: 16px;
+    font-size: 12.5px;
+    color: var(--mu);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* ---------- rows + cards ---------- */
+
+body.yearly-page .y-row {
+    display: grid;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+body.yearly-page .y-charts {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    margin-top: 20px;
+}
+
+body.yearly-page .y-tables {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.yearly-page .y-card {
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+body.yearly-page .top-expense-card {
+    margin-top: 16px;
+    padding-bottom: 18px;
+}
+
+body.yearly-page .card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px 8px;
+}
+
+body.yearly-page .card-head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+body.yearly-page .card-ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    flex: none;
+}
+
+body.yearly-page .card-note {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--mu);
+}
+
+body.yearly-page .chart-body {
+    position: relative;
+    height: 320px;
+    padding: 8px 14px 16px;
+}
+
+
+/* ---------- tables ---------- */
+
+body.yearly-page .table-scroll {
+    max-height: 400px;
+    overflow: auto;
+    padding: 0 6px 8px;
+}
+
+body.yearly-page .summary-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+}
+
+body.yearly-page .summary-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 9px 12px;
+    background: var(--panel);
+    color: var(--mu);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-bottom: 1px solid var(--line);
+}
+
+body.yearly-page .summary-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+}
+
+body.yearly-page .summary-table th:first-child,
+body.yearly-page .summary-table td:first-child {
+    text-align: left;
+}
+
+body.yearly-page .summary-table th:not(:first-child),
+body.yearly-page .summary-table td:not(:first-child) {
+    text-align: right;
+    white-space: nowrap;
+}
+
+body.yearly-page .summary-table td:nth-child(2) {
+    font-weight: 600;
+}
+
+body.yearly-page .summary-table tbody tr:hover td {
+    background: var(--panel2);
+}
+
+body.yearly-page .summary-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+body.yearly-page .summary-table td i {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    border-radius: 7px;
+    display: inline-grid;
+    place-items: center;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+body.yearly-page .summary-table tfoot th {
+    position: sticky;
+    bottom: 0;
+    padding: 11px 12px;
+    background: var(--panel);
+    color: var(--accent);
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 0;
+}
+
+
+/* ---------- top 5 expenses (cards are created by yearly.js) ---------- */
+
+body.yearly-page .top-expense-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    padding: 6px 18px 0;
+}
+
+body.yearly-page .top-expense-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 14px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+}
+
+body.yearly-page .top-expense-item .rank {
+    width: 26px;
+    height: 26px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent);
+}
+
+body.yearly-page .top-expense-item .description {
+    margin-bottom: 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+body.yearly-page .top-expense-item .category {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--mu);
+}
+
+body.yearly-page .top-expense-item .category i {
+    color: var(--accent);
+    font-size: 12px;
+}
+
+body.yearly-page .top-expense-item .expense-meta,
+body.yearly-page .top-expense-item .expense-date {
+    margin-top: 3px;
+    font-size: 12px;
+    color: var(--mu);
+}
+
+body.yearly-page .top-expense-item .amount {
+    margin-top: auto;
+    padding-top: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+
+/* ==========================================================
+   SMALLER SCREENS
+========================================================== */
+
+@media (max-width: 1300px) {
+
+    body.yearly-page .y-tables {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.yearly-page .mode-card {
+        grid-column: span 2;
+    }
+
+    body.yearly-page .top-expense-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1100px) {
+
+    body.yearly-page .financial-range {
+        order: 7;
+        flex: 1 1 100%;
+    }
+
+    body.yearly-page .kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    body.yearly-page .kpi {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    body.yearly-page .kpi-val {
+        margin-top: 10px;
+        font-size: 22px;
+        min-height: 26px;
+    }
+
+    body.yearly-page .y-charts,
+    body.yearly-page .y-tables {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    body.yearly-page .mode-card {
+        grid-column: auto;
+    }
+
+    body.yearly-page .y-card {
+        border-radius: 18px;
+    }
+
+    body.yearly-page .chart-body {
+        height: 280px;
+        padding: 6px 10px 14px;
+    }
+
+    body.yearly-page .table-scroll {
+        max-height: 340px;
+    }
+
+    body.yearly-page .top-expense-card {
+        margin-top: 12px;
+    }
+
+    body.yearly-page .top-expense-grid {
+        grid-template-columns: 1fr;
+        padding: 4px 14px 0;
+    }
+
+    body.yearly-page .top-expense-item {
+        display: grid;
+        grid-template-columns: 26px 1fr auto;
+        column-gap: 12px;
+        align-items: center;
+        padding: 12px;
+    }
+
+    body.yearly-page .top-expense-item .rank {
+        grid-row: span 3;
+        margin: 0;
+    }
+
+    body.yearly-page .top-expense-item .description {
+        grid-column: 2;
+        margin: 0;
+    }
+
+    body.yearly-page .top-expense-item .category {
+        grid-column: 2;
+        margin-top: 2px;
+    }
+
+    body.yearly-page .top-expense-item .expense-meta {
+        grid-column: 2;
+    }
+
+    body.yearly-page .top-expense-item .expense-date {
+        display: none;
+    }
+
+    body.yearly-page .top-expense-item .amount {
+        grid-column: 3;
+        grid-row: 1 / span 3;
+        margin: 0;
+        padding: 0;
+        font-size: 18px;
+    }
+}

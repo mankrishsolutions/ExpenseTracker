@@ -1,0 +1,355 @@
+/* ==========================================================
+   ANALYTICS PAGE  -  "NIGHT LEDGER"  (dark + light)
+   ----------------------------------------------------------
+   Uses the same theme colours as the home page (they come from
+   style.css, section "Home page redesign"), so the theme switch
+   and look stay identical on both pages.
+
+   Everything is scoped to  body.analytics-page.
+========================================================== */
+
+body.analytics-page .back-btn {
+    display: none;              /* the side rail / bottom bar handles navigation */
+}
+
+body.analytics-page .dashboard-container {
+    display: block;
+}
+
+
+/* ==========================================================
+   SUMMARY TILES
+========================================================== */
+
+body.analytics-page .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+body.analytics-page .kpi {
+    --k: var(--accent);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px 18px 15px;
+    box-shadow: var(--card-shadow);
+    min-width: 0;
+}
+
+body.analytics-page .kpi-income  { --k: var(--pos); }
+body.analytics-page .kpi-expense { --k: var(--neg); }
+body.analytics-page .kpi-count   { --k: var(--accent); }
+body.analytics-page .kpi-avg     { --k: var(--a-TRCASH); }
+
+body.analytics-page .kpi-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body.analytics-page .kpi-ic {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    color: var(--k);
+    background: color-mix(in srgb, var(--k) 15%, transparent);
+    flex: none;
+}
+
+body.analytics-page .kpi-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--mu);
+}
+
+body.analytics-page .kpi-val {
+    margin-top: 12px;
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    white-space: nowrap;
+}
+
+body.analytics-page .kpi-sub {
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--mu);
+}
+
+
+/* ==========================================================
+   TABS  (segmented control)
+========================================================== */
+
+body.analytics-page .analytics-tabs {
+    display: inline-flex;
+    gap: 4px;
+    margin: 22px 0 16px;
+    padding: 4px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+body.analytics-page .analytics-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: var(--mu);
+    font: 600 13.5px "Inter", "Segoe UI", sans-serif;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+body.analytics-page .analytics-tab i {
+    font-size: 13px;
+}
+
+body.analytics-page .analytics-tab:hover {
+    background: var(--panel2);
+    color: var(--tx);
+}
+
+body.analytics-page .analytics-tab.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+}
+
+
+/* ==========================================================
+   PANELS + CARDS
+========================================================== */
+
+body.analytics-page .analytics-panel {
+    display: none;
+}
+
+body.analytics-page .analytics-panel.active {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+}
+
+body.analytics-page .span-6  { grid-column: span 6; }
+body.analytics-page .span-12 { grid-column: span 12; }
+
+body.analytics-page .analytics-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+body.analytics-page .card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px 6px;
+}
+
+body.analytics-page .card-head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+}
+
+body.analytics-page .card-ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    flex: none;
+}
+
+body.analytics-page .card-note {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--mu);
+    white-space: nowrap;
+}
+
+body.analytics-page .chart-box {
+    position: relative;
+    height: 300px;
+    padding: 8px 14px 16px;
+}
+
+body.analytics-page .span-12 .chart-box {
+    height: 320px;
+}
+
+
+/* ==========================================================
+   TOP LISTS  (rows are created by analytics.js)
+========================================================== */
+
+body.analytics-page .top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 14px 18px 20px;
+}
+
+body.analytics-page .top-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+body.analytics-page .top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+body.analytics-page .top-header > span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+body.analytics-page .top-header > span:last-child {
+    white-space: nowrap;
+}
+
+body.analytics-page .top-header strong {
+    color: var(--mu);
+    font-weight: 600;
+    min-width: 16px;
+}
+
+body.analytics-page .top-header i {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    flex: none;
+}
+
+body.analytics-page .top-progress {
+    height: 7px;
+    border-radius: 7px;
+    background: var(--track);
+    overflow: hidden;
+}
+
+body.analytics-page .top-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+body.analytics-page .top-percent {
+    font-size: 11.5px;
+    color: var(--mu);
+    text-align: right;
+}
+
+body.analytics-page .top-subtitle {
+    margin: -2px 0 0 53px;
+    font-size: 12px;
+    color: var(--mu);
+}
+
+/* each "top expense" row is a short two-line item, give it a divider */
+body.analytics-page #topExpensesList .top-item {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+}
+
+body.analytics-page #topExpensesList .top-item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+
+/* ==========================================================
+   LAPTOP (narrow) / TABLET / PHONE
+========================================================== */
+
+@media (max-width: 1100px) {
+
+    body.analytics-page .kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    body.analytics-page .kpi {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    body.analytics-page .kpi-val {
+        margin-top: 10px;
+        font-size: 22px;
+    }
+
+    body.analytics-page .analytics-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        margin: 16px 0 12px;
+    }
+
+    body.analytics-page .analytics-tab {
+        padding: 0 6px;
+    }
+
+    body.analytics-page .analytics-panel.active {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    body.analytics-page .span-6,
+    body.analytics-page .span-12 {
+        grid-column: auto;
+    }
+
+    body.analytics-page .analytics-card {
+        border-radius: 18px;
+    }
+
+    body.analytics-page .chart-box,
+    body.analytics-page .span-12 .chart-box {
+        height: 280px;
+        padding: 6px 10px 14px;
+    }
+
+    body.analytics-page .top-list {
+        padding: 12px 16px 18px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    body.analytics-page .analytics-tab i {
+        display: none;
+    }
+}
