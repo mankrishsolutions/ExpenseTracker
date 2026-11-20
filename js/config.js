@@ -51,6 +51,6 @@ const LEDGER_ACCOUNTS = [...BALANCE_ACCOUNTS, "CC"];
 
 const PAYMENT_MODE_GROUPS = {
     CASH:   ["CashOut", "TRCASH"],
-    ONLINE: ["CRHD", "CRAX", "TRHD", "TRPN", "CC", "CC-KiWi"],
+    ONLINE: ["CRHD", "CRAX", "TRHD", "KRHD", "TRPN", "CC", "CC-KiWi"],
     CARD:   ["CC", "CC-KiWi"]          // Card is part of Online
 };
