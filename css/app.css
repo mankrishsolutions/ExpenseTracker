@@ -2031,6 +2031,59 @@ body.home-page #dailySummaryModal .custom-modal-body h3 {
 
 
 
+/* Daily reconciliation date range */
+
+.daily-reconciliation-filters {
+    display: flex;
+    align-items: end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.daily-date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.daily-date-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mu);
+}
+
+.daily-date-field input {
+    padding: 9px 11px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--panel2);
+    color: var(--tx);
+    font-size: 13px;
+}
+
+#btnApplyDailyRange {
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media(max-width: 550px) {
+    .daily-reconciliation-filters {
+        align-items: stretch;
+    }
+
+    .daily-date-field {
+        flex: 1;
+        min-width: 130px;
+    }
+}
+
+
 @media (prefers-reduced-motion: reduce) {
 body.home-page *,
 body.home-page *::before,

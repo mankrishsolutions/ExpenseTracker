@@ -244,7 +244,26 @@
 
 			<div class="custom-modal-body">
 
-				<div id="dailySummaryDate"></div>
+				<div class="daily-reconciliation-filters">
+
+				<div class="daily-date-field">
+					<label for="dailyFromDate">From Date</label>
+					<input type="date" id="dailyFromDate">
+				</div>
+
+				<div class="daily-date-field">
+					<label for="dailyToDate">To Date</label>
+					<input type="date" id="dailyToDate">
+				</div>
+
+				<button type="button" id="btnApplyDailyRange">
+					<i class="fa-solid fa-filter"></i>
+					Apply
+				</button>
+
+			</div>
+
+			<div id="dailySummaryDate"></div>
 
 				<div id="dailySummaryCards"></div>
 
@@ -253,10 +272,10 @@
 						<thead>
 							<tr>
 								<th>Account</th>
-								<th>Yesterday Closing</th>
-								<th>Expenses</th>
+								<th>Opening Balance</th>
+								<th>Transactions</th>
 								<th>Adjustments</th>
-								<th>Today's Closing</th>
+								<th>Closing Balance</th>
 							</tr>
 						</thead>
 
@@ -266,10 +285,10 @@
 					</table>
 				</div>
 
-				<h3>Today's Expense Entries</h3>
+				<h3>Transactions in Selected Range</h3>
 				<div id="dailyExpenseEntries"></div>
 
-				<h3>Today's Adjustment Entries</h3>
+				<h3>Adjustments in Selected Range</h3>
 				<div id="dailyAdjustmentEntries"></div>
 
 				<div id="dailyReconciliationNote"></div>
