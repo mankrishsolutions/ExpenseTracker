@@ -1854,6 +1854,183 @@ body.home-page .custom-modal-header {
         padding: 12px 14px;
     }
 }
+
+
+/* =========================================
+   DAILY RECONCILIATION - COMPACT UI
+========================================= */
+
+body.home-page .daily-reconciliation-content {
+    width: min(1050px, 94vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: var(--panel);
+    color: var(--tx);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--pop-shadow);
+}
+
+body.home-page #dailySummaryModal .custom-modal-header {
+    padding: 13px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+}
+
+body.home-page #dailySummaryModal .custom-modal-header h2 {
+    font-size: 18px;
+    color: var(--tx);
+    margin: 0;
+}
+
+body.home-page #dailySummaryModal .custom-modal-body {
+    padding: 16px 20px;
+    color: var(--tx);
+}
+
+#dailySummaryDate {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mu);
+    margin-bottom: 12px;
+}
+
+/* Summary cards */
+
+#dailySummaryCards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.daily-summary-card {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 15px;
+}
+
+.daily-summary-card small {
+    display: block;
+    color: var(--mu);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .3px;
+}
+
+.daily-summary-card strong {
+    display: block;
+    color: var(--tx);
+    font-size: 19px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+/* Account table */
+
+.daily-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.daily-summary-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.daily-summary-table th {
+    background: var(--panel2);
+    color: var(--mu);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 11px 12px;
+    white-space: nowrap;
+}
+
+.daily-summary-table td {
+    color: var(--tx);
+    padding: 11px 12px;
+    border-top: 1px solid var(--line);
+    white-space: nowrap;
+}
+
+.daily-summary-table tfoot th {
+    color: var(--tx);
+    border-top: 2px solid var(--line);
+}
+
+/* Entry sections */
+
+body.home-page #dailySummaryModal .custom-modal-body h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 20px 0 9px;
+    color: var(--tx);
+}
+
+.daily-entry {
+    padding: 10px 12px;
+    margin-bottom: 7px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--tx);
+}
+
+.daily-entry-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.daily-entry-meta {
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--mu);
+}
+
+.daily-positive {
+    color: var(--pos) !important;
+}
+
+.daily-negative {
+    color: var(--neg) !important;
+}
+
+.daily-empty {
+    padding: 12px;
+    color: var(--mu);
+    background: var(--panel2);
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+.daily-reconciliation-note {
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+@media(max-width: 650px) {
+    #dailySummaryCards {
+        grid-template-columns: 1fr;
+    }
+
+    body.home-page #dailySummaryModal .custom-modal-body {
+        padding: 12px;
+    }
+
+    .daily-summary-card strong {
+        font-size: 17px;
+    }
+}
+
+
+
 @media (prefers-reduced-motion: reduce) {
 body.home-page *,
 body.home-page *::before,

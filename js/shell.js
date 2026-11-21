@@ -195,6 +195,24 @@
         );
         right.appendChild(theme);
 
+		// Daily Reconciliation button - Home dashboard only
+		if (IS_HOME) {
+
+			const reconcile = document.createElement("button");
+
+			reconcile.type = "button";
+			reconcile.id = "btnDailySummary";
+			reconcile.className = "hp-icon-btn daily-summary-btn";
+
+			reconcile.innerHTML =
+				'<i class="fa-solid fa-scale-balanced"></i>';
+
+			reconcile.title = "Daily Reconciliation";
+			reconcile.setAttribute("aria-label", "Daily Reconciliation");
+
+			right.appendChild(reconcile);
+		}
+			
         // "Add expense" button (laptop only, the phone uses the bottom bar)
         if (!IS_ADD) {
 

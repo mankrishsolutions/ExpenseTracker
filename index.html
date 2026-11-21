@@ -18,7 +18,7 @@
     </script>
 
     <link rel="stylesheet" href="css/app.css">
-    <link rel="stylesheet" href="css/home.css">
+    <!-- <link rel="stylesheet" href="css/home.css"> -->
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -227,6 +227,56 @@
             </div>
 
         </div>
+
+		<div id="dailySummaryModal" class="custom-modal">
+
+		<div class="custom-modal-content daily-reconciliation-content">
+
+			<div class="custom-modal-header">
+				<h2>Daily Reconciliation</h2>
+
+				<button id="btnCloseDailySummary"
+						class="close-modal"
+						type="button">
+					<i class="fa-solid fa-xmark"></i>
+				</button>
+			</div>
+
+			<div class="custom-modal-body">
+
+				<div id="dailySummaryDate"></div>
+
+				<div id="dailySummaryCards"></div>
+
+				<div class="daily-table-wrap">
+					<table class="daily-summary-table">
+						<thead>
+							<tr>
+								<th>Account</th>
+								<th>Yesterday Closing</th>
+								<th>Expenses</th>
+								<th>Adjustments</th>
+								<th>Today's Closing</th>
+							</tr>
+						</thead>
+
+						<tbody id="dailyReconciliationRows"></tbody>
+
+						<tfoot id="dailyReconciliationFoot"></tfoot>
+					</table>
+				</div>
+
+				<h3>Today's Expense Entries</h3>
+				<div id="dailyExpenseEntries"></div>
+
+				<h3>Today's Adjustment Entries</h3>
+				<div id="dailyAdjustmentEntries"></div>
+
+				<div id="dailyReconciliationNote"></div>
+
+			</div>
+		</div>
+	</div>
 
     </main>
 

@@ -79,6 +79,16 @@ function render() {
 }
 
 function wireEvents() {
+	// Daily Reconciliation
+	$("btnDailySummary").addEventListener(
+		"click",
+		openDailyReconciliation
+	);
+
+	$("btnCloseDailySummary").addEventListener(
+		"click",
+		closeDailyReconciliation
+	);
 
     $("cmbMonth").addEventListener("change", render);
 
@@ -515,4 +525,613 @@ function renderAllTransactionsModal() {
                     .map(r => transactionRow(r, false)).join("")}
             </tbody>
         </table>`;
+}
+
+
+/* ==========================================================
+   6. DAILY RECONCILIATION
+   Read-only feature. Does not modify core calculations.
+
+   TRANSACTIONS:
+   [0] ID
+   [1] Date
+   [2] Amount
+   [3] Description
+   [4] Category
+   [5] Mode
+   [6] PaymentMedium
+   [7] Remarks
+   [8] CreatedOn
+   [9] UpdatedOn
+
+   ADJUSTMENTS:
+   [0] ID
+   [1] Date
+   [2] Amount
+   [3] FromMode
+   [4] ToMode
+   [5] Type
+   [6] Description
+   [7] Remarks
+   [8] CreatedOn (treated as UpdatedOn)
+========================================================== */
+
+
+/* ---------- Date helpers ---------- */
+
+
+function dailyDateKey(value) {
+
+    if (!value) return "";
+
+    const s = String(value).trim();
+
+    // YYYY-MM-DD or ISO timestamp
+    let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if (m) {
+        return `${m[1]}-${m[2]}-${m[3]}`;
+    }
+
+    // DD/MM/YYYY (Google Sheets date format)
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+
+    if (m) {
+        return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
+    }
+
+    // DD-MMM-YYYY
+    m = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})/);
+
+    if (m) {
+
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        const month = months.findIndex(
+            x => x.toLowerCase() === m[2].toLowerCase()
+        );
+
+        if (month >= 0) {
+            return `${m[3]}-${String(month + 1).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
+        }
+    }
+
+    const d = new Date(s);
+
+    if (isNaN(d.getTime())) return "";
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+
+
+function dailyTodayKey() {
+
+    const d = new Date();
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+
+/* ---------- Month inclusion ---------- */
+
+// Match the month scope used by the existing dashboard.
+// This prevents movements outside the selected closing period
+// from being included in the reconciliation.
+
+function dailyIsIncludedInBalance(row, selectedMonth) {
+
+    if (selectedMonth === ALL_MONTHS) return true;
+
+    const months = getAllMonths();
+
+    const rowIndex = months.indexOf(rowMonth(row));
+    const selectedIndex = months.indexOf(selectedMonth);
+
+    return rowIndex >= 0 &&
+           selectedIndex >= 0 &&
+           rowIndex <= selectedIndex;
+}
+
+
+/* ---------- Movement structure ---------- */
+
+function createDailyMovement() {
+
+    const movement = {};
+
+    BALANCE_ACCOUNTS.forEach(account => {
+        movement[account] = 0;
+    });
+
+    return movement;
+}
+
+
+/* ---------- Expense movement ---------- */
+
+// Negative = money spent.
+// Positive = money received.
+
+function addDailyExpenseMovement(movement, row) {
+
+    const amount = Number(row[2]) || 0;
+    const mode = String(row[5] || "").trim();
+
+    if (mode === "CashIn") {
+
+        movement.CASH += amount;
+
+    }
+    else if (mode === "CashOut") {
+
+        movement.CASH -= amount;
+
+    }
+    else if (
+        Object.prototype.hasOwnProperty.call(movement, mode)
+    ) {
+
+        movement[mode] -= amount;
+
+    }
+}
+
+
+/* ---------- Adjustment movement ---------- */
+
+// This deliberately follows the same branches as processMonth()
+// in core.js. Do not change the existing core.js rules.
+
+function addDailyAdjustmentMovement(movement, row) {
+
+    const amount = Number(row[2]) || 0;
+
+    const fromMode = String(row[3] || "").trim();
+    const toMode = String(row[4] || "").trim();
+    const adjType = String(row[5] || "").trim();
+
+    const fromIsAccount = LEDGER_ACCOUNTS.includes(fromMode);
+    const toIsAccount = LEDGER_ACCOUNTS.includes(toMode);
+
+    if (
+        fromMode === "TRCASH" &&
+        toMode === "CASH" &&
+        adjType === "Internal"
+    ) {
+
+        movement.TRCASH -= amount;
+        movement.CASH += amount;
+
+    }
+    else if (
+        fromMode === "TRCASH" &&
+        toMode === "CASH"
+    ) {
+
+        // Existing historical rule in core.js
+        movement.CASH += amount;
+
+    }
+    else if (fromIsAccount && toIsAccount) {
+
+        if (Object.prototype.hasOwnProperty.call(movement, fromMode)) {
+            movement[fromMode] -= amount;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(movement, toMode)) {
+            movement[toMode] += amount;
+        }
+
+    }
+    else if (fromIsAccount) {
+
+        if (Object.prototype.hasOwnProperty.call(movement, fromMode)) {
+            movement[fromMode] -= amount;
+        }
+
+    }
+    else if (toIsAccount) {
+
+        if (Object.prototype.hasOwnProperty.call(movement, toMode)) {
+            movement[toMode] += amount;
+        }
+
+    }
+}
+
+
+/* ---------- Collect today's entries ---------- */
+
+
+function getDailyReconciliationData() {
+
+const today = dailyTodayKey();
+
+console.log("Total transactions loaded:", allTransactions.length);
+console.log("Total adjustments loaded:", allAdjustments.length);
+
+console.log("Today's transactions:",
+    allTransactions.filter(r =>
+        dailyDateKey(r[9]) === today ||
+        dailyDateKey(r[8]) === today
+    )
+);
+
+console.log("Today's adjustments:",
+    allAdjustments.filter(r =>
+        dailyDateKey(r[8]) === today
+    )
+);
+
+console.log("Last 5 transactions:",
+    allTransactions.slice(-5)
+);
+
+    const selectedMonth = $("cmbMonth").value;
+
+    const expenses = [];
+    const adjustments = [];
+
+    const editedExpenses = [];
+    const unknownExpenses = [];
+
+    const expenseMovement = createDailyMovement();
+    const adjustmentMovement = createDailyMovement();
+
+    // TRANSACTIONS
+    allTransactions.forEach(row => {
+
+        const created = dailyDateKey(row[8]);
+        const updated = dailyDateKey(row[9]);
+
+        // Use UpdatedOn if available, otherwise CreatedOn.
+        const activityDate = updated || created;
+
+        if (activityDate !== today) return;
+
+        if (!dailyIsIncludedInBalance(row, selectedMonth)) return;
+
+        expenses.push(row);
+
+        // Existing transaction edited today:
+        // previous amount/account is not available.
+        if (created && updated && created !== updated) {
+            editedExpenses.push(row);
+            return;
+        }
+
+        if (!created) {
+            unknownExpenses.push(row);
+            return;
+        }
+
+        addDailyExpenseMovement(expenseMovement, row);
+    });
+
+
+    // ADJUSTMENTS
+    // Column I (index 8) = CreatedOn
+    allAdjustments.forEach(row => {
+
+        const created = dailyDateKey(row[8]);
+
+        if (created !== today) return;
+
+        if (!dailyIsIncludedInBalance(row, selectedMonth)) return;
+
+        adjustments.push(row);
+
+        addDailyAdjustmentMovement(adjustmentMovement, row);
+    });
+
+
+    return {
+        expenses,
+        adjustments,
+        editedExpenses,
+        unknownExpenses,
+        expenseMovement,
+        adjustmentMovement
+    };
+}
+
+
+
+/* ---------- Render account reconciliation ---------- */
+
+function renderDailyReconciliation(data) {
+
+    const selectedMonth = $("cmbMonth").value;
+
+    // Use the SAME current balance calculation as the dashboard.
+    // This is read-only and does not change any historical data.
+
+    const currentBalances = calculateBalances(selectedMonth);
+
+    const tbody = $("dailyReconciliationRows");
+    const tfoot = $("dailyReconciliationFoot");
+
+    tbody.innerHTML = "";
+
+    let yesterdayTotal = 0;
+    let expenseTotal = 0;
+    let adjustmentTotal = 0;
+    let closingTotal = 0;
+
+    BALANCE_ACCOUNTS.forEach(account => {
+
+        const closing =
+            Number(currentBalances[account]) || 0;
+
+        const expense =
+            Number(data.expenseMovement[account]) || 0;
+
+        const adjustment =
+            Number(data.adjustmentMovement[account]) || 0;
+
+        const netMovement = expense + adjustment;
+
+        // Reverse today's known movement.
+        const yesterday = closing - netMovement;
+
+        yesterdayTotal += yesterday;
+        expenseTotal += expense;
+        adjustmentTotal += adjustment;
+        closingTotal += closing;
+
+        const movementClass = value => {
+
+            if (value > 0.005) return "daily-positive";
+            if (value < -0.005) return "daily-negative";
+
+            return "";
+        };
+
+        tbody.innerHTML += `
+            <tr>
+
+                <td><strong>${esc(account)}</strong></td>
+
+                <td>${formatMoney(yesterday)}</td>
+
+                <td class="${movementClass(expense)}">
+                    ${formatMoney(expense)}
+                </td>
+
+                <td class="${movementClass(adjustment)}">
+                    ${formatMoney(adjustment)}
+                </td>
+
+                <td>
+                    <strong>${formatMoney(closing)}</strong>
+                </td>
+
+            </tr>
+        `;
+
+    });
+
+
+    tfoot.innerHTML = `
+        <tr>
+            <th>Total</th>
+            <th>${formatMoney(yesterdayTotal)}</th>
+            <th>${formatMoney(expenseTotal)}</th>
+            <th>${formatMoney(adjustmentTotal)}</th>
+            <th>${formatMoney(closingTotal)}</th>
+        </tr>
+    `;
+
+
+    $("dailySummaryCards").innerHTML = `
+
+        <div class="daily-summary-card">
+            <small>YESTERDAY CLOSING</small>
+            <strong>${formatMoney(yesterdayTotal)}</strong>
+        </div>
+
+        <div class="daily-summary-card">
+            <small>TODAY'S NET MOVEMENT</small>
+            <strong>${formatMoney(expenseTotal + adjustmentTotal)}</strong>
+        </div>
+
+        <div class="daily-summary-card">
+            <small>TODAY'S CLOSING</small>
+            <strong>${formatMoney(closingTotal)}</strong>
+        </div>
+
+    `;
+
+    return {
+        yesterdayTotal,
+        expenseTotal,
+        adjustmentTotal,
+        closingTotal
+    };
+}
+
+
+/* ---------- Expense entry details ---------- */
+
+function renderDailyExpenseEntries(data) {
+
+    const container = $("dailyExpenseEntries");
+
+    if (!data.expenses.length) {
+
+        container.innerHTML =
+            '<div class="daily-empty">No expenses updated today.</div>';
+
+        return;
+    }
+
+    container.innerHTML = data.expenses.map(row => {
+
+        const created = dailyDateKey(row[8]);
+        const updated = dailyDateKey(row[9]);
+
+        let warning = "";
+
+        if (!created) {
+
+            warning = "Previous value unknown - excluded from movement";
+
+        }
+        else if (created !== updated) {
+
+            warning = "Edited today - previous value unavailable";
+
+        }
+
+        return `
+            <div class="daily-entry">
+
+                <div class="daily-entry-main">
+
+                    <strong>${esc(row[3])}</strong>
+
+                    <strong>${formatMoney(row[2])}</strong>
+
+                </div>
+
+                <div class="daily-entry-meta">
+
+                    Date: ${esc(row[1])}
+                    | Category: ${esc(row[4])}
+                    | Mode: ${esc(row[5])}
+                    | Payment: ${esc(row[6])}
+
+                </div>
+
+                ${warning ? `
+                    <div class="daily-negative daily-entry-meta">
+                        ⚠ ${esc(warning)}
+                    </div>
+                ` : ""}
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+
+/* ---------- Adjustment entry details ---------- */
+
+function renderDailyAdjustmentEntries(data) {
+
+    const container = $("dailyAdjustmentEntries");
+
+    if (!data.adjustments.length) {
+
+        container.innerHTML =
+            '<div class="daily-empty">No adjustments recorded today.</div>';
+
+        return;
+    }
+
+    container.innerHTML = data.adjustments.map(row => {
+
+        return `
+            <div class="daily-entry">
+
+                <div class="daily-entry-main">
+
+                    <strong>${esc(row[6])}</strong>
+
+                    <strong>${formatMoney(row[2])}</strong>
+
+                </div>
+
+                <div class="daily-entry-meta">
+
+                    Date: ${esc(row[1])}
+                    | Type: ${esc(row[5])}
+                    | ${esc(row[3])} → ${esc(row[4])}
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+}
+
+
+/* ---------- Open reconciliation modal ---------- */
+
+function openDailyReconciliation() {
+
+    const data = getDailyReconciliationData();
+
+    const totals = renderDailyReconciliation(data);
+
+    renderDailyExpenseEntries(data);
+
+    renderDailyAdjustmentEntries(data);
+
+    const today = new Date();
+
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    $("dailySummaryDate").textContent =
+        dailyDateKey(yesterday) + "  →  " + dailyDateKey(today);
+
+
+    let notes = [];
+
+    if (data.editedExpenses.length) {
+
+        notes.push(
+            `⚠ ${data.editedExpenses.length} existing transaction(s) edited today. Previous amounts/accounts are unavailable and these have been excluded from the movement calculation.`
+        );
+
+    }
+
+    if (data.unknownExpenses.length) {
+
+        notes.push(
+            `⚠ ${data.unknownExpenses.length} transaction(s) have no CreatedOn value and have been excluded from the movement calculation.`
+        );
+
+    }
+
+    if (notes.length) {
+
+        $("dailyReconciliationNote").innerHTML =
+            notes.map(n => `<p class="daily-negative">${esc(n)}</p>`).join("");
+
+    }
+    else {
+
+        $("dailyReconciliationNote").innerHTML = `
+            <p class="daily-positive">
+                ✓ All identified new entries have been included in the reconciliation.
+            </p>
+        `;
+
+    }
+
+    $("dailySummaryModal").classList.add("show");
+}
+
+
+/* ---------- Close modal ---------- */
+
+function closeDailyReconciliation() {
+
+    $("dailySummaryModal").classList.remove("show");
 }
