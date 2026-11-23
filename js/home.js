@@ -566,9 +566,6 @@ function renderAllTransactionsModal() {
    [8] CreatedOn
 ========================================================== */
 
-const DAILY_RECON_START_DATE = "2026-10-01";
-
-
 /* ---------- Date helpers ---------- */
 
 function dailyDateKey(value) {
@@ -806,140 +803,75 @@ function applyDailyMovement(balances, transactionMovement, adjustmentMovement) {
 
 /* ---------- Collect entries for selected range ---------- */
 
-function getDailyReconciliationData(fromDate, toDate) {
 
+function getDailyReconciliationData(fromDate, toDate) {
     const expenses = [];
     const adjustments = [];
 
-    const editedExpenses = [];
     const unknownExpenses = [];
 
-    const historicalEditedExpenses = [];
-    const historicalUnknownExpenses = [];
-
-    // Movements before From Date
     const openingExpenseMovement = createDailyMovement();
     const openingAdjustmentMovement = createDailyMovement();
 
-    // Movements inside selected range
     const expenseMovement = createDailyMovement();
     const adjustmentMovement = createDailyMovement();
 
-
     // TRANSACTIONS
-
     allTransactions.forEach(row => {
 
-        const created = dailyDateKey(row[8]);
-        const updated = dailyDateKey(row[9]);
-
-        // Use UpdatedOn, otherwise CreatedOn.
-        const activityDate = updated || created;
+        // Match core.js: use the actual transaction Date (row[1]).
+        const activityDate = dailyDateKey(row[1]);
 
         if (!activityDate) {
-
             unknownExpenses.push(row);
             return;
-
         }
 
-        // Existing transaction edited after creation.
-        // Previous amount/account is not available.
-        const isEdited = created && updated && created !== updated;
-
-
-        // Before selected range:
-        // Include in opening balance if reconstructable.
-
+        // Before selected range: add to opening balance.
         if (activityDate < fromDate) {
-
-            if (isEdited) {
-                historicalEditedExpenses.push(row);
-                return;
-            }
-
-            if (!created) {
-                historicalUnknownExpenses.push(row);
-                return;
-            }
-
             addDailyExpenseMovement(openingExpenseMovement, row);
             return;
-
         }
 
-        // After selected range
+        // After selected range: ignore for now.
+        if (activityDate > toDate) return;
 
-		if (activityDate > toDate) {
-
-			// An older transaction may have been edited after
-			// the selected reconciliation period.
-			if (isEdited && created && created <= toDate) {
-				historicalEditedExpenses.push(row);
-			}
-
-			return;
-		}
-
-
+        // Inside selected range: include latest saved values,
+        // even if the transaction was edited.
         expenses.push(row);
-
-        if (isEdited) {
-            editedExpenses.push(row);
-            return;
-        }
-
-        if (!created) {
-            unknownExpenses.push(row);
-            return;
-        }
-
         addDailyExpenseMovement(expenseMovement, row);
-
     });
 
-
     // ADJUSTMENTS
-
     allAdjustments.forEach(row => {
 
-        const created = dailyDateKey(row[8]);
+        // Match core.js: use the adjustment Date (row[1]).
+        const activityDate = dailyDateKey(row[1]);
 
-        if (!created) return;
+        if (!activityDate) return;
 
-
-        // Before selected range
-
-        if (created < fromDate) {
-
+        // Before selected range: add to opening balance.
+        if (activityDate < fromDate) {
             addDailyAdjustmentMovement(
                 openingAdjustmentMovement,
                 row
             );
-
             return;
-
         }
 
+        // After selected range.
+        if (activityDate > toDate) return;
 
-        // After selected range
-
-        if (created > toDate) return;
-
-
+        // Inside selected range.
         adjustments.push(row);
 
         addDailyAdjustmentMovement(
             adjustmentMovement,
             row
         );
-
     });
 
-
-    // Calculate opening balance:
-    // Original opening + all movements before From Date.
-
+    // Opening balance = original balance + all earlier movements.
     const openingBalances = getDailyBaseBalances();
 
     applyDailyMovement(
@@ -948,10 +880,7 @@ function getDailyReconciliationData(fromDate, toDate) {
         openingAdjustmentMovement
     );
 
-
-    // Calculate closing balance:
-    // Opening balance + movements inside selected range.
-
+    // Closing balance = opening + selected-range movements.
     const closingBalances = { ...openingBalances };
 
     applyDailyMovement(
@@ -960,27 +889,16 @@ function getDailyReconciliationData(fromDate, toDate) {
         adjustmentMovement
     );
 
-
     return {
-
         fromDate,
         toDate,
-
         expenses,
         adjustments,
-
-        editedExpenses,
         unknownExpenses,
-
-        historicalEditedExpenses,
-        historicalUnknownExpenses,
-
         openingBalances,
         closingBalances,
-
         expenseMovement,
         adjustmentMovement
-
     };
 }
 
@@ -1110,120 +1028,87 @@ function renderDailyReconciliation(data) {
 /* ---------- Expense entry details ---------- */
 
 function renderDailyExpenseEntries(data) {
-
     const container = $("dailyExpenseEntries");
 
     if (!data.expenses.length) {
-
         container.innerHTML =
             '<div class="daily-empty">No transactions found in this date range.</div>';
-
         return;
-
     }
 
-
-    container.innerHTML = data.expenses.map(row => {
-
-        const created = dailyDateKey(row[8]);
-        const updated = dailyDateKey(row[9]);
-
-        let warning = "";
-
-        if (!created) {
-
-            warning = "CreatedOn missing - excluded from movement";
-
-        }
-        else if (created !== updated) {
-
-            warning = "Edited transaction - previous value unavailable; excluded from movement";
-
-        }
-
-
-        return `
-
-            <div class="daily-entry">
-
-                <div class="daily-entry-main">
-
-                    <strong>${esc(row[3])}</strong>
-
-                    <strong>${formatMoney(row[2])}</strong>
-
-                </div>
-
-                <div class="daily-entry-meta">
-
-                    Date: ${esc(row[1])}
-                    | Category: ${esc(row[4])}
-                    | Mode: ${esc(row[5])}
-                    | Payment: ${esc(row[6])}
-
-                </div>
-
-                ${warning ? `
-                    <div class="daily-negative daily-entry-meta">
-                        ⚠ ${esc(warning)}
-                    </div>
-                ` : ""}
-
-            </div>
-
-        `;
-
-    }).join("");
-
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-sm table-hover daily-detail-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Mode</th>
+                        <th>Payment</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.expenses.map(row => `
+                        <tr>
+                            <td>${esc(row[1])}</td>
+                            <td><strong>${esc(row[3])}</strong></td>
+                            <td>${esc(row[4])}</td>
+                            <td>${esc(row[5])}</td>
+                            <td>${esc(row[6])}</td>
+                            <td class="text-end fw-semibold">
+                                ${formatMoney(row[2])}
+                            </td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
 
-
 /* ---------- Adjustment entry details ---------- */
-
 function renderDailyAdjustmentEntries(data) {
-
     const container = $("dailyAdjustmentEntries");
 
     if (!data.adjustments.length) {
-
         container.innerHTML =
             '<div class="daily-empty">No adjustments found in this date range.</div>';
-
         return;
-
     }
 
-
-    container.innerHTML = data.adjustments.map(row => {
-
-        return `
-
-            <div class="daily-entry">
-
-                <div class="daily-entry-main">
-
-                    <strong>${esc(row[6])}</strong>
-
-                    <strong>${formatMoney(row[2])}</strong>
-
-                </div>
-
-                <div class="daily-entry-meta">
-
-                    Date: ${esc(row[1])}
-                    | Type: ${esc(row[5])}
-                    | ${esc(row[3])} → ${esc(row[4])}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }).join("");
-
+    container.innerHTML = `
+        <div class="table-responsive">
+            <table class="table table-sm table-hover daily-detail-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>From Account</th>
+                        <th>To Account</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.adjustments.map(row => `
+                        <tr>
+                            <td>${esc(row[1])}</td>
+                            <td><strong>${esc(row[6])}</strong></td>
+                            <td>${esc(row[5])}</td>
+                            <td>${esc(row[3])}</td>
+                            <td>${esc(row[4])}</td>
+                            <td class="text-end fw-semibold">
+                                ${formatMoney(row[2])}
+                            </td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
 }
-
 
 /* ---------- Apply selected date range ---------- */
 
@@ -1236,16 +1121,6 @@ function applyDailyReconciliationRange() {
     if (!fromDate || !toDate) {
 
         alert("Please select both From Date and To Date.");
-        return;
-
-    }
-
-    if (fromDate < DAILY_RECON_START_DATE) {
-
-        alert("Reconciliation is available from 1 October 2026 onwards.");
-
-        $("dailyFromDate").value = DAILY_RECON_START_DATE;
-
         return;
 
     }
@@ -1278,95 +1153,63 @@ function applyDailyReconciliationRange() {
         fromDate + "  →  " + toDate;
 
 
-    const notes = [];
+    
+	const notes = [];
 
+	if (data.unknownExpenses.length) {
+		notes.push(
+			`${data.unknownExpenses.length} transaction(s) have a missing or invalid Date and were excluded from reconciliation.`
+		);
+	}
 
-    if (data.editedExpenses.length) {
+	if (notes.length) {
+		$("dailyReconciliationNote").innerHTML =
+			notes.map(n =>
+				`<p class="daily-negative">⚠ ${esc(n)}</p>`
+			).join("");
+	} else {
+		$("dailyReconciliationNote").innerHTML = `
+			<p class="daily-positive">
+				✓ All transactions and adjustments with valid dates have been included.
+			</p>
+		`;
+	}
 
-        notes.push(
-            `${data.editedExpenses.length} transaction(s) edited during this range. Previous amounts/accounts are unavailable, so these were excluded from movement.`
-        );
-
-    }
-
-
-    if (data.unknownExpenses.length) {
-
-        notes.push(
-            `${data.unknownExpenses.length} transaction(s) have missing CreatedOn values and were excluded from movement.`
-        );
-
-    }
-
-
-    if (data.historicalEditedExpenses.length) {
-
-        notes.push(
-            `${data.historicalEditedExpenses.length} earlier edited transaction(s) could not be reconstructed for the opening balance.`
-        );
-
-    }
-
-
-    if (data.historicalUnknownExpenses.length) {
-
-        notes.push(
-            `${data.historicalUnknownExpenses.length} earlier transaction(s) could not be included in the opening balance because CreatedOn is missing.`
-        );
-
-    }
-
-
-    if (notes.length) {
-
-        $("dailyReconciliationNote").innerHTML =
-            notes.map(n =>
-                `<p class="daily-negative">⚠ ${esc(n)}</p>`
-            ).join("");
-
-    }
-    else {
-
-        $("dailyReconciliationNote").innerHTML = `
-
-            <p class="daily-positive">
-                ✓ All identifiable transactions and adjustments have been included.
-            </p>
-
-        `;
-
-    }
 
 }
 
 
 /* ---------- Open reconciliation modal ---------- */
-
 function openDailyReconciliation() {
-
     const today = dailyTodayKey();
 
+    // Default From Date = Today - 2 days
+    const defaultFrom = new Date(today + "T00:00:00");
+    defaultFrom.setDate(defaultFrom.getDate() - 2);
+
+    const fromDateDefault = [
+        defaultFrom.getFullYear(),
+        String(defaultFrom.getMonth() + 1).padStart(2, "0"),
+        String(defaultFrom.getDate()).padStart(2, "0")
+    ].join("-");
+
+    // Set defaults only if fields are empty
     if (!$("dailyFromDate").value) {
-        $("dailyFromDate").value = DAILY_RECON_START_DATE;
+        $("dailyFromDate").value = fromDateDefault;
     }
 
     if (!$("dailyToDate").value) {
         $("dailyToDate").value = today;
     }
 
-    $("dailyFromDate").min = DAILY_RECON_START_DATE;
+    // Allow date selection up to today
     $("dailyFromDate").max = today;
-
-    $("dailyToDate").min = DAILY_RECON_START_DATE;
     $("dailyToDate").max = today;
-
 
     applyDailyReconciliationRange();
 
     $("dailySummaryModal").classList.add("show");
-
 }
-
 
 /* ---------- Close reconciliation modal ---------- */
 
