@@ -2083,6 +2083,40 @@ body.home-page #dailySummaryModal .custom-modal-body h3 {
     }
 }
 
+.daily-detail-table {
+    width: 100%;
+    margin-bottom: 0;
+    color: var(--bs-body-color);
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.daily-detail-table th {
+    font-size: 12px;
+    font-weight: 700;
+    color: #aeb8d8;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.daily-detail-table td {
+    font-size: 13px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    vertical-align: middle;
+}
+
+.daily-detail-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.daily-detail-table tbody tr:hover {
+    background: rgba(255,255,255,0.04);
+}
+
+.daily-detail-table .text-end {
+    text-align: right;
+}
 
 @media (prefers-reduced-motion: reduce) {
 body.home-page *,
